@@ -38,7 +38,7 @@ export interface DuesAgingData {
 }
 
 export async function getPnL(params?: { year?: number }): Promise<ApiResponse<PnLData>> {
-  const { data } = await api.get<ApiResponse<PnLData>>("/finance/pnl", { params });
+  const { data } = await api.get<ApiResponse<PnLData>>("/reports/pnl", { params });
   return data;
 }
 
