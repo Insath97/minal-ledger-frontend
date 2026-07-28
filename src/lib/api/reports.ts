@@ -112,8 +112,6 @@ export async function getCustomerStatement(params: {
   customer_id: number;
   date_from?: string;
   date_to?: string;
-  month?: number;
-  year?: number;
 }): Promise<ApiResponse<CustomerStatementData>> {
   const { data } = await api.get<ApiResponse<CustomerStatementData>>("/reports/customer-statement", { params });
   return data;

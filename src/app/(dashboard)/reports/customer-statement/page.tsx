@@ -11,72 +11,63 @@ export default function CustomerStatementPage() {
   const { toast } = useToast();
   const [data, setData] = useState<CustomerStatementData | null>(null);
   const [loading, setLoading] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState<Customer[]>([]);
-  const [searching, setSearching] = useState(false);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  // Customer searchable select
+  const [customers, setCustomers] = useState<Customer[]>([]);
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-  const debounceRef = useRef<NodeJS.Timeout | null>(null);
+  const [customerDropdownOpen, setCustomerDropdownOpen] = useState(false);
+  const [customerSearch, setCustomerSearch] = useState("");
+  const [searchingCustomers, setSearchingCustomers] = useState(false);
+  const customerDropdownRef = useRef<HTMLDivElement>(null);
+  const customerDebounceRef = useRef<NodeJS.Timeout | null>(null);
+
   const today = new Date().toISOString().split("T")[0];
   const firstOfYear = `${new Date().getFullYear()}-01-01`;
   const [dateFrom, setDateFrom] = useState(firstOfYear);
   const [dateTo, setDateTo] = useState(today);
-  const [filterMonth, setFilterMonth] = useState("");
-  const [filterYear, setFilterYear] = useState(String(new Date().getFullYear()));
 
-  const MONTH_OPTIONS = [
-    { value: "", label: "All Months" },
-    { value: "1", label: "January" }, { value: "2", label: "February" },
-    { value: "3", label: "March" }, { value: "4", label: "April" },
-    { value: "5", label: "May" }, { value: "6", label: "June" },
-    { value: "7", label: "July" }, { value: "8", label: "August" },
-    { value: "9", label: "September" }, { value: "10", label: "October" },
-    { value: "11", label: "November" }, { value: "12", label: "December" },
-  ];
-  const YEAR_OPTIONS = Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - i);
-
-  const searchCustomers = useCallback(async (query: string) => {
-    if (!query || query.length < 1) {
-      setSearchResults([]);
-      return;
-    }
-    setSearching(true);
+  const fetchCustomers = useCallback(async (query: string) => {
+    setSearchingCustomers(true);
     try {
-      const res = await getCustomers({ search: query, per_page: 20, is_active: 1 });
-      if (res.status === "success") setSearchResults(res.data.data);
+      const params: Record<string, string | number> = { per_page: 20, is_active: 1 };
+      if (query) params.search = query;
+      const res = await getCustomers(params);
+      if (res.status === "success") setCustomers(res.data.data);
     } catch {
-      setSearchResults([]);
+      setCustomers([]);
     } finally {
-      setSearching(false);
+      setSearchingCustomers(false);
     }
   }, []);
 
-  const handleSearchChange = (value: string) => {
-    setSearchQuery(value);
-    setDropdownOpen(true);
-    if (debounceRef.current) clearTimeout(debounceRef.current);
-    debounceRef.current = setTimeout(() => searchCustomers(value), 300);
+  useEffect(() => {
+    fetchCustomers("");
+  }, [fetchCustomers]);
+
+  const handleCustomerSearch = (value: string) => {
+    setCustomerSearch(value);
+    if (customerDebounceRef.current) clearTimeout(customerDebounceRef.current);
+    customerDebounceRef.current = setTimeout(() => fetchCustomers(value), 300);
   };
 
   const handleSelectCustomer = (customer: Customer) => {
     setSelectedCustomer(customer);
-    setSearchQuery(`${customer.name} (${customer.code})`);
-    setDropdownOpen(false);
-    setSearchResults([]);
+    setCustomerDropdownOpen(false);
+    setCustomerSearch("");
   };
 
   const handleClearCustomer = () => {
     setSelectedCustomer(null);
-    setSearchQuery("");
-    setSearchResults([]);
+    setCustomerSearch("");
+    setCustomers([]);
     setData(null);
+    fetchCustomers("");
   };
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
-        setDropdownOpen(false);
+      if (customerDropdownRef.current && !customerDropdownRef.current.contains(e.target as Node)) {
+        setCustomerDropdownOpen(false);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
@@ -88,20 +79,15 @@ export default function CustomerStatementPage() {
     async function fetch() {
       setLoading(true);
       try {
-        const params: { customer_id: number; date_from?: string; date_to?: string; month?: number; year?: number } = { customer_id: selectedCustomer!.id };
-        if (filterMonth && filterYear) {
-          params.month = Number(filterMonth);
-          params.year = Number(filterYear);
-        } else {
-          if (dateFrom) params.date_from = dateFrom;
-          if (dateTo) params.date_to = dateTo;
-        }
+        const params: { customer_id: number; date_from?: string; date_to?: string } = { customer_id: selectedCustomer!.id };
+        if (dateFrom) params.date_from = dateFrom;
+        if (dateTo) params.date_to = dateTo;
         const res = await getCustomerStatement(params);
         if (res.status === "success") setData(res.data);
       } catch { toast("Failed to load customer statement", "error"); } finally { setLoading(false); }
     }
     fetch();
-  }, [selectedCustomer, dateFrom, dateTo, filterMonth, filterYear, toast]);
+  }, [selectedCustomer, dateFrom, dateTo, toast]);
 
   const formatCurrency = (amount: number) => `Rs. ${Number(amount).toLocaleString("en-US")}`;
 
@@ -114,81 +100,83 @@ export default function CustomerStatementPage() {
 
       <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
         <div className="grid gap-4 sm:grid-cols-3">
-          <div className="relative" ref={dropdownRef}>
+          {/* Customer Searchable Select */}
+          <div className="relative" ref={customerDropdownRef}>
             <label className="mb-1.5 block text-[13px] font-semibold text-slate-700">Customer *</label>
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => handleSearchChange(e.target.value)}
-                onFocus={() => { if (searchQuery) setDropdownOpen(true); }}
-                placeholder="Search by name, code, or phone..."
-                className="h-11 w-full rounded-lg border border-slate-200 bg-white pl-10 pr-8 text-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
-              />
-              {searchQuery && (
-                <button type="button" onClick={handleClearCustomer} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
-                  <X className="h-4 w-4" />
-                </button>
-              )}
-              {!searchQuery && (
-                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
-              )}
-            </div>
-            {dropdownOpen && (searchResults.length > 0 || searching) && (
-              <div className="absolute z-50 mt-1 w-full rounded-lg border border-slate-200 bg-white shadow-lg max-h-60 overflow-y-auto scrollbar-thin">
-                {searching ? (
-                  <div className="flex items-center justify-center py-4">
-                    <Loader2 className="h-5 w-5 text-emerald-500 animate-spin" />
-                  </div>
-                ) : (
-                  searchResults.map((c) => (
-                    <button
-                      key={c.id}
-                      type="button"
-                      onClick={() => handleSelectCustomer(c)}
-                      className="flex w-full items-center gap-3 px-4 py-3 text-left hover:bg-slate-50 transition-colors border-b border-slate-50 last:border-0"
-                    >
-                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-100 text-xs font-bold text-emerald-700">
-                        {c.name.charAt(0).toUpperCase()}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-slate-700 truncate">{c.name}</p>
-                        <p className="text-xs text-slate-400">{c.code} &middot; {c.phone}</p>
-                      </div>
-                      {c.outstanding_balance > 0 && (
-                        <span className="text-xs font-semibold text-red-600">{formatCurrency(c.outstanding_balance)}</span>
+            <button
+              type="button"
+              onClick={() => setCustomerDropdownOpen(!customerDropdownOpen)}
+              className="flex h-11 w-full items-center justify-between gap-2 rounded-lg border border-slate-200 bg-white px-3 text-sm transition-all hover:border-slate-300 focus:border-emerald-500"
+            >
+              <span className={selectedCustomer ? "text-slate-700 font-medium" : "text-slate-400"}>
+                {selectedCustomer ? `${selectedCustomer.name} (${selectedCustomer.code})` : "Select a customer"}
+              </span>
+              <ChevronDown className={`h-4 w-4 shrink-0 text-slate-500 transition-transform ${customerDropdownOpen ? "rotate-180" : ""}`} />
+            </button>
+            {customerDropdownOpen && (
+              <div className="absolute z-50 mt-1 w-full overflow-hidden rounded-lg border border-slate-200 bg-white shadow-xl">
+                <div className="p-1.5">
+                  <input
+                    autoFocus
+                    value={customerSearch}
+                    onChange={(e) => handleCustomerSearch(e.target.value)}
+                    placeholder="Search by name, code, or phone..."
+                    className="h-8 w-full rounded-md border border-slate-200 bg-slate-50 px-2.5 text-xs outline-none focus:border-emerald-500"
+                  />
+                </div>
+                <div className="max-h-56 overflow-y-auto border-t border-slate-100 scrollbar-thin">
+                  {searchingCustomers ? (
+                    <div className="flex items-center justify-center py-4">
+                      <Loader2 className="h-4 w-4 text-emerald-500 animate-spin" />
+                    </div>
+                  ) : customers.length === 0 ? (
+                    <div className="px-3 py-4 text-center">
+                      <p className="text-xs text-slate-500">No customers found</p>
+                    </div>
+                  ) : (
+                    <>
+                      {selectedCustomer && (
+                        <button
+                          type="button"
+                          onClick={handleClearCustomer}
+                          className="flex w-full items-center px-3 py-1.5 text-xs text-red-500 hover:bg-red-50"
+                        >
+                          Clear selection
+                        </button>
                       )}
-                    </button>
-                  ))
-                )}
+                      {customers.map((c) => (
+                        <button
+                          key={c.id}
+                          type="button"
+                          onClick={() => handleSelectCustomer(c)}
+                          className={`flex w-full items-center gap-3 px-3 py-2 text-left hover:bg-slate-50 ${selectedCustomer?.id === c.id ? "bg-emerald-50" : ""}`}
+                        >
+                          <div className="flex h-7 w-7 items-center justify-center rounded-full bg-emerald-100 text-[10px] font-bold text-emerald-700 shrink-0">
+                            {c.name.charAt(0).toUpperCase()}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-xs font-medium text-slate-700 truncate">{c.name}</p>
+                            <p className="text-[10px] text-slate-400">{c.code} &middot; {c.phone}</p>
+                          </div>
+                          {c.outstanding_balance > 0 && (
+                            <span className="text-[10px] font-semibold text-red-600 shrink-0">{formatCurrency(c.outstanding_balance)}</span>
+                          )}
+                        </button>
+                      ))}
+                    </>
+                  )}
+                </div>
               </div>
             )}
-            {dropdownOpen && !searching && searchQuery && searchResults.length === 0 && (
-              <div className="absolute z-50 mt-1 w-full rounded-lg border border-slate-200 bg-white shadow-lg p-4 text-center">
-                <p className="text-sm text-slate-500">No customers found</p>
-              </div>
-            )}
           </div>
-          <div>
-            <label className="mb-1.5 block text-[13px] font-semibold text-slate-700">Month</label>
-            <select value={filterMonth} onChange={(e) => setFilterMonth(e.target.value)} className="h-11 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500">
-              {MONTH_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
-            </select>
-          </div>
-          <div>
-            <label className="mb-1.5 block text-[13px] font-semibold text-slate-700">Year</label>
-            <select value={filterYear} onChange={(e) => setFilterYear(e.target.value)} className="h-11 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500">
-              {YEAR_OPTIONS.map((y) => <option key={y} value={y}>{y}</option>)}
-            </select>
-          </div>
+
           <div>
             <label className="mb-1.5 block text-[13px] font-semibold text-slate-700">Date From</label>
-            <Input type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} className="h-11" disabled={!!filterMonth} />
+            <Input type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} className="h-11" />
           </div>
           <div>
             <label className="mb-1.5 block text-[13px] font-semibold text-slate-700">Date To</label>
-            <Input type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)} className="h-11" disabled={!!filterMonth} />
+            <Input type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)} className="h-11" />
           </div>
         </div>
       </div>
@@ -208,7 +196,7 @@ export default function CustomerStatementPage() {
                 <p className="text-lg font-bold text-red-600">{formatCurrency(data.customer.outstanding_balance)}</p>
               </div>
             </div>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+            <div className="grid gap-4 sm:grid-cols-3">
               <div className="rounded-xl bg-emerald-50 p-4">
                 <p className="text-xs text-emerald-600">Total Sales</p>
                 <p className="text-lg font-bold text-emerald-700">{formatCurrency(data.summary.total_sales)}</p>
