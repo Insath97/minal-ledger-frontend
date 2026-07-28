@@ -169,12 +169,19 @@ td{padding:7px 8px;font-size:10px}
   const handlePrint = () => {
     setPrintConfirmOpen(false);
     if (!data) return;
-    const w = window.open("", "_blank");
-    if (!w) return;
-    w.document.write(buildPrintHtml());
-    w.document.close();
-    w.focus();
-    setTimeout(() => { w.print(); }, 400);
+    const iframe = document.createElement("iframe");
+    iframe.style.cssText = "position:fixed;left:-9999px;top:0;width:0;height:0;border:none";
+    document.body.appendChild(iframe);
+    const doc = iframe.contentWindow?.document;
+    if (!doc) { document.body.removeChild(iframe); return; }
+    doc.open();
+    doc.write(buildPrintHtml());
+    doc.close();
+    setTimeout(() => {
+      iframe.contentWindow?.focus();
+      iframe.contentWindow?.print();
+      setTimeout(() => document.body.removeChild(iframe), 500);
+    }, 400);
   };
 
   return (
