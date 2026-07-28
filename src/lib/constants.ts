@@ -15,16 +15,18 @@ export const NAV_SECTIONS: NavSection[] = [
   {
     title: "REPORTS",
     items: [
-      { label: "Reports", href: "/reports", icon: "FileText", permission: ["Reports", "Report Sales", "Report Customer Statement", "Report Cheques", "Report Payments", "Report Expense Summary", "Report Monthly Summary", "Report Dues Aging", "Report PnL"], children: [
-        { label: "Profit & Loss", href: "/reports/pnl", icon: "TrendingUp", permission: ["Reports", "Report PnL"] },
-        { label: "Dues Aging", href: "/reports/dues-aging", icon: "Clock", permission: ["Reports", "Report Dues Aging"] },
-        { label: "Sales Report", href: "/reports/sales", icon: "ShoppingCart", permission: ["Reports", "Report Sales"] },
-        { label: "Customer Statement", href: "/reports/customer-statement", icon: "UserCheck", permission: ["Reports", "Report Customer Statement"] },
-        { label: "Cheque Report", href: "/reports/cheque-report", icon: "CreditCard", permission: ["Reports", "Report Cheques"] },
-        { label: "Payment Report", href: "/reports/payment-report", icon: "ArrowDownRight", permission: ["Reports", "Report Payments"] },
-        { label: "Expense Summary", href: "/reports/expense-summary", icon: "Receipt", permission: ["Reports", "Report Expense Summary"] },
-        { label: "Monthly Summary", href: "/reports/monthly-summary", icon: "TrendingUp", permission: ["Reports", "Report Monthly Summary"] },
-      ]},
+      {
+        label: "Reports", href: "/reports", icon: "FileText", permission: ["Reports", "Report Sales", "Report Customer Statement", "Report Cheques", "Report Payments", "Report Expense Summary", "Report Monthly Summary", "Report Dues Aging", "Report PnL"], children: [
+          { label: "Profit & Loss", href: "/reports/pnl", icon: "TrendingUp", permission: ["Reports", "Report PnL"] },
+          { label: "Dues Aging", href: "/reports/dues-aging", icon: "Clock", permission: ["Reports", "Report Dues Aging"] },
+          { label: "Sales Report", href: "/reports/sales", icon: "ShoppingCart", permission: ["Reports", "Report Sales"] },
+          { label: "Customer Statement", href: "/reports/customer-statement", icon: "UserCheck", permission: ["Reports", "Report Customer Statement"] },
+          { label: "Cheque Report", href: "/reports/cheque-report", icon: "CreditCard", permission: ["Reports", "Report Cheques"] },
+          { label: "Payment Report", href: "/reports/payment-report", icon: "ArrowDownRight", permission: ["Reports", "Report Payments"] },
+          { label: "Expense Summary", href: "/reports/expense-summary", icon: "Receipt", permission: ["Reports", "Report Expense Summary"] },
+          { label: "Monthly Summary", href: "/reports/monthly-summary", icon: "TrendingUp", permission: ["Reports", "Report Monthly Summary"] },
+        ]
+      },
     ],
   },
   {

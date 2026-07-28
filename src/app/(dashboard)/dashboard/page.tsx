@@ -44,39 +44,39 @@ export default function DashboardPage() {
 
   const cards = stats
     ? [
-        {
-          title: "Total Sales",
-          value: stats.total_sales,
-          change: stats.sales_change,
-          icon: ShoppingCart,
-          iconBg: "bg-emerald-50",
-          iconColor: "text-emerald-600",
-        },
-        {
-          title: "Total Expenses",
-          value: stats.total_expenses,
-          change: stats.expenses_change,
-          icon: TrendingDown,
-          iconBg: "bg-red-50",
-          iconColor: "text-red-600",
-        },
-        {
-          title: "Total Received",
-          value: stats.total_received,
-          change: stats.received_change,
-          icon: ArrowDownRight,
-          iconBg: "bg-blue-50",
-          iconColor: "text-blue-600",
-        },
-        {
-          title: "Outstanding Dues",
-          value: stats.total_outstanding,
-          change: stats.outstanding_change,
-          icon: AlertTriangle,
-          iconBg: "bg-amber-50",
-          iconColor: "text-amber-600",
-        },
-      ]
+      {
+        title: "Total Sales",
+        value: stats.total_sales,
+        change: stats.sales_change,
+        icon: ShoppingCart,
+        iconBg: "bg-emerald-50",
+        iconColor: "text-emerald-600",
+      },
+      {
+        title: "Total Expenses",
+        value: stats.total_expenses,
+        change: stats.expenses_change,
+        icon: TrendingDown,
+        iconBg: "bg-red-50",
+        iconColor: "text-red-600",
+      },
+      {
+        title: "Total Received",
+        value: stats.total_received,
+        change: stats.received_change,
+        icon: ArrowDownRight,
+        iconBg: "bg-blue-50",
+        iconColor: "text-blue-600",
+      },
+      {
+        title: "Outstanding Dues",
+        value: stats.total_outstanding,
+        change: stats.outstanding_change,
+        icon: AlertTriangle,
+        iconBg: "bg-amber-50",
+        iconColor: "text-amber-600",
+      },
+    ]
     : [];
 
   return (
