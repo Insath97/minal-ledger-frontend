@@ -105,20 +105,6 @@ export default function ChequeReportPage() {
             </div>
           </div>
 
-          {data.by_bank.length > 0 && (
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-              <h3 className="text-sm font-semibold text-slate-700 mb-4">By Bank</h3>
-              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                {data.by_bank.map((b) => (
-                  <div key={b.bank_name} className="rounded-xl border border-slate-100 bg-slate-50 p-4">
-                    <p className="text-sm font-semibold text-slate-700">{b.bank_name}</p>
-                    <p className="text-xs text-slate-500">{b.count} cheques &middot; {formatCurrency(b.total_amount)}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
           <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
             <div className="px-6 py-4 border-b border-slate-100">
               <h3 className="text-sm font-semibold text-slate-700">Cheque Details</h3>
