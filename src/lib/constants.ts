@@ -16,10 +16,7 @@ export const NAV_SECTIONS: NavSection[] = [
     title: "REPORTS",
     items: [
       { label: "Reports", href: "/reports", icon: "FileText", children: [
-        { label: "Financial Dashboard", href: "/reports/financial-dashboard", icon: "BarChart3" },
         { label: "Profit & Loss", href: "/reports/pnl", icon: "TrendingUp" },
-        { label: "Income Breakdown", href: "/reports/income-breakdown", icon: "ArrowDownRight" },
-        { label: "Expense Breakdown", href: "/reports/expense-breakdown", icon: "TrendingDown" },
         { label: "Dues Aging", href: "/reports/dues-aging", icon: "Clock" },
         { label: "Sales Report", href: "/reports/sales", icon: "ShoppingCart" },
         { label: "Customer Statement", href: "/reports/customer-statement", icon: "UserCheck" },

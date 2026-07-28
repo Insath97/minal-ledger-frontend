@@ -1,10 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Loader2, ArrowDownRight } from "lucide-react";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { Loader2, ArrowDownRight, ChevronDown, Printer, Download } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/toast";
 import { getPaymentReport, type PaymentReportData } from "@/lib/api/reports";
+import { getCustomers, type Customer } from "@/lib/api/customers";
+import * as XLSX from "xlsx";
 
 const METHOD_OPTIONS = [
   { value: "", label: "All Methods" },
@@ -26,37 +28,205 @@ export default function PaymentReportPage() {
   const [data, setData] = useState<PaymentReportData | null>(null);
   const [loading, setLoading] = useState(true);
   const today = new Date().toISOString().split("T")[0];
-  const firstOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split("T")[0];
-  const [dateFrom, setDateFrom] = useState(firstOfMonth);
+  const firstOfYear = `${new Date().getFullYear()}-01-01`;
+  const [dateFrom, setDateFrom] = useState(firstOfYear);
   const [dateTo, setDateTo] = useState(today);
   const [paymentMethod, setPaymentMethod] = useState("");
+
+  const [customers, setCustomers] = useState<Customer[]>([]);
+  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
+  const [customerDropdownOpen, setCustomerDropdownOpen] = useState(false);
+  const [customerSearch, setCustomerSearch] = useState("");
+  const [searchingCustomers, setSearchingCustomers] = useState(false);
+  const customerDropdownRef = useRef<HTMLDivElement>(null);
+  const customerDebounceRef = useRef<NodeJS.Timeout | null>(null);
+
+  const fetchCustomers = useCallback(async (query: string) => {
+    setSearchingCustomers(true);
+    try {
+      const params: Record<string, string | number> = { per_page: 20, is_active: 1 };
+      if (query) params.search = query;
+      const res = await getCustomers(params);
+      if (res.status === "success") setCustomers(res.data.data);
+    } catch { setCustomers([]); } finally { setSearchingCustomers(false); }
+  }, []);
+
+  useEffect(() => { fetchCustomers(""); }, [fetchCustomers]);
+
+  const handleCustomerSearch = (value: string) => {
+    setCustomerSearch(value);
+    if (customerDebounceRef.current) clearTimeout(customerDebounceRef.current);
+    customerDebounceRef.current = setTimeout(() => fetchCustomers(value), 300);
+  };
+
+  const handleSelectCustomer = (customer: Customer) => {
+    setSelectedCustomer(customer);
+    setCustomerDropdownOpen(false);
+    setCustomerSearch("");
+  };
+
+  const handleClearCustomer = () => {
+    setSelectedCustomer(null);
+    setCustomerSearch("");
+    setCustomers([]);
+    fetchCustomers("");
+  };
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (customerDropdownRef.current && !customerDropdownRef.current.contains(e.target as Node)) setCustomerDropdownOpen(false);
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const hasFilters = dateFrom !== firstOfYear || dateTo !== today || paymentMethod || selectedCustomer;
+
+  const clearFilters = () => {
+    setDateFrom(firstOfYear);
+    setDateTo(today);
+    setPaymentMethod("");
+    setSelectedCustomer(null);
+    setCustomerSearch("");
+    setCustomers([]);
+    fetchCustomers("");
+  };
 
   useEffect(() => {
     async function fetch() {
       setLoading(true);
       try {
-        const params: Record<string, string> = {};
+        const params: Record<string, string | number> = {};
         if (dateFrom) params.date_from = dateFrom;
         if (dateTo) params.date_to = dateTo;
         if (paymentMethod) params.payment_method = paymentMethod;
+        if (selectedCustomer) params.customer_id = selectedCustomer.id;
         const res = await getPaymentReport(params);
         if (res.status === "success") setData(res.data);
       } catch { toast("Failed to load payment report", "error"); } finally { setLoading(false); }
     }
     fetch();
-  }, [dateFrom, dateTo, paymentMethod, toast]);
+  }, [dateFrom, dateTo, paymentMethod, selectedCustomer, toast]);
 
   const formatCurrency = (amount: number) => `Rs. ${Number(amount).toLocaleString("en-US")}`;
 
+  const [printConfirmOpen, setPrintConfirmOpen] = useState(false);
+
+  const buildPrintHtml = () => {
+    if (!data) return "";
+    const now = new Date().toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
+    const nowFull = new Date().toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" });
+    const rows = data.payments.map((p, i) => `<tr style="border-bottom:1px solid #f1f5f9;${i % 2 === 0 ? "" : "background:#f8fafc;"}">
+      <td style="padding:7px 8px;font-size:10px;color:#475569;font-family:monospace">PAY-${p.id}</td>
+      <td style="padding:7px 8px;font-size:10px;color:#334155">${p.customer?.name || "\u2014"}</td>
+      <td style="padding:7px 8px;font-size:10px;color:#475569;white-space:nowrap">${new Date(p.payment_date).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })}</td>
+      <td style="padding:7px 8px;font-size:10px;text-transform:capitalize;color:#334155">${p.payment_method}</td>
+      <td style="padding:7px 8px;font-size:10px;font-weight:700;color:#047857;text-align:right">${formatCurrency(p.total_amount)}</td>
+    </tr>`).join("");
+    return `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Payment Report</title>
+<style>
+@page{size:A4;margin:10mm}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;color:#1e293b;font-size:11px;line-height:1.4;-webkit-print-color-adjust:exact;print-color-adjust:exact;color-adjust:exact}
+table{width:100%;border-collapse:collapse}
+th{padding:8px 8px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#64748b;text-align:left;border-bottom:2px solid #10b981}
+td{padding:7px 8px;font-size:10px}
+</style></head><body style="padding:0;margin:0">
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:750px;margin:0 auto">
+<tr><td style="padding:0 0 12px 0;border-bottom:2px solid #10b981">
+<table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+<td width="50%" style="vertical-align:middle">
+<table cellpadding="0" cellspacing="0" border="0"><tr>
+<td style="width:38px;height:38px;background:#10b981;border-radius:8px;text-align:center;vertical-align:middle;color:#fff;font-weight:bold;font-size:16px">M</td>
+<td style="padding-left:10px;vertical-align:middle"><span style="font-size:15px;font-weight:700;color:#0f172a">Minal Ledger</span><br><span style="font-size:9px;color:#94a3b8">Financial Management System</span></td>
+</tr></table>
+</td>
+<td width="50%" style="text-align:right;vertical-align:middle"><span style="font-size:9px;color:#94a3b8">Generated on</span><br><span style="font-size:10px;font-weight:600;color:#475569">${now}</span></td>
+</tr></table>
+</td></tr>
+<tr><td style="padding:12px 0 0 0">
+<div style="font-size:15px;font-weight:700;color:#0f172a;margin-bottom:2px">Payment Report</div>
+<div style="font-size:10px;color:#64748b;margin-bottom:12px">Payments received by method, customer, and date range</div>
+<table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+<td style="padding:0 20px 0 0;font-size:10px;color:#475569">Period: <b>${dateFrom} to ${dateTo}</b></td>
+${selectedCustomer ? `<td style="padding:0 20px 0 0;font-size:10px;color:#475569">Customer: <b>${selectedCustomer.name}</b></td>` : ""}
+${paymentMethod ? `<td style="padding:0;font-size:10px;color:#475569">Method: <b>${paymentMethod}</b></td>` : ""}
+</tr></table>
+</td></tr>
+<tr><td style="padding:16px 0">
+<table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+<td width="33%" style="padding:0 5px 0 0"><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding:10px 12px;border-radius:6px;background-color:#f8fafc"><span style="font-size:9px;font-weight:600;color:#64748b">Total Payments</span><br><span style="font-size:14px;font-weight:700;color:#0f172a">${data.summary.count}</span><br><span style="font-size:9px;color:#94a3b8">${formatCurrency(data.summary.total_amount)}</span></td></tr></table></td>
+<td width="33%" style="padding:0 5px"><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding:10px 12px;border-radius:6px;background-color:#ecfdf5"><span style="font-size:9px;font-weight:600;color:#047857">Customers</span><br><span style="font-size:14px;font-weight:700;color:#047857">${data.by_customer.length}</span></td></tr></table></td>
+<td width="33%" style="padding:0 0 0 5px"><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding:10px 12px;border-radius:6px;background-color:#f8fafc"><span style="font-size:9px;font-weight:600;color:#64748b">Total Amount</span><br><span style="font-size:14px;font-weight:700;color:#0f172a">${formatCurrency(data.summary.total_amount)}</span></td></tr></table></td>
+</tr></table>
+</td></tr>
+<tr><td style="padding:0 0 20px 0">
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+<thead><tr>
+<th style="text-align:left">ID</th><th style="text-align:left">Customer</th><th style="text-align:left">Date</th><th style="text-align:left">Method</th><th style="text-align:right">Amount</th>
+</tr></thead>
+<tbody>${rows}</tbody>
+</table>
+</td></tr>
+<tr><td style="padding:10px 0 0 0;border-top:1px solid #e2e8f0">
+<table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+<td width="50%" style="font-size:9px;color:#94a3b8"><b style="color:#64748b">Minal Ledger</b><br>Financial Management System</td>
+<td width="50%" style="text-align:right;font-size:9px;color:#94a3b8">Generated by: System<br>${nowFull}</td>
+</tr></table>
+</td></tr>
+</table>
+</body></html>`;
+  };
+
+  const handlePrint = () => {
+    setPrintConfirmOpen(false);
+    if (!data) return;
+    const iframe = document.createElement("iframe");
+    iframe.style.cssText = "position:fixed;left:-9999px;top:0;width:0;height:0;border:none";
+    document.body.appendChild(iframe);
+    const doc = iframe.contentWindow?.document;
+    if (!doc) { document.body.removeChild(iframe); return; }
+    doc.open();
+    doc.write(buildPrintHtml());
+    doc.close();
+    setTimeout(() => {
+      iframe.contentWindow?.focus();
+      iframe.contentWindow?.print();
+      setTimeout(() => document.body.removeChild(iframe), 500);
+    }, 400);
+  };
+
+  const handleDownloadExcel = () => {
+    if (!data || data.payments.length === 0) { toast("No data to export", "error"); return; }
+    const wsData: (string | number)[][] = [["ID", "Customer", "Date", "Method", "Amount"]];
+    data.payments.forEach((p) => {
+      wsData.push([`PAY-${p.id}`, p.customer?.name || "", new Date(p.payment_date).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" }), p.payment_method, p.total_amount]);
+    });
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.aoa_to_sheet(wsData);
+    ws["!cols"] = [{ wch: 12 }, { wch: 20 }, { wch: 14 }, { wch: 16 }, { wch: 14 }];
+    XLSX.utils.book_append_sheet(wb, ws, "Payment Report");
+    XLSX.writeFile(wb, `payment-report-${new Date().toISOString().slice(0, 10)}.xlsx`);
+  };
+
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-slate-900">Payment Report</h1>
-        <p className="mt-1 text-sm text-slate-500">Payments received by method, customer, and date range.</p>
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900">Payment Report</h1>
+          <p className="mt-1 text-sm text-slate-500">Payments received by method, customer, and date range.</p>
+        </div>
+        {data && (
+          <div className="flex flex-wrap items-center gap-2">
+            {hasFilters && <button onClick={clearFilters} className="h-10 px-4 rounded-lg bg-red-50 text-xs font-medium text-red-500 hover:bg-red-100 transition-colors whitespace-nowrap">Clear Filters</button>}
+            <button onClick={handleDownloadExcel} className="flex h-10 items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 text-xs font-semibold text-slate-700 transition-all hover:bg-slate-50 whitespace-nowrap"><Download className="h-3.5 w-3.5" />Excel</button>
+            <button onClick={() => setPrintConfirmOpen(true)} className="flex h-10 items-center gap-2 rounded-lg bg-emerald-600 px-4 text-xs font-semibold text-white shadow-sm transition-all hover:bg-emerald-700 whitespace-nowrap"><Printer className="h-3.5 w-3.5" />Print</button>
+          </div>
+        )}
       </div>
 
       <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-        <div className="grid gap-4 sm:grid-cols-3">
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <div>
             <label className="mb-1.5 block text-[13px] font-semibold text-slate-700">Date From</label>
             <Input type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} className="h-11" />
@@ -64,6 +234,27 @@ export default function PaymentReportPage() {
           <div>
             <label className="mb-1.5 block text-[13px] font-semibold text-slate-700">Date To</label>
             <Input type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)} className="h-11" />
+          </div>
+          <div className="relative" ref={customerDropdownRef}>
+            <label className="mb-1.5 block text-[13px] font-semibold text-slate-700">Customer</label>
+            <button type="button" onClick={() => setCustomerDropdownOpen(!customerDropdownOpen)} className="flex h-11 w-full items-center justify-between gap-2 rounded-lg border border-slate-200 bg-white px-3 text-sm transition-all hover:border-slate-300 focus:border-emerald-500">
+              <span className={`truncate ${selectedCustomer ? "text-slate-700 font-medium" : "text-slate-400"}`}>{selectedCustomer ? `${selectedCustomer.name} (${selectedCustomer.code})` : "All Customers"}</span>
+              <ChevronDown className={`h-4 w-4 shrink-0 text-slate-500 transition-transform ${customerDropdownOpen ? "rotate-180" : ""}`} />
+            </button>
+            {customerDropdownOpen && (
+              <div className="absolute z-50 mt-1 w-full overflow-hidden rounded-lg border border-slate-200 bg-white shadow-xl">
+                <div className="p-1.5"><input autoFocus value={customerSearch} onChange={(e) => handleCustomerSearch(e.target.value)} placeholder="Search by name, code, or phone..." className="h-8 w-full rounded-md border border-slate-200 bg-slate-50 px-2.5 text-xs outline-none focus:border-emerald-500" /></div>
+                <div className="max-h-56 overflow-y-auto border-t border-slate-100 scrollbar-thin">
+                  {searchingCustomers ? (<div className="flex items-center justify-center py-4"><Loader2 className="h-4 w-4 text-emerald-500 animate-spin" /></div>)
+                  : customers.length === 0 ? (<div className="px-3 py-4 text-center"><p className="text-xs text-slate-500">No customers found</p></div>)
+                  : (<>{selectedCustomer && <button type="button" onClick={handleClearCustomer} className="flex w-full items-center px-3 py-1.5 text-xs text-red-500 hover:bg-red-50">Clear selection</button>}
+                    {customers.map((c) => (<button key={c.id} type="button" onClick={() => handleSelectCustomer(c)} className={`flex w-full items-center gap-3 px-3 py-2 text-left hover:bg-slate-50 ${selectedCustomer?.id === c.id ? "bg-emerald-50" : ""}`}>
+                      <div className="flex h-7 w-7 items-center justify-center rounded-full bg-emerald-100 text-[10px] font-bold text-emerald-700 shrink-0">{c.name.charAt(0).toUpperCase()}</div>
+                      <div className="flex-1 min-w-0"><p className="text-xs font-medium text-slate-700 truncate">{c.name}</p><p className="text-[10px] text-slate-400">{c.code} &middot; {c.phone}</p></div>
+                    </button>))}</>)}
+                </div>
+              </div>
+            )}
           </div>
           <div>
             <label className="mb-1.5 block text-[13px] font-semibold text-slate-700">Payment Method</label>
@@ -78,7 +269,7 @@ export default function PaymentReportPage() {
         <div className="flex items-center justify-center py-20"><Loader2 className="h-8 w-8 text-emerald-500 animate-spin" /></div>
       ) : data ? (
         <>
-          {data.by_customer.length > 0 && (
+          {selectedCustomer && data.by_customer.length > 0 && (
             <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
               <h3 className="text-sm font-semibold text-slate-700 mb-4">By Customer</h3>
               <div className="overflow-x-auto scrollbar-thin">
@@ -139,6 +330,25 @@ export default function PaymentReportPage() {
           </div>
         </>
       ) : null}
+
+      {printConfirmOpen && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center">
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setPrintConfirmOpen(false)} />
+          <div className="relative z-10 w-full max-w-sm rounded-2xl bg-white p-6 shadow-2xl">
+            <div className="mb-5 text-center">
+              <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100">
+                <Printer className="h-6 w-6 text-emerald-600" />
+              </div>
+              <h3 className="text-base font-bold text-slate-900">Print Payment Report</h3>
+              <p className="mt-1 text-sm text-slate-500">Do you want to print this report?</p>
+            </div>
+            <div className="flex gap-3">
+              <button onClick={() => setPrintConfirmOpen(false)} className="flex-1 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition-all hover:bg-slate-50">No</button>
+              <button onClick={handlePrint} className="flex-1 rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-emerald-700">Yes</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
