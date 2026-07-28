@@ -7,7 +7,7 @@ interface WalletCardProps {
 }
 
 export function WalletCard({ wallet }: WalletCardProps) {
-  const flag = CURRENCY_FLAGS[wallet.currency] || "";
+  const flag = CURRENCY_FLAGS[wallet.currency] || "🇱🇰";
 
   return (
     <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm transition-shadow hover:shadow-md">
@@ -21,8 +21,7 @@ export function WalletCard({ wallet }: WalletCardProps) {
         </button>
       </div>
       <p className="text-xl font-bold text-slate-900">
-        {wallet.currency === "BDT" ? "৳" : wallet.currency === "EUR" ? "€" : wallet.currency === "GBP" ? "£" : "$"}
-        {wallet.balance.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+        Rs. {wallet.balance.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
       </p>
       <p className={`mt-1.5 text-xs font-medium ${wallet.isActive ? "text-emerald-600" : "text-slate-400"}`}>
         {wallet.isActive ? "Active" : "Inactive"}

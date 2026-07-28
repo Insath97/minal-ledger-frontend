@@ -1,4 +1,4 @@
-export type Currency = "USD" | "EUR" | "BDT" | "GBP";
+export type Currency = "LKR";
 
 export type TransactionStatus = "success" | "pending" | "failed";
 

@@ -276,7 +276,7 @@ export default function CreateSalePage() {
           )}
 
           {/* Customer Selection (inline) */}
-          {(businessType === "wholesale" || (businessType === "retail" && totalAmount > 0 && paidAmount < totalAmount)) && (
+          {(businessType === "wholesale" || (businessType === "retail" && totalAmount > 0 && (paidAmount ?? 0) < totalAmount)) && (
             <div className="mt-4 space-y-2">
               <Label className="mb-1.5 block text-[13px] font-semibold text-slate-700">
                 Select Customer <span className="text-red-500">*</span>

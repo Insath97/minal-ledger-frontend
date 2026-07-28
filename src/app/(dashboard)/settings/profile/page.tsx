@@ -2,7 +2,7 @@
 
 import { useState, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
+import { useForm, type UseFormReturn } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import {
@@ -61,7 +61,7 @@ function PasswordInputField({
   onToggle,
   error,
 }: {
-  register: ReturnType<typeof useForm<PasswordInput>["register"]>;
+  register: UseFormReturn<PasswordInput>["register"];
   name: "current_password" | "password" | "password_confirmation";
   placeholder: string;
   show: boolean;

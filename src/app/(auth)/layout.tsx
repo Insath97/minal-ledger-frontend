@@ -94,7 +94,7 @@ export default function AuthLayout({
 
             {/* Feature Pills */}
             <div className="flex flex-wrap gap-2 mt-6">
-              {["Real-time Analytics", "Multi-Currency", "Smart Reports"].map((f) => (
+              {["Real-time Analytics", "Sri Lankan Rupees", "Smart Reports"].map((f) => (
                 <span key={f} className="inline-flex items-center gap-1.5 rounded-full bg-white/10 backdrop-blur-sm px-4 py-2 text-xs font-medium text-white/90 border border-white/10">
                   <span className="h-1.5 w-1.5 rounded-full bg-emerald-300" />
                   {f}

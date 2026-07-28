@@ -7,15 +7,15 @@ interface CurrencyDisplayProps {
   showCents?: boolean;
 }
 
-export function CurrencyDisplay({ amount, currency = "USD", showCents = true }: CurrencyDisplayProps) {
-  const symbol = CURRENCY_SYMBOLS[currency] || "$";
+export function CurrencyDisplay({ amount, currency = "LKR", showCents = false }: CurrencyDisplayProps) {
+  const symbol = CURRENCY_SYMBOLS[currency] || "Rs.";
   const formatted = showCents
     ? amount.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
     : amount.toLocaleString("en-US");
 
   return (
     <span>
-      {symbol}{formatted}
+      {symbol} {formatted}
     </span>
   );
 }

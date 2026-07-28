@@ -12,10 +12,7 @@ export const currentUser: User = {
 };
 
 export const wallets: Wallet[] = [
-  { id: "1", currency: "USD", balance: 22678.0, isActive: true },
-  { id: "2", currency: "EUR", balance: 18345.0, isActive: true },
-  { id: "3", currency: "BDT", balance: 122678.0, isActive: true },
-  { id: "4", currency: "GBP", balance: 15000.0, isActive: false },
+  { id: "1", currency: "LKR", balance: 22678.0, isActive: true },
 ];
 
 export const recentTransactions: Transaction[] = [

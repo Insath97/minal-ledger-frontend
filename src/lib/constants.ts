@@ -21,6 +21,12 @@ export const NAV_SECTIONS: NavSection[] = [
         { label: "Income Breakdown", href: "/reports/income-breakdown", icon: "ArrowDownRight" },
         { label: "Expense Breakdown", href: "/reports/expense-breakdown", icon: "TrendingDown" },
         { label: "Dues Aging", href: "/reports/dues-aging", icon: "Clock" },
+        { label: "Sales Report", href: "/reports/sales", icon: "ShoppingCart" },
+        { label: "Customer Statement", href: "/reports/customer-statement", icon: "UserCheck" },
+        { label: "Cheque Report", href: "/reports/cheque-report", icon: "CreditCard" },
+        { label: "Payment Report", href: "/reports/payment-report", icon: "ArrowDownRight" },
+        { label: "Expense Summary", href: "/reports/expense-summary", icon: "Receipt" },
+        { label: "Monthly Summary", href: "/reports/monthly-summary", icon: "TrendingUp" },
       ]},
     ],
   },
@@ -36,17 +42,11 @@ export const NAV_SECTIONS: NavSection[] = [
 ];
 
 export const CURRENCY_SYMBOLS: Record<string, string> = {
-  USD: "$",
-  EUR: "€",
-  BDT: "৳",
-  GBP: "£",
+  LKR: "Rs.",
 };
 
 export const CURRENCY_FLAGS: Record<string, string> = {
-  USD: "🇺🇸",
-  EUR: "🇪🇺",
-  BDT: "🇧🇩",
-  GBP: "🇬🇧",
+  LKR: "🇱🇰",
 };
 
 export const APP_NAME = "Minal Ledger";
