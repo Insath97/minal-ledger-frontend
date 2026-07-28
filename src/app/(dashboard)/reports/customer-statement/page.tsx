@@ -169,18 +169,7 @@ td{padding:7px 8px;font-size:10px}
 </body></html>`;
   };
 
-  const handlePrint = () => {
-    setPrintModalOpen(false);
-    if (!data) return;
-    const w = window.open("", "_blank");
-    if (!w) return;
-    w.document.write(buildPrintHtml());
-    w.document.close();
-    w.focus();
-    setTimeout(() => { w.print(); w.close(); }, 400);
-  };
-
-  const handleDownloadPdf = async () => {
+  const handlePrint = async () => {
     setPrintModalOpen(false);
     if (!data) return;
     setDownloadingPdf(true);
@@ -312,7 +301,7 @@ td{padding:7px 8px;font-size:10px}
         </div>
       )}
 
-      <PrintModal open={printModalOpen} onClose={() => setPrintModalOpen(false)} onPrint={handlePrint} onDownloadPdf={handleDownloadPdf} title="Customer Statement" downloading={downloadingPdf} />
+      <PrintModal open={printModalOpen} onClose={() => setPrintModalOpen(false)} onPrint={handlePrint} title="Customer Statement" downloading={downloadingPdf} />
     </div>
   );
 }

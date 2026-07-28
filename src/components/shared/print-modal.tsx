@@ -1,18 +1,16 @@
 "use client";
 
-import { useState } from "react";
-import { Printer, Download, X, Loader2, FileText } from "lucide-react";
+import { X, Loader2, FileText } from "lucide-react";
 
 interface PrintModalProps {
   open: boolean;
   onClose: () => void;
   onPrint: () => void;
-  onDownloadPdf: () => void;
   title?: string;
   downloading?: boolean;
 }
 
-export function PrintModal({ open, onClose, onPrint, onDownloadPdf, title = "Report", downloading }: PrintModalProps) {
+export function PrintModal({ open, onClose, onPrint, title = "Report", downloading }: PrintModalProps) {
   if (!open) return null;
 
   return (
@@ -28,35 +26,26 @@ export function PrintModal({ open, onClose, onPrint, onDownloadPdf, title = "Rep
             <FileText className="h-6 w-6 text-emerald-600" />
           </div>
           <h3 className="text-base font-bold text-slate-900">Print {title}</h3>
-          <p className="mt-1 text-sm text-slate-500">Choose how you want to export this report</p>
+          <p className="mt-1 text-sm text-slate-500">Download this report as a PDF file</p>
         </div>
 
-        <div className="space-y-3">
-          <button
-            onClick={onPrint}
-            className="flex w-full items-center justify-center gap-2.5 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 transition-all hover:bg-slate-50 hover:border-slate-300"
-          >
-            <Printer className="h-4 w-4" />
-            Print Preview
-          </button>
-          <button
-            onClick={onDownloadPdf}
-            disabled={downloading}
-            className="flex w-full items-center justify-center gap-2.5 rounded-xl bg-emerald-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-emerald-700 disabled:opacity-50"
-          >
-            {downloading ? (
-              <>
-                <Loader2 className="h-4 w-4 animate-spin" />
-                Generating PDF...
-              </>
-            ) : (
-              <>
-                <Download className="h-4 w-4" />
-                Download as PDF (A4)
-              </>
-            )}
-          </button>
-        </div>
+        <button
+          onClick={onPrint}
+          disabled={downloading}
+          className="flex w-full items-center justify-center gap-2.5 rounded-xl bg-emerald-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-emerald-700 disabled:opacity-50"
+        >
+          {downloading ? (
+            <>
+              <Loader2 className="h-4 w-4 animate-spin" />
+              Generating PDF...
+            </>
+          ) : (
+            <>
+              <FileText className="h-4 w-4" />
+              Download PDF
+            </>
+          )}
+        </button>
       </div>
     </div>
   );
