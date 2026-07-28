@@ -2,11 +2,12 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { Loader2, ShoppingCart, ChevronDown } from "lucide-react";
+import { Loader2, ShoppingCart, ChevronDown, Printer, Download, FileText } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/toast";
 import { getSalesReport, type SalesReportData } from "@/lib/api/reports";
 import { getCustomers, type Customer } from "@/lib/api/customers";
+import * as XLSX from "xlsx";
 
 const PAYMENT_STATUS_OPTIONS = [
   { value: "", label: "All Statuses" },
@@ -99,6 +100,123 @@ export default function SalesReportPage() {
 
   const formatCurrency = (amount: number) => `Rs. ${Number(amount).toLocaleString("en-US")}`;
 
+  const hasFilters = selectedCustomer || dateFrom !== firstOfYear || dateTo !== today || businessType || paymentStatus;
+
+  const clearFilters = () => {
+    setSelectedCustomer(null);
+    setCustomerSearch("");
+    setCustomers([]);
+    setDateFrom(firstOfYear);
+    setDateTo(today);
+    setBusinessType("");
+    setPaymentStatus("");
+    fetchCustomers("");
+  };
+
+  const [printConfirmOpen, setPrintConfirmOpen] = useState(false);
+
+  const buildPrintHtml = () => {
+    if (!data) return "";
+    const now = new Date().toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
+    const nowFull = new Date().toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" });
+    const rows = data.sales.map((s, i) => `<tr style="border-bottom:1px solid #f1f5f9;${i % 2 === 0 ? "" : "background:#f8fafc;"}">
+      <td style="padding:7px 8px;font-size:10px;color:#475569">${s.reference_number}</td>
+      <td style="padding:7px 8px;font-size:10px;color:#334155">${s.customer?.name || "\u2014"}</td>
+      <td style="padding:7px 8px;font-size:10px;color:#475569;white-space:nowrap">${new Date(s.sale_date).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })}</td>
+      <td style="padding:7px 8px;font-size:10px;color:#475569;text-transform:capitalize">${s.business_type}</td>
+      <td style="padding:7px 8px;font-size:10px;font-weight:600;color:#334155;text-align:right">${formatCurrency(s.total_amount)}</td>
+      <td style="padding:7px 8px;font-size:10px;font-weight:600;color:#047857;text-align:right">${formatCurrency(s.paid_amount)}</td>
+      <td style="padding:7px 8px;font-size:10px;font-weight:600;color:#dc2626;text-align:right">${formatCurrency(s.due_amount)}</td>
+      <td style="padding:7px 8px;font-size:10px;text-transform:capitalize;color:${s.payment_status === "paid" ? "#047857" : s.payment_status === "partial" ? "#d97706" : "#dc2626"};font-weight:600">${s.payment_status}</td>
+    </tr>`).join("");
+    return `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Sales Report</title>
+<style>
+@page{size:A4;margin:10mm}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;color:#1e293b;font-size:11px;line-height:1.4;-webkit-print-color-adjust:exact;print-color-adjust:exact;color-adjust:exact}
+table{width:100%;border-collapse:collapse}
+th{padding:8px 8px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#64748b;text-align:left;border-bottom:2px solid #10b981}
+td{padding:7px 8px;font-size:10px}
+</style></head><body style="padding:0;margin:0">
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:750px;margin:0 auto">
+<tr><td style="padding:0 0 12px 0;border-bottom:2px solid #10b981">
+<table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+<td width="50%" style="vertical-align:middle">
+<table cellpadding="0" cellspacing="0" border="0"><tr>
+<td style="width:38px;height:38px;background:#10b981;border-radius:8px;text-align:center;vertical-align:middle;color:#fff;font-weight:bold;font-size:16px">M</td>
+<td style="padding-left:10px;vertical-align:middle"><span style="font-size:15px;font-weight:700;color:#0f172a">Minal Ledger</span><br><span style="font-size:9px;color:#94a3b8">Financial Management System</span></td>
+</tr></table>
+</td>
+<td width="50%" style="text-align:right;vertical-align:middle"><span style="font-size:9px;color:#94a3b8">Generated on</span><br><span style="font-size:10px;font-weight:600;color:#475569">${now}</span></td>
+</tr></table>
+</td></tr>
+<tr><td style="padding:12px 0 0 0">
+<div style="font-size:15px;font-weight:700;color:#0f172a;margin-bottom:2px">Sales Report</div>
+<div style="font-size:10px;color:#64748b;margin-bottom:12px">Detailed sales breakdown by date, customer, and status</div>
+<table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+<td style="padding:0 20px 0 0;font-size:10px;color:#475569">Period: <b>${dateFrom} to ${dateTo}</b></td>
+${selectedCustomer ? `<td style="padding:0 20px 0 0;font-size:10px;color:#475569">Customer: <b>${selectedCustomer.name}</b></td>` : ""}
+${businessType ? `<td style="padding:0 20px 0 0;font-size:10px;color:#475569">Type: <b>${businessType}</b></td>` : ""}
+${paymentStatus ? `<td style="padding:0;font-size:10px;color:#475569">Status: <b>${paymentStatus}</b></td>` : ""}
+</tr></table>
+</td></tr>
+<tr><td style="padding:16px 0">
+<table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+<td width="25%" style="padding:0 5px 0 0"><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding:10px 12px;border-radius:6px;background-color:#f8fafc"><span style="font-size:9px;font-weight:600;color:#64748b">Total Sales</span><br><span style="font-size:14px;font-weight:700;color:#0f172a">${formatCurrency(data.summary.total_sales)}</span><br><span style="font-size:9px;color:#94a3b8">${data.summary.count} sales</span></td></tr></table></td>
+<td width="25%" style="padding:0 5px"><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding:10px 12px;border-radius:6px;background-color:#ecfdf5"><span style="font-size:9px;font-weight:600;color:#047857">Total Paid</span><br><span style="font-size:14px;font-weight:700;color:#047857">${formatCurrency(data.summary.total_paid)}</span><br><span style="font-size:9px;color:#059669">${data.summary.paid_count} sales</span></td></tr></table></td>
+<td width="25%" style="padding:0 5px"><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding:10px 12px;border-radius:6px;background-color:#fef3c7"><span style="font-size:9px;font-weight:600;color:#d97706">Partial</span><br><span style="font-size:14px;font-weight:700;color:#d97706">${data.summary.count - data.summary.paid_count - data.summary.unpaid_count}</span><br><span style="font-size:9px;color:#b45309">sales</span></td></tr></table></td>
+<td width="25%" style="padding:0 0 0 5px"><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding:10px 12px;border-radius:6px;background-color:#fef2f2"><span style="font-size:9px;font-weight:600;color:#dc2626">Total Due</span><br><span style="font-size:14px;font-weight:700;color:#dc2626">${formatCurrency(data.summary.total_due)}</span><br><span style="font-size:9px;color:#b91c1c">${data.summary.unpaid_count} unpaid</span></td></tr></table></td>
+</tr></table>
+</td></tr>
+<tr><td style="padding:0 0 20px 0">
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+<thead><tr>
+<th style="text-align:left">Reference</th><th style="text-align:left">Customer</th><th style="text-align:left">Date</th><th style="text-align:left">Type</th><th style="text-align:right">Total</th><th style="text-align:right">Paid</th><th style="text-align:right">Due</th><th style="text-align:left">Status</th>
+</tr></thead>
+<tbody>${rows}</tbody>
+</table>
+</td></tr>
+<tr><td style="padding:10px 0 0 0;border-top:1px solid #e2e8f0">
+<table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+<td width="50%" style="font-size:9px;color:#94a3b8"><b style="color:#64748b">Minal Ledger</b><br>Financial Management System</td>
+<td width="50%" style="text-align:right;font-size:9px;color:#94a3b8">Generated by: System<br>${nowFull}</td>
+</tr></table>
+</td></tr>
+</table>
+</body></html>`;
+  };
+
+  const handlePrint = () => {
+    setPrintConfirmOpen(false);
+    if (!data) return;
+    const iframe = document.createElement("iframe");
+    iframe.style.cssText = "position:fixed;left:-9999px;top:0;width:0;height:0;border:none";
+    document.body.appendChild(iframe);
+    const doc = iframe.contentWindow?.document;
+    if (!doc) { document.body.removeChild(iframe); return; }
+    doc.open();
+    doc.write(buildPrintHtml());
+    doc.close();
+    setTimeout(() => {
+      iframe.contentWindow?.focus();
+      iframe.contentWindow?.print();
+      setTimeout(() => document.body.removeChild(iframe), 500);
+    }, 400);
+  };
+
+  const handleDownloadExcel = () => {
+    if (!data || data.sales.length === 0) { toast("No data to export", "error"); return; }
+    const wsData: (string | number)[][] = [["Reference", "Customer", "Date", "Type", "Total", "Paid", "Due", "Status"]];
+    data.sales.forEach((s) => {
+      wsData.push([s.reference_number, s.customer?.name || "", new Date(s.sale_date).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" }), s.business_type, s.total_amount, s.paid_amount, s.due_amount, s.payment_status]);
+    });
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.aoa_to_sheet(wsData);
+    ws["!cols"] = [{ wch: 18 }, { wch: 20 }, { wch: 14 }, { wch: 12 }, { wch: 14 }, { wch: 14 }, { wch: 14 }, { wch: 10 }];
+    XLSX.utils.book_append_sheet(wb, ws, "Sales Report");
+    XLSX.writeFile(wb, `sales-report-${new Date().toISOString().slice(0, 10)}.xlsx`);
+  };
+
   const STATUS_BADGES: Record<string, string> = {
     paid: "bg-emerald-50 text-emerald-700 border border-emerald-200",
     partial: "bg-amber-50 text-amber-700 border border-amber-200",
@@ -112,6 +230,13 @@ export default function SalesReportPage() {
           <h1 className="text-2xl font-bold text-slate-900">Sales Report</h1>
           <p className="mt-1 text-sm text-slate-500">Detailed sales breakdown by date, customer, and status.</p>
         </div>
+        {data && (
+          <div className="flex flex-wrap items-center gap-2">
+            {hasFilters && <button onClick={clearFilters} className="h-10 px-4 rounded-lg bg-red-50 text-xs font-medium text-red-500 hover:bg-red-100 transition-colors whitespace-nowrap">Clear Filters</button>}
+            <button onClick={handleDownloadExcel} className="flex h-10 items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 text-xs font-semibold text-slate-700 transition-all hover:bg-slate-50 whitespace-nowrap"><Download className="h-3.5 w-3.5" />Excel</button>
+            <button onClick={() => setPrintConfirmOpen(true)} className="flex h-10 items-center gap-2 rounded-lg bg-emerald-600 px-4 text-xs font-semibold text-white shadow-sm transition-all hover:bg-emerald-700 whitespace-nowrap"><Printer className="h-3.5 w-3.5" />Print</button>
+          </div>
+        )}
       </div>
 
       <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
@@ -230,6 +355,25 @@ export default function SalesReportPage() {
           </div>
         </>
       ) : null}
+
+      {printConfirmOpen && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center">
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setPrintConfirmOpen(false)} />
+          <div className="relative z-10 w-full max-w-sm rounded-2xl bg-white p-6 shadow-2xl">
+            <div className="mb-5 text-center">
+              <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100">
+                <Printer className="h-6 w-6 text-emerald-600" />
+              </div>
+              <h3 className="text-base font-bold text-slate-900">Print Sales Report</h3>
+              <p className="mt-1 text-sm text-slate-500">Do you want to print this report?</p>
+            </div>
+            <div className="flex gap-3">
+              <button onClick={() => setPrintConfirmOpen(false)} className="flex-1 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition-all hover:bg-slate-50">No</button>
+              <button onClick={handlePrint} className="flex-1 rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-emerald-700">Yes</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
