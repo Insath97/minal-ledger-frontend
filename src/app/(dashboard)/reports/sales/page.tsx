@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { Loader2, ShoppingCart } from "lucide-react";
+import { Loader2, ShoppingCart, ChevronDown } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/toast";
 import { getSalesReport, type SalesReportData } from "@/lib/api/reports";
@@ -17,9 +17,8 @@ const PAYMENT_STATUS_OPTIONS = [
 
 const BUSINESS_TYPE_OPTIONS = [
   { value: "", label: "All Types" },
-  { value: "hardware", label: "Hardware" },
-  { value: "software", label: "Software" },
-  { value: "service", label: "Service" },
+  { value: "retail", label: "Retail" },
+  { value: "wholesale", label: "Wholesale" },
 ];
 
 export default function SalesReportPage() {
@@ -27,19 +26,58 @@ export default function SalesReportPage() {
   const { toast } = useToast();
   const [data, setData] = useState<SalesReportData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [customers, setCustomers] = useState<Customer[]>([]);
   const today = new Date().toISOString().split("T")[0];
   const firstOfYear = `${new Date().getFullYear()}-01-01`;
   const [dateFrom, setDateFrom] = useState(firstOfYear);
   const [dateTo, setDateTo] = useState(today);
-  const [customerId, setCustomerId] = useState("");
   const [businessType, setBusinessType] = useState("");
   const [paymentStatus, setPaymentStatus] = useState("");
 
-  useEffect(() => {
-    getCustomers({ per_page: 1000 }).then((res) => {
+  const [customers, setCustomers] = useState<Customer[]>([]);
+  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
+  const [customerDropdownOpen, setCustomerDropdownOpen] = useState(false);
+  const [customerSearch, setCustomerSearch] = useState("");
+  const [searchingCustomers, setSearchingCustomers] = useState(false);
+  const customerDropdownRef = useRef<HTMLDivElement>(null);
+  const customerDebounceRef = useRef<NodeJS.Timeout | null>(null);
+
+  const fetchCustomers = useCallback(async (query: string) => {
+    setSearchingCustomers(true);
+    try {
+      const params: Record<string, string | number> = { per_page: 20, is_active: 1 };
+      if (query) params.search = query;
+      const res = await getCustomers(params);
       if (res.status === "success") setCustomers(res.data.data);
-    }).catch(() => {});
+    } catch { setCustomers([]); } finally { setSearchingCustomers(false); }
+  }, []);
+
+  useEffect(() => { fetchCustomers(""); }, [fetchCustomers]);
+
+  const handleCustomerSearch = (value: string) => {
+    setCustomerSearch(value);
+    if (customerDebounceRef.current) clearTimeout(customerDebounceRef.current);
+    customerDebounceRef.current = setTimeout(() => fetchCustomers(value), 300);
+  };
+
+  const handleSelectCustomer = (customer: Customer) => {
+    setSelectedCustomer(customer);
+    setCustomerDropdownOpen(false);
+    setCustomerSearch("");
+  };
+
+  const handleClearCustomer = () => {
+    setSelectedCustomer(null);
+    setCustomerSearch("");
+    setCustomers([]);
+    fetchCustomers("");
+  };
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (customerDropdownRef.current && !customerDropdownRef.current.contains(e.target as Node)) setCustomerDropdownOpen(false);
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   useEffect(() => {
@@ -49,7 +87,7 @@ export default function SalesReportPage() {
         const params: Record<string, string | number> = {};
         if (dateFrom) params.date_from = dateFrom;
         if (dateTo) params.date_to = dateTo;
-        if (customerId) params.customer_id = Number(customerId);
+        if (selectedCustomer) params.customer_id = selectedCustomer.id;
         if (businessType) params.business_type = businessType;
         if (paymentStatus) params.payment_status = paymentStatus;
         const res = await getSalesReport(params);
@@ -57,7 +95,7 @@ export default function SalesReportPage() {
       } catch { toast("Failed to load sales report", "error"); } finally { setLoading(false); }
     }
     fetch();
-  }, [dateFrom, dateTo, customerId, businessType, paymentStatus, toast]);
+  }, [dateFrom, dateTo, selectedCustomer, businessType, paymentStatus, toast]);
 
   const formatCurrency = (amount: number) => `Rs. ${Number(amount).toLocaleString("en-US")}`;
 
@@ -86,12 +124,26 @@ export default function SalesReportPage() {
             <label className="mb-1.5 block text-[13px] font-semibold text-slate-700">Date To</label>
             <Input type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)} className="h-11" />
           </div>
-          <div>
+          <div className="relative" ref={customerDropdownRef}>
             <label className="mb-1.5 block text-[13px] font-semibold text-slate-700">Customer</label>
-            <select value={customerId} onChange={(e) => setCustomerId(e.target.value)} className="h-11 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500">
-              <option value="">All Customers</option>
-              {customers.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
-            </select>
+            <button type="button" onClick={() => setCustomerDropdownOpen(!customerDropdownOpen)} className="flex h-11 w-full items-center justify-between gap-2 rounded-lg border border-slate-200 bg-white px-3 text-sm transition-all hover:border-slate-300 focus:border-emerald-500">
+              <span className={`truncate ${selectedCustomer ? "text-slate-700 font-medium" : "text-slate-400"}`}>{selectedCustomer ? `${selectedCustomer.name} (${selectedCustomer.code})` : "All Customers"}</span>
+              <ChevronDown className={`h-4 w-4 shrink-0 text-slate-500 transition-transform ${customerDropdownOpen ? "rotate-180" : ""}`} />
+            </button>
+            {customerDropdownOpen && (
+              <div className="absolute z-50 mt-1 w-full overflow-hidden rounded-lg border border-slate-200 bg-white shadow-xl">
+                <div className="p-1.5"><input autoFocus value={customerSearch} onChange={(e) => handleCustomerSearch(e.target.value)} placeholder="Search by name, code, or phone..." className="h-8 w-full rounded-md border border-slate-200 bg-slate-50 px-2.5 text-xs outline-none focus:border-emerald-500" /></div>
+                <div className="max-h-56 overflow-y-auto border-t border-slate-100 scrollbar-thin">
+                  {searchingCustomers ? (<div className="flex items-center justify-center py-4"><Loader2 className="h-4 w-4 text-emerald-500 animate-spin" /></div>)
+                  : customers.length === 0 ? (<div className="px-3 py-4 text-center"><p className="text-xs text-slate-500">No customers found</p></div>)
+                  : (<>{selectedCustomer && <button type="button" onClick={handleClearCustomer} className="flex w-full items-center px-3 py-1.5 text-xs text-red-500 hover:bg-red-50">Clear selection</button>}
+                    {customers.map((c) => (<button key={c.id} type="button" onClick={() => handleSelectCustomer(c)} className={`flex w-full items-center gap-3 px-3 py-2 text-left hover:bg-slate-50 ${selectedCustomer?.id === c.id ? "bg-emerald-50" : ""}`}>
+                      <div className="flex h-7 w-7 items-center justify-center rounded-full bg-emerald-100 text-[10px] font-bold text-emerald-700 shrink-0">{c.name.charAt(0).toUpperCase()}</div>
+                      <div className="flex-1 min-w-0"><p className="text-xs font-medium text-slate-700 truncate">{c.name}</p><p className="text-[10px] text-slate-400">{c.code} &middot; {c.phone}</p></div>
+                    </button>))}</>)}
+                </div>
+              </div>
+            )}
           </div>
           <div>
             <label className="mb-1.5 block text-[13px] font-semibold text-slate-700">Business Type</label>
