@@ -101,8 +101,8 @@ export default function CustomerStatementPage() {
   const buildPrintHtml = () => {
     if (!data) return "";
     const badge = (t: string) => t === "sale"
-      ? `<span style="display:inline-block;padding:2px 8px;border-radius:9999px;font-size:9px;font-weight:600;background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe">Sale</span>`
-      : `<span style="display:inline-block;padding:2px 8px;border-radius:9999px;font-size:9px;font-weight:600;background:#ecfdf5;color:#047857;border:1px solid #a7f3d0">Payment</span>`;
+      ? `<span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:9px;font-weight:600;background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe">Sale</span>`
+      : `<span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:9px;font-weight:600;background:#ecfdf5;color:#047857;border:1px solid #a7f3d0">Payment</span>`;
     const rows = data.transactions.map((txn, i) => `<tr style="border-bottom:1px solid #f1f5f9;${i % 2 === 0 ? "" : "background:#f8fafc;"}">
       <td style="padding:7px 8px;font-size:10px;color:#475569;white-space:nowrap">${new Date(txn.date).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })}</td>
       <td style="padding:7px 8px">${badge(txn.type)}</td>
@@ -114,36 +114,59 @@ export default function CustomerStatementPage() {
     </tr>`).join("");
     const now = new Date().toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
     const nowFull = new Date().toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" });
-    return `<!DOCTYPE html><html><head><title>Customer Statement - ${data.customer.name}</title>
-<style>@page{size:A4;margin:12mm}*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Segoe UI',Tahoma,sans-serif;color:#1e293b;font-size:11px;line-height:1.4}table{width:100%;border-collapse:collapse}th{padding:8px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#64748b;text-align:left}</style></head><body>
-<div style="padding:0">
-<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px;padding-bottom:12px;border-bottom:2px solid #10b981">
-  <div style="display:flex;align-items:center;gap:10px">
-    <div style="width:38px;height:38px;background:#10b981;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:bold;font-size:16px">M</div>
-    <div><div style="font-size:15px;font-weight:700;color:#0f172a">Minal Ledger</div><div style="font-size:9px;color:#94a3b8">Financial Management System</div></div>
-  </div>
-  <div style="text-align:right"><div style="font-size:9px;color:#94a3b8">Generated on</div><div style="font-size:10px;font-weight:600;color:#475569">${now}</div></div>
-</div>
+    return `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Customer Statement - ${data.customer.name}</title>
+<style>
+@page{size:A4;margin:10mm}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;color:#1e293b;font-size:11px;line-height:1.4;-webkit-print-color-adjust:exact;print-color-adjust:exact;color-adjust:exact}
+table{width:100%;border-collapse:collapse}
+th{padding:8px 8px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#64748b;text-align:left;border-bottom:2px solid #10b981}
+td{padding:7px 8px;font-size:10px}
+</style></head><body style="padding:0;margin:0">
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:750px;margin:0 auto">
+<tr><td style="padding:0 0 12px 0;border-bottom:2px solid #10b981">
+<table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+<td width="50%" style="vertical-align:middle">
+<table cellpadding="0" cellspacing="0" border="0"><tr>
+<td style="width:38px;height:38px;background:#10b981;border-radius:8px;text-align:center;vertical-align:middle;color:#fff;font-weight:bold;font-size:16px">M</td>
+<td style="padding-left:10px;vertical-align:middle"><span style="font-size:15px;font-weight:700;color:#0f172a">Minal Ledger</span><br><span style="font-size:9px;color:#94a3b8">Financial Management System</span></td>
+</tr></table>
+</td>
+<td width="50%" style="text-align:right;vertical-align:middle"><span style="font-size:9px;color:#94a3b8">Generated on</span><br><span style="font-size:10px;font-weight:600;color:#475569">${now}</span></td>
+</tr></table>
+</td></tr>
+<tr><td style="padding:12px 0 0 0">
 <div style="font-size:15px;font-weight:700;color:#0f172a;margin-bottom:2px">Customer Statement</div>
 <div style="font-size:10px;color:#64748b;margin-bottom:12px">Full transaction history</div>
-<div style="display:flex;gap:24px;font-size:10px;color:#475569;margin-bottom:16px;flex-wrap:wrap">
-  <div>Period: <span style="font-weight:600">${dateFrom} to ${dateTo}</span></div>
-  <div>Customer: <span style="font-weight:600">${data.customer.name} (${data.customer.code})</span></div>
-  <div>Phone: <span style="font-weight:600">${data.customer.phone}</span></div>
-</div>
-<div style="display:flex;gap:10px;margin-bottom:18px">
-  <div style="flex:1;padding:10px 12px;border-radius:6px;background:#ecfdf5"><div style="font-size:9px;font-weight:600;color:#047857">Total Sales</div><div style="font-size:14px;font-weight:700;color:#047857;margin-top:2px">${formatCurrency(data.summary.total_sales)}</div></div>
-  <div style="flex:1;padding:10px 12px;border-radius:6px;background:#eff6ff"><div style="font-size:9px;font-weight:600;color:#1d4ed8">Total Payments</div><div style="font-size:14px;font-weight:700;color:#1d4ed8;margin-top:2px">${formatCurrency(data.summary.total_payments)}</div></div>
-  <div style="flex:1;padding:10px 12px;border-radius:6px;background:#f8fafc"><div style="font-size:9px;font-weight:600;color:#64748b">Net Balance</div><div style="font-size:14px;font-weight:700;color:#0f172a;margin-top:2px">${formatCurrency(data.summary.net_balance)}</div></div>
-</div>
-<table><thead><tr>
-  <th style="text-align:left;border-bottom:2px solid #10b981">Date</th><th style="text-align:left;border-bottom:2px solid #10b981">Type</th><th style="text-align:left;border-bottom:2px solid #10b981">Description</th><th style="text-align:left;border-bottom:2px solid #10b981">Reference</th><th style="text-align:right;border-bottom:2px solid #10b981">Debit</th><th style="text-align:right;border-bottom:2px solid #10b981">Credit</th><th style="text-align:right;border-bottom:2px solid #10b981">Balance</th>
-</tr></thead><tbody>${rows}</tbody></table>
-<div style="margin-top:20px;padding-top:10px;border-top:1px solid #e2e8f0;display:flex;justify-content:space-between;font-size:9px;color:#94a3b8">
-  <div><div style="font-weight:600;color:#64748b">Minal Ledger</div><div>Financial Management System</div></div>
-  <div style="text-align:right"><div>Generated by: System</div><div>${nowFull}</div></div>
-</div>
-</div></body></html>`;
+<table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+<td style="padding:0 20px 0 0;font-size:10px;color:#475569">Period: <b>${dateFrom} to ${dateTo}</b></td>
+<td style="padding:0 20px 0 0;font-size:10px;color:#475569">Customer: <b>${data.customer.name} (${data.customer.code})</b></td>
+<td style="padding:0;font-size:10px;color:#475569">Phone: <b>${data.customer.phone}</b></td>
+</tr></table>
+</td></tr>
+<tr><td style="padding:16px 0">
+<table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+<td width="33%" style="padding:0 5px 0 0"><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding:10px 12px;border-radius:6px;background-color:#ecfdf5"><span style="font-size:9px;font-weight:600;color:#047857">Total Sales</span><br><span style="font-size:14px;font-weight:700;color:#047857">${formatCurrency(data.summary.total_sales)}</span></td></tr></table></td>
+<td width="33%" style="padding:0 5px"><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding:10px 12px;border-radius:6px;background-color:#eff6ff"><span style="font-size:9px;font-weight:600;color:#1d4ed8">Total Payments</span><br><span style="font-size:14px;font-weight:700;color:#1d4ed8">${formatCurrency(data.summary.total_payments)}</span></td></tr></table></td>
+<td width="33%" style="padding:0 0 0 5px"><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding:10px 12px;border-radius:6px;background-color:#f8fafc"><span style="font-size:9px;font-weight:600;color:#64748b">Net Balance</span><br><span style="font-size:14px;font-weight:700;color:#0f172a">${formatCurrency(data.summary.net_balance)}</span></td></tr></table></td>
+</tr></table>
+</td></tr>
+<tr><td style="padding:0 0 20px 0">
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+<thead><tr>
+<th style="text-align:left">Date</th><th style="text-align:left">Type</th><th style="text-align:left">Description</th><th style="text-align:left">Reference</th><th style="text-align:right">Debit</th><th style="text-align:right">Credit</th><th style="text-align:right">Balance</th>
+</tr></thead>
+<tbody>${rows}</tbody>
+</table>
+</td></tr>
+<tr><td style="padding:10px 0 0 0;border-top:1px solid #e2e8f0">
+<table width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
+<td width="50%" style="font-size:9px;color:#94a3b8"><b style="color:#64748b">Minal Ledger</b><br>Financial Management System</td>
+<td width="50%" style="text-align:right;font-size:9px;color:#94a3b8">Generated by: System<br>${nowFull}</td>
+</tr></table>
+</td></tr>
+</table>
+</body></html>`;
   };
 
   const handlePrint = () => {
