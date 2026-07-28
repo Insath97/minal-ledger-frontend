@@ -185,9 +185,9 @@ export default function CreateUserPage() {
               {selectedRole ? (
                 <span className="inline-flex items-center gap-1.5 rounded-md bg-emerald-100 px-2.5 py-1 text-xs font-semibold text-emerald-700">
                   {selectedRole}
-                  <button type="button" onClick={(e) => { e.stopPropagation(); setRole(""); }}>
+                  <span role="button" onClick={(e) => { e.stopPropagation(); setRole(""); }} className="cursor-pointer">
                     <X className="h-3 w-3" />
-                  </button>
+                  </span>
                 </span>
               ) : (
                 <span className="text-slate-400">Select a role...</span>
