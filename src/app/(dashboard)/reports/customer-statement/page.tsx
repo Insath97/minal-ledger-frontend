@@ -24,6 +24,7 @@ export default function CustomerStatementPage() {
   const firstOfYear = `${new Date().getFullYear()}-01-01`;
   const [dateFrom, setDateFrom] = useState(firstOfYear);
   const [dateTo, setDateTo] = useState(today);
+  const [printConfirmOpen, setPrintConfirmOpen] = useState(false);
 
   const hasFilters = selectedCustomer || dateFrom !== firstOfYear || dateTo !== today;
 
@@ -166,6 +167,7 @@ td{padding:7px 8px;font-size:10px}
   };
 
   const handlePrint = () => {
+    setPrintConfirmOpen(false);
     if (!data) return;
     const w = window.open("", "_blank");
     if (!w) return;
@@ -209,7 +211,7 @@ td{padding:7px 8px;font-size:10px}
             <Input type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} className="h-11 w-full sm:w-auto sm:flex-none" />
             <Input type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)} className="h-11 w-full sm:w-auto sm:flex-none" />
             {hasFilters && <button onClick={clearFilters} className="h-11 px-4 rounded-lg bg-red-50 text-xs font-medium text-red-500 hover:bg-red-100 transition-colors whitespace-nowrap">Clear</button>}
-            {data && <button onClick={handlePrint} className="flex h-11 items-center gap-2 rounded-lg bg-emerald-600 px-4 text-sm font-semibold text-white shadow-sm transition-all hover:bg-emerald-700 whitespace-nowrap"><Printer className="h-4 w-4" />Print</button>}
+            {data && <button onClick={() => setPrintConfirmOpen(true)} className="flex h-11 items-center gap-2 rounded-lg bg-emerald-600 px-4 text-sm font-semibold text-white shadow-sm transition-all hover:bg-emerald-700 whitespace-nowrap"><Printer className="h-4 w-4" />Print</button>}
           </div>
         </div>
       </div>
@@ -260,6 +262,25 @@ td{padding:7px 8px;font-size:10px}
         <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-12 sm:p-16 text-center">
           <Search className="mx-auto h-10 w-10 text-slate-300 mb-3" />
           <p className="text-sm font-semibold text-slate-600">Select a customer to view their statement</p>
+        </div>
+      )}
+
+      {printConfirmOpen && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center">
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setPrintConfirmOpen(false)} />
+          <div className="relative z-10 w-full max-w-sm rounded-2xl bg-white p-6 shadow-2xl">
+            <div className="mb-5 text-center">
+              <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100">
+                <Printer className="h-6 w-6 text-emerald-600" />
+              </div>
+              <h3 className="text-base font-bold text-slate-900">Print Statement</h3>
+              <p className="mt-1 text-sm text-slate-500">Do you want to print this report?</p>
+            </div>
+            <div className="flex gap-3">
+              <button onClick={() => setPrintConfirmOpen(false)} className="flex-1 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition-all hover:bg-slate-50">No</button>
+              <button onClick={handlePrint} className="flex-1 rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-emerald-700">Yes</button>
+            </div>
+          </div>
         </div>
       )}
     </div>
