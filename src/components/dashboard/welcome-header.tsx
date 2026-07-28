@@ -1,7 +1,20 @@
+"use client";
+
 import { Calendar, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useAuthStore } from "@/stores/auth-store";
+
+function getGreeting(): string {
+  const hour = new Date().getHours();
+  if (hour < 12) return "Good Morning";
+  if (hour < 17) return "Good Afternoon";
+  return "Good Evening";
+}
 
 export function WelcomeHeader() {
+  const { user } = useAuthStore();
+  const name = user?.name || "User";
+
   const today = new Date().toLocaleDateString("en-US", {
     weekday: "long",
     year: "numeric",
@@ -13,10 +26,10 @@ export function WelcomeHeader() {
     <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <div>
         <h1 className="text-2xl font-bold text-slate-900">
-          Welcome back Sajibur Rahman
+          {getGreeting()}, {name}
         </h1>
         <p className="mt-1 text-sm text-slate-500">
-          Monitor and control what happens with your money today for financial health.
+          Welcome back! Monitor and control what happens with your money today for financial health.
         </p>
       </div>
       <div className="flex items-center gap-3">

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
+import { useRouter } from "next/navigation";
 import {
   Plus,
   Search,
@@ -29,6 +30,7 @@ import type { Permission, PaginatedResponse } from "@/types";
 const PER_PAGE_OPTIONS = [5, 10, 25, 50, 100];
 
 export default function PermissionsPage() {
+  const router = useRouter();
   const { toast } = useToast();
   const [permissions, setPermissions] = useState<Permission[]>([]);
   const [pagination, setPagination] = useState<PaginatedResponse<Permission> | null>(null);
@@ -159,17 +161,24 @@ export default function PermissionsPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex items-start justify-between">
         <div>
           <h1 className="text-2xl font-bold text-slate-900">Permissions</h1>
-          <p className="mt-1 text-sm text-slate-500">
+          <p className="mt-0.5 text-sm text-slate-500">
             Manage system permissions and access controls.
           </p>
         </div>
-        <Button onClick={openCreate} className="bg-emerald-600 text-white hover:bg-emerald-700 shadow-lg shadow-emerald-600/20">
-          <Plus className="mr-2 h-4 w-4" />
-          Add Permission
-        </Button>
+        <div className="flex items-center gap-3">
+          <nav className="flex items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-1.5 text-xs">
+            <button onClick={() => router.push("/settings")} className="font-medium text-slate-500 hover:text-emerald-600 transition-colors">Settings</button>
+            <ChevronRight className="h-3 w-3 text-slate-400" />
+            <span className="font-semibold text-emerald-600">Permissions</span>
+          </nav>
+          <Button onClick={openCreate} className="h-11 bg-emerald-600 text-white hover:bg-emerald-700 shadow-lg shadow-emerald-600/20">
+            <Plus className="mr-2 h-4 w-4" />
+            Add Permission
+          </Button>
+        </div>
       </div>
 
       {/* Search & Filters */}

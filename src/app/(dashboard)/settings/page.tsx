@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { PageHeader } from "@/components/shared/page-header";
-import { User, ChevronRight, Activity } from "lucide-react";
+import { User, ChevronRight, Activity, KeyRound } from "lucide-react";
 
 const settingsSections = [
   {
@@ -9,6 +9,13 @@ const settingsSections = [
     icon: User,
     href: "/settings/profile",
     color: "bg-blue-50 text-blue-600",
+  },
+  {
+    title: "Permissions",
+    description: "Control what each role can access",
+    icon: KeyRound,
+    href: "/permissions",
+    color: "bg-emerald-50 text-emerald-600",
   },
   {
     title: "Activity Logs",

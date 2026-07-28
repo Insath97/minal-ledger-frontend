@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { createPortal } from "react-dom";
 import { LogOut, X } from "lucide-react";
 import { useAuthStore } from "@/stores/auth-store";
 
@@ -21,30 +22,29 @@ export function LogoutDialog({ open, onOpenChange }: LogoutDialogProps) {
       await logout();
       router.push("/login");
     } catch {
-      // Even if API fails, redirect to login
       router.push("/login");
     }
   };
 
   if (!open) return null;
 
-  return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center">
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200"
+        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
         onClick={() => onOpenChange(false)}
       />
 
       {/* Dialog */}
-      <div className="relative z-10 w-full max-w-sm mx-4 animate-in zoom-in-95 fade-in duration-200">
+      <div className="relative z-[10000] w-full max-w-sm mx-4">
         <div className="rounded-3xl bg-white shadow-2xl shadow-black/10 border border-slate-100 overflow-hidden">
           {/* Top Accent */}
           <div className="h-1.5 bg-gradient-to-r from-emerald-600 via-emerald-500 to-emerald-600" />
 
           <div className="p-6 text-center">
             {/* Icon */}
-            <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-50 border border-emerald-100 animate-in zoom-in-0 duration-300 delay-100">
+            <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-50 border border-emerald-100">
               <LogOut className="h-8 w-8 text-emerald-600" />
             </div>
 
@@ -89,6 +89,7 @@ export function LogoutDialog({ open, onOpenChange }: LogoutDialogProps) {
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

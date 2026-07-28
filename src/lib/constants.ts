@@ -30,7 +30,6 @@ export const NAV_SECTIONS: NavSection[] = [
       { label: "Banks", href: "/banks", icon: "Building2" },
       { label: "Users", href: "/users", icon: "Users" },
       { label: "Roles", href: "/roles", icon: "Shield" },
-      { label: "Permissions", href: "/permissions", icon: "KeyRound" },
       { label: "Settings", href: "/settings", icon: "Settings" },
     ],
   },
