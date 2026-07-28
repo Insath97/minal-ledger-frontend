@@ -3,15 +3,18 @@
 import { ChevronLeft, ChevronRight, Wallet } from "lucide-react";
 import { NAV_SECTIONS } from "@/lib/constants";
 import { useSidebarStore } from "@/stores/sidebar-store";
+import { useAuthStore } from "@/stores/auth-store";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { cn } from "@/lib/utils";
 import { SidebarSection } from "./sidebar-section";
 import { SidebarItem } from "./sidebar-item";
 import { HelpCard } from "./upgrade-card";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
+import type { NavSection, NavItem } from "@/types";
 
 export function Sidebar() {
   const { isCollapsed, isMobileOpen, toggle, setMobileOpen, setCollapsed } = useSidebarStore();
+  const { hasAnyPermission } = useAuthStore();
   const isMobile = useMediaQuery("(max-width: 768px)");
 
   useEffect(() => {
@@ -19,6 +22,20 @@ export function Sidebar() {
       setCollapsed(true);
     }
   }, [isMobile, setCollapsed]);
+
+  const filteredSections = useMemo(() => {
+    return NAV_SECTIONS.map((section) => ({
+      ...section,
+      items: section.items
+        .filter((item) => !item.permission || hasAnyPermission(item.permission))
+        .map((item) => ({
+          ...item,
+          children: item.children?.filter(
+            (child) => !child.permission || hasAnyPermission(child.permission)
+          ),
+        })),
+    })).filter((section) => section.items.length > 0);
+  }, [hasAnyPermission]);
 
   return (
     <>
@@ -51,7 +68,7 @@ export function Sidebar() {
         </div>
 
         <nav className="flex-1 overflow-y-auto px-3 py-4 scrollbar-thin">
-          {NAV_SECTIONS.map((section) => (
+          {filteredSections.map((section) => (
             <SidebarSection
               key={section.title}
               title={section.title}

@@ -11,9 +11,11 @@ interface AuthState {
   logout: () => Promise<void>;
   fetchUser: () => Promise<void>;
   updateUser: (updates: Partial<User>) => void;
+  hasPermission: (permissionName: string) => boolean;
+  hasAnyPermission: (permissionNames: string[]) => boolean;
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
+export const useAuthStore = create<AuthState>((set, get) => ({
   user: null,
   isAuthenticated: false,
   isLoading: false,
@@ -70,4 +72,20 @@ export const useAuthStore = create<AuthState>((set) => ({
     set((state) => ({
       user: state.user ? { ...state.user, ...updates } : null,
     })),
+
+  hasPermission: (permissionName: string) => {
+    const user = get().user;
+    if (!user) return false;
+    return user.roles.some((role) =>
+      role.permissions.some((p) => p.name === permissionName)
+    );
+  },
+
+  hasAnyPermission: (permissionNames: string[]) => {
+    const user = get().user;
+    if (!user) return false;
+    return user.roles.some((role) =>
+      role.permissions.some((p) => permissionNames.includes(p.name))
+    );
+  },
 }));
