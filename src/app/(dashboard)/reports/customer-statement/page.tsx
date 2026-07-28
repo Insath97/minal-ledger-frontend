@@ -343,7 +343,7 @@ export default function CustomerStatementPage() {
                       <tr key={i} className="hover:bg-slate-50/50 transition-colors">
                         <td className="px-4 sm:px-5 py-3 text-sm text-slate-600 whitespace-nowrap">{new Date(txn.date).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })}</td>
                         <td className="px-4 sm:px-5 py-3">
-                          <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${txn.type === "sale" ? "bg-blue-50 text-blue-700 border border-blue-200" : "bg-emerald-50 text-emerald-700 border border-emerald-200"}`}>{txn.type}</span>
+                          <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${txn.type === "sale" ? "bg-blue-50 text-blue-700 border border-blue-200" : "bg-emerald-50 text-emerald-700 border border-emerald-200"}`}>{txn.type === "sale" ? "Sale" : "Payment"}</span>
                         </td>
                         <td className="px-4 sm:px-5 py-3 text-sm text-slate-700 max-w-[200px] truncate">{txn.description}</td>
                         <td className="px-4 sm:px-5 py-3 text-sm font-mono text-slate-600">{txn.reference}</td>
@@ -434,7 +434,7 @@ export default function CustomerStatementPage() {
                   <tr key={i} style={{ borderBottom: "1px solid #f1f5f9" }}>
                     <td style={{ padding: "6px 8px", fontSize: "10px", color: "#475569" }}>{new Date(txn.date).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })}</td>
                     <td style={{ padding: "6px 8px" }}>
-                      <span style={{ display: "inline-block", padding: "1px 6px", borderRadius: "9999px", fontSize: "8px", fontWeight: "600", background: txn.type === "sale" ? "#eff6ff" : "#ecfdf5", color: txn.type === "sale" ? "#1d4ed8" : "#047857", border: `1px solid ${txn.type === "sale" ? "#bfdbfe" : "#a7f3d0"}` }}>{txn.type}</span>
+                      <span style={{ display: "inline-block", padding: "1px 6px", borderRadius: "9999px", fontSize: "8px", fontWeight: "600", background: txn.type === "sale" ? "#eff6ff" : "#ecfdf5", color: txn.type === "sale" ? "#1d4ed8" : "#047857", border: `1px solid ${txn.type === "sale" ? "#bfdbfe" : "#a7f3d0"}` }}>{txn.type === "sale" ? "Sale" : "Payment"}</span>
                     </td>
                     <td style={{ padding: "6px 8px", fontSize: "10px", color: "#334155" }}>{txn.description}</td>
                     <td style={{ padding: "6px 8px", fontSize: "10px", color: "#475569" }}>{txn.reference}</td>
