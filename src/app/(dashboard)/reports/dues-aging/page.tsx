@@ -98,7 +98,7 @@ export default function DuesAgingPage() {
                             <p className="text-xs text-slate-400">{s.customer?.code || ""}</p>
                           </td>
                           <td className="px-5 py-3 text-sm text-slate-600">{new Date(s.sale_date).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })}</td>
-                          <td className="px-5 py-3 text-right text-sm font-semibold text-slate-700">{s.days_outstanding}</td>
+                          <td className="px-5 py-3 text-right text-sm font-semibold text-slate-700">{Math.floor(s.days_outstanding)}</td>
                           <td className="px-5 py-3 text-right text-sm font-bold text-red-600">{formatCurrency(s.due_amount)}</td>
                           <td className="px-5 py-3">
                             <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold ${style.border} ${style.bg} ${style.text}`}>{s.aging_bucket}</span>
