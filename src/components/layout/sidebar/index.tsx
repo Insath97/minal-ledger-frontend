@@ -14,7 +14,7 @@ import type { NavSection, NavItem } from "@/types";
 
 export function Sidebar() {
   const { isCollapsed, isMobileOpen, toggle, setMobileOpen, setCollapsed } = useSidebarStore();
-  const { hasAnyPermission } = useAuthStore();
+  const { hasAnyPermission, user } = useAuthStore();
   const isMobile = useMediaQuery("(max-width: 768px)");
 
   useEffect(() => {
@@ -35,7 +35,7 @@ export function Sidebar() {
           ),
         })),
     })).filter((section) => section.items.length > 0);
-  }, [hasAnyPermission]);
+  }, [hasAnyPermission, user]);
 
   return (
     <>
