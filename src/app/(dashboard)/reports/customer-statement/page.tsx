@@ -6,7 +6,6 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/toast";
 import { getCustomerStatement, type CustomerStatementData } from "@/lib/api/reports";
 import { getCustomers, type Customer } from "@/lib/api/customers";
-import { PrintModal } from "@/components/shared/print-modal";
 
 export default function CustomerStatementPage() {
   const { toast } = useToast();
@@ -25,9 +24,6 @@ export default function CustomerStatementPage() {
   const firstOfYear = `${new Date().getFullYear()}-01-01`;
   const [dateFrom, setDateFrom] = useState(firstOfYear);
   const [dateTo, setDateTo] = useState(today);
-
-  const [printModalOpen, setPrintModalOpen] = useState(false);
-  const [downloadingPdf, setDownloadingPdf] = useState(false);
 
   const hasFilters = selectedCustomer || dateFrom !== firstOfYear || dateTo !== today;
 
@@ -169,48 +165,14 @@ td{padding:7px 8px;font-size:10px}
 </body></html>`;
   };
 
-  const handlePrint = async () => {
-    setPrintModalOpen(false);
+  const handlePrint = () => {
     if (!data) return;
-    setDownloadingPdf(true);
-    try {
-      const html2canvas = (await import("html2canvas")).default;
-      const jsPDF = (await import("jspdf")).default;
-      const tmp = document.createElement("div");
-      tmp.style.cssText = "position:absolute;left:-9999px;top:0;width:794px;background:#fff;padding:0";
-      tmp.innerHTML = buildPrintHtml();
-      document.body.appendChild(tmp);
-      await new Promise((r) => setTimeout(r, 300));
-      const canvas = await html2canvas(tmp, { scale: 2, useCORS: true, logging: false, backgroundColor: "#ffffff" });
-      document.body.removeChild(tmp);
-      const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF("p", "mm", "a4");
-      const pageW = pdf.internal.pageSize.getWidth();
-      const pageH = pdf.internal.pageSize.getHeight();
-      const margin = 12;
-      const contentW = pageW - margin * 2;
-      const imgH = (canvas.height * contentW) / canvas.width;
-      let remaining = imgH;
-      let srcY = 0;
-      let page = 0;
-      while (remaining > 0) {
-        if (page > 0) pdf.addPage();
-        const drawH = Math.min(remaining, pageH - margin * 2);
-        const srcH = (drawH / imgH) * canvas.height;
-        const c = document.createElement("canvas");
-        c.width = canvas.width;
-        c.height = srcH;
-        const ctx = c.getContext("2d");
-        if (ctx) {
-          ctx.drawImage(canvas, 0, srcY, canvas.width, srcH, 0, 0, canvas.width, srcH);
-          pdf.addImage(c.toDataURL("image/png"), "PNG", margin, margin, contentW, drawH);
-        }
-        srcY += srcH;
-        remaining -= drawH;
-        page++;
-      }
-      pdf.save(`statement-${data.customer.name.toLowerCase().replace(/\s+/g, "-")}.pdf`);
-    } catch { toast("Failed to generate PDF", "error"); } finally { setDownloadingPdf(false); }
+    const w = window.open("", "_blank");
+    if (!w) return;
+    w.document.write(buildPrintHtml());
+    w.document.close();
+    w.focus();
+    setTimeout(() => { w.print(); }, 400);
   };
 
   return (
@@ -247,7 +209,7 @@ td{padding:7px 8px;font-size:10px}
             <Input type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} className="h-11 w-full sm:w-auto sm:flex-none" />
             <Input type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)} className="h-11 w-full sm:w-auto sm:flex-none" />
             {hasFilters && <button onClick={clearFilters} className="h-11 px-4 rounded-lg bg-red-50 text-xs font-medium text-red-500 hover:bg-red-100 transition-colors whitespace-nowrap">Clear</button>}
-            {data && <button onClick={() => setPrintModalOpen(true)} className="flex h-11 items-center gap-2 rounded-lg bg-emerald-600 px-4 text-sm font-semibold text-white shadow-sm transition-all hover:bg-emerald-700 whitespace-nowrap"><Printer className="h-4 w-4" />Print</button>}
+            {data && <button onClick={handlePrint} className="flex h-11 items-center gap-2 rounded-lg bg-emerald-600 px-4 text-sm font-semibold text-white shadow-sm transition-all hover:bg-emerald-700 whitespace-nowrap"><Printer className="h-4 w-4" />Print</button>}
           </div>
         </div>
       </div>
@@ -300,8 +262,6 @@ td{padding:7px 8px;font-size:10px}
           <p className="text-sm font-semibold text-slate-600">Select a customer to view their statement</p>
         </div>
       )}
-
-      <PrintModal open={printModalOpen} onClose={() => setPrintModalOpen(false)} onPrint={handlePrint} title="Customer Statement" downloading={downloadingPdf} />
     </div>
   );
 }
