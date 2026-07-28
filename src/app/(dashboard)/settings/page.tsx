@@ -1,14 +1,18 @@
+"use client";
+
 import Link from "next/link";
 import { PageHeader } from "@/components/shared/page-header";
 import { User, ChevronRight, Activity, KeyRound } from "lucide-react";
+import { useAuthStore } from "@/stores/auth-store";
 
-const settingsSections = [
+const allSettingsSections = [
   {
     title: "Profile",
     description: "Manage your personal information and avatar",
     icon: User,
     href: "/settings/profile",
     color: "bg-blue-50 text-blue-600",
+    permission: [] as string[],
   },
   {
     title: "Permissions",
@@ -16,6 +20,7 @@ const settingsSections = [
     icon: KeyRound,
     href: "/permissions",
     color: "bg-emerald-50 text-emerald-600",
+    permission: ["Permission Index", "Permission List", "Permission Create", "Permission Update", "Permission Delete"],
   },
   {
     title: "Activity Logs",
@@ -23,10 +28,17 @@ const settingsSections = [
     icon: Activity,
     href: "/activity-logs",
     color: "bg-slate-50 text-slate-600",
+    permission: ["ActivityLog Index", "ActivityLog Show"],
   },
 ];
 
 export default function SettingsPage() {
+  const { hasAnyPermission } = useAuthStore();
+
+  const settingsSections = allSettingsSections.filter(
+    (section) => section.permission.length === 0 || hasAnyPermission(section.permission)
+  );
+
   return (
     <div className="space-y-6">
       <PageHeader
