@@ -11,8 +11,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/toast";
 import { createCheque, type CreateChequePayload } from "@/lib/api/cheques";
-import { getCustomers, type Customer } from "@/lib/api/customers";
-import { getSales, type Sale } from "@/lib/api/sales";
+import { handleServerErrors } from "@/lib/api/handle-server-errors";
+import { getCustomerList, type CustomerListItem } from "@/lib/api/customers";
+import { getUnpaidSales, type Sale } from "@/lib/api/sales";
+import { useAuthStore } from "@/stores/auth-store";
 
 const chequeSchema = z.object({
   customer_id: z.number().min(1, "Customer is required"),
@@ -29,9 +31,12 @@ type ChequeInput = z.infer<typeof chequeSchema>;
 export default function CreateChequePage() {
   const router = useRouter();
   const { toast } = useToast();
+  const { hasPermission } = useAuthStore();
 
+  const canListCustomers = hasPermission("Customer List");
+  const canListSales = hasPermission("Sale List");
   const [isSaving, setIsSaving] = useState(false);
-  const [customers, setCustomers] = useState<Customer[]>([]);
+  const [customers, setCustomers] = useState<CustomerListItem[]>([]);
   const [sales, setSales] = useState<Sale[]>([]);
   const [chequeImage, setChequeImage] = useState<File | null>(null);
   const [chequeImagePreview, setChequeImagePreview] = useState<string | null>(null);
@@ -47,6 +52,7 @@ export default function CreateChequePage() {
     handleSubmit,
     watch,
     setValue,
+    setError,
     formState: { errors },
   } = useForm<ChequeInput>({
     resolver: zodResolver(chequeSchema),
@@ -67,25 +73,27 @@ export default function CreateChequePage() {
   const selectedSale = sales.find((s) => s.id === selectedSaleId);
 
   useEffect(() => {
+    if (!canListCustomers) return;
     async function fetchCustomers() {
       try {
-        const res = await getCustomers({ per_page: 100 });
-        if (res.status === "success") setCustomers(res.data.data);
+        const res = await getCustomerList();
+        if (res.status === "success") setCustomers(res.data);
       } catch { /* silent */ }
     }
     fetchCustomers();
-  }, []);
+  }, [canListCustomers]);
 
   useEffect(() => {
+    if (!canListSales) return;
     async function fetchSales() {
       if (!selectedCustomerId) { setSales([]); return; }
       try {
-        const res = await getSales({ per_page: 100, customer_id: selectedCustomerId, payment_status: "unpaid" });
-        if (res.status === "success") setSales(res.data.data);
+        const res = await getUnpaidSales(selectedCustomerId);
+        if (res.status === "success") setSales(res.data);
       } catch { /* silent */ }
     }
     fetchSales();
-  }, [selectedCustomerId]);
+  }, [selectedCustomerId, canListSales]);
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -143,15 +151,7 @@ export default function CreateChequePage() {
       toast("Cheque recorded successfully", "success");
       router.push("/cheques");
     } catch (err: unknown) {
-      const error = err as { response?: { data?: { message?: string; errors?: Array<{ field: string; messages: string[] }> } } };
-      const backendErrors = error.response?.data?.errors;
-      if (backendErrors && Array.isArray(backendErrors)) {
-        backendErrors.forEach((e) => {
-          if (e.messages && e.messages.length > 0) toast(e.messages[0], "error");
-        });
-      } else {
-        toast(error.response?.data?.message || "Failed to record cheque", "error");
-      }
+      handleServerErrors(err, setError, toast, "Failed to record cheque");
     } finally {
       setIsSaving(false);
     }

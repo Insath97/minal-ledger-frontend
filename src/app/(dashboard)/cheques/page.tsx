@@ -16,6 +16,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/toast";
+import { useAuthStore } from "@/stores/auth-store";
 import {
   getCheques,
   deleteCheque,
@@ -43,6 +44,11 @@ const STATUS_STYLES: Record<string, string> = {
 export default function ChequesPage() {
   const router = useRouter();
   const { toast } = useToast();
+  const { hasPermission } = useAuthStore();
+
+  const canCreate = hasPermission("Cheque Create");
+  const canDelete = hasPermission("Cheque Delete");
+  const showActions = true; // Always show Actions column for View details button
 
   const [cheques, setCheques] = useState<Cheque[]>([]);
   const [pagination, setPagination] = useState<PaginatedResponse<Cheque> | null>(null);
@@ -111,10 +117,12 @@ export default function ChequesPage() {
           <h1 className="text-2xl font-bold text-slate-900">Cheques</h1>
           <p className="mt-1 text-sm text-slate-500">Manage and track pending, cleared, and bounced cheques.</p>
         </div>
-        <Button onClick={() => router.push("/cheques/create")} className="bg-emerald-600 text-white hover:bg-emerald-700 shadow-lg shadow-emerald-600/20">
-          <Plus className="mr-2 h-4 w-4" />
-          Record Cheque
-        </Button>
+        {canCreate && (
+          <Button onClick={() => router.push("/cheques/create")} className="bg-emerald-600 text-white hover:bg-emerald-700 shadow-lg shadow-emerald-600/20">
+            <Plus className="mr-2 h-4 w-4" />
+            Record Cheque
+          </Button>
+        )}
       </div>
 
       {/* Search & Filters */}
@@ -159,20 +167,22 @@ export default function ChequesPage() {
                 <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">Date</th>
                 <th className="px-5 py-3.5 text-right text-[11px] font-bold uppercase tracking-wider text-slate-500">Amount</th>
                 <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">Status</th>
-                <th className="px-5 py-3.5 text-right text-[11px] font-bold uppercase tracking-wider text-slate-500">Actions</th>
+                {showActions && (
+                  <th className="px-5 py-3.5 text-right text-[11px] font-bold uppercase tracking-wider text-slate-500">Actions</th>
+                )}
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50">
               {loading ? (
                 <tr>
-                  <td colSpan={8} className="px-5 py-16 text-center">
+                  <td colSpan={showActions ? 8 : 7} className="px-5 py-16 text-center">
                     <Loader2 className="mx-auto h-8 w-8 text-emerald-500 animate-spin mb-3" />
                     <p className="text-sm text-slate-500">Loading cheques...</p>
                   </td>
                 </tr>
               ) : cheques.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="px-5 py-16 text-center">
+                  <td colSpan={showActions ? 8 : 7} className="px-5 py-16 text-center">
                     <CreditCard className="mx-auto h-10 w-10 text-slate-300 mb-3" />
                     <p className="text-sm font-semibold text-slate-600">No cheques found</p>
                     <p className="text-xs text-slate-400 mt-1">Try adjusting your search or filters</p>
@@ -205,26 +215,28 @@ export default function ChequesPage() {
                         {cheque.status}
                       </span>
                     </td>
-                    <td className="px-5 py-3.5 text-right">
-                      <div className="flex items-center justify-end gap-1">
-                        <button
-                          onClick={() => router.push(`/cheques/${cheque.id}`)}
-                          className="rounded-lg p-1.5 text-slate-400 hover:bg-blue-50 hover:text-blue-600 transition-colors"
-                          title="View"
-                        >
-                          <Eye className="h-4 w-4" />
-                        </button>
-                        {cheque.status !== "cleared" && (
+                    {showActions && (
+                      <td className="px-5 py-3.5 text-right">
+                        <div className="flex items-center justify-end gap-1">
                           <button
-                            onClick={() => setShowDeleteConfirm(cheque)}
-                            className="rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-500 transition-colors"
-                            title="Delete"
+                            onClick={() => router.push(`/cheques/${cheque.id}`)}
+                            className="rounded-lg p-1.5 text-slate-400 hover:bg-blue-50 hover:text-blue-600 transition-colors"
+                            title="View"
                           >
-                            <Trash2 className="h-4 w-4" />
+                            <Eye className="h-4 w-4" />
                           </button>
-                        )}
-                      </div>
-                    </td>
+                          {cheque.status !== "cleared" && canDelete && (
+                            <button
+                              onClick={() => setShowDeleteConfirm(cheque)}
+                              className="rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-500 transition-colors"
+                              title="Delete"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </button>
+                          )}
+                        </div>
+                      </td>
+                    )}
                   </tr>
                 ))
               )}

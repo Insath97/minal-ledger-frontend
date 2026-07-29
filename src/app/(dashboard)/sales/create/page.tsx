@@ -11,7 +11,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/toast";
 import { createSale, type CreateSalePayload } from "@/lib/api/sales";
-import { getCustomers, type Customer } from "@/lib/api/customers";
+import { handleServerErrors } from "@/lib/api/handle-server-errors";
+import { getCustomerList, type CustomerListItem } from "@/lib/api/customers";
+import { useAuthStore } from "@/stores/auth-store";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL?.replace("/api/v1", "") || "http://localhost:8000";
 
@@ -48,9 +50,11 @@ type SaleInput = z.infer<typeof saleSchema>;
 export default function CreateSalePage() {
   const router = useRouter();
   const { toast } = useToast();
+  const { hasPermission } = useAuthStore();
 
+  const canListCustomers = hasPermission("Customer List");
   const [isSaving, setIsSaving] = useState(false);
-  const [customers, setCustomers] = useState<Customer[]>([]);
+  const [customers, setCustomers] = useState<CustomerListItem[]>([]);
   const [billImage, setBillImage] = useState<File | null>(null);
   const [billImagePreview, setBillImagePreview] = useState<string | null>(null);
   const [chequeImage, setChequeImage] = useState<File | null>(null);
@@ -64,6 +68,7 @@ export default function CreateSalePage() {
     handleSubmit,
     watch,
     setValue,
+    setError,
     formState: { errors },
   } = useForm<SaleInput>({
     resolver: zodResolver(saleSchema),
@@ -89,18 +94,19 @@ export default function CreateSalePage() {
   const paidAmount = watch("paid_amount");
 
   useEffect(() => {
+    if (!canListCustomers) return;
     async function fetchCustomers() {
       try {
-        const res = await getCustomers({ per_page: 100 });
+        const res = await getCustomerList();
         if (res.status === "success") {
-          setCustomers(res.data.data);
+          setCustomers(res.data);
         }
       } catch {
         // silent
       }
     }
     fetchCustomers();
-  }, []);
+  }, [canListCustomers]);
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -173,17 +179,7 @@ export default function CreateSalePage() {
       toast("Sale created successfully", "success");
       router.push("/sales");
     } catch (err: unknown) {
-      const error = err as { response?: { data?: { message?: string; errors?: Array<{ field: string; messages: string[] }> } } };
-      const backendErrors = error.response?.data?.errors;
-      if (backendErrors && Array.isArray(backendErrors)) {
-        backendErrors.forEach((e) => {
-          if (e.messages && e.messages.length > 0) {
-            toast(e.messages[0], "error");
-          }
-        });
-      } else {
-        toast(error.response?.data?.message || "Failed to create sale", "error");
-      }
+      handleServerErrors(err, setError, toast, "Failed to create sale");
     } finally {
       setIsSaving(false);
     }

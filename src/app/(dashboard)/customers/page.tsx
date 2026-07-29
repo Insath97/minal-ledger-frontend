@@ -17,6 +17,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/toast";
+import { useAuthStore } from "@/stores/auth-store";
 import {
   getCustomers,
   deleteCustomer,
@@ -38,6 +39,13 @@ const PER_PAGE_OPTIONS = [5, 10, 25, 50, 100];
 export default function CustomersPage() {
   const router = useRouter();
   const { toast } = useToast();
+  const { hasPermission } = useAuthStore();
+
+  const canCreate = hasPermission("Customer Create");
+  const canEdit = hasPermission("Customer Update");
+  const canDelete = hasPermission("Customer Delete");
+  const canToggleStatus = hasPermission("Customer Toggle Status");
+  const showActions = true;
 
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [pagination, setPagination] = useState<PaginatedResponse<Customer> | null>(null);
@@ -119,10 +127,12 @@ export default function CustomersPage() {
           <h1 className="text-2xl font-bold text-slate-900">Customers</h1>
           <p className="mt-1 text-sm text-slate-500">Manage your customer accounts.</p>
         </div>
-        <Button onClick={() => router.push("/customers/create")} className="bg-emerald-600 text-white hover:bg-emerald-700 shadow-lg shadow-emerald-600/20">
-          <Plus className="mr-2 h-4 w-4" />
-          Add Customer
-        </Button>
+        {canCreate && (
+          <Button onClick={() => router.push("/customers/create")} className="bg-emerald-600 text-white hover:bg-emerald-700 shadow-lg shadow-emerald-600/20">
+            <Plus className="mr-2 h-4 w-4" />
+            Add Customer
+          </Button>
+        )}
       </div>
 
       {/* Search & Filters */}
@@ -166,21 +176,25 @@ export default function CustomersPage() {
                 <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">Contact</th>
                 <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">City</th>
                 <th className="px-5 py-3.5 text-right text-[11px] font-bold uppercase tracking-wider text-slate-500">Balance</th>
-                <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">Status</th>
-                <th className="px-5 py-3.5 text-right text-[11px] font-bold uppercase tracking-wider text-slate-500">Actions</th>
+                {canToggleStatus && (
+                  <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">Status</th>
+                )}
+                {showActions && (
+                  <th className="px-5 py-3.5 text-right text-[11px] font-bold uppercase tracking-wider text-slate-500">Actions</th>
+                )}
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50">
               {loading ? (
                 <tr>
-                  <td colSpan={8} className="px-5 py-16 text-center">
+                  <td colSpan={canToggleStatus ? (showActions ? 8 : 7) : (showActions ? 7 : 6)} className="px-5 py-16 text-center">
                     <Loader2 className="mx-auto h-8 w-8 text-emerald-500 animate-spin mb-3" />
                     <p className="text-sm text-slate-500">Loading customers...</p>
                   </td>
                 </tr>
               ) : customers.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="px-5 py-16 text-center">
+                  <td colSpan={canToggleStatus ? (showActions ? 8 : 7) : (showActions ? 7 : 6)} className="px-5 py-16 text-center">
                     <UserCheck className="mx-auto h-10 w-10 text-slate-300 mb-3" />
                     <p className="text-sm font-semibold text-slate-600">No customers found</p>
                     <p className="text-xs text-slate-400 mt-1">Try adjusting your search or filters</p>
@@ -224,53 +238,61 @@ export default function CustomersPage() {
                       <td className="px-5 py-3.5 text-right">
                         <p className="text-sm font-semibold text-slate-800">{formatCurrency(customer.outstanding_balance)}</p>
                       </td>
-                      <td className="px-5 py-3.5">
-                        <button
-                          onClick={() => handleToggleStatus(customer)}
-                          className="inline-flex items-center gap-1.5 cursor-pointer"
-                          title={`Click to ${customer.is_active ? "deactivate" : "activate"}`}
-                        >
-                          <span
-                            className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
-                              customer.is_active ? "bg-emerald-500" : "bg-slate-200"
-                            }`}
+                      {canToggleStatus && (
+                        <td className="px-5 py-3.5">
+                          <button
+                            onClick={() => handleToggleStatus(customer)}
+                            className="inline-flex items-center gap-1.5 cursor-pointer"
+                            title={`Click to ${customer.is_active ? "deactivate" : "activate"}`}
                           >
                             <span
-                              className={`inline-block h-3.5 w-3.5 rounded-full bg-white shadow-sm transition-transform ${
-                                customer.is_active ? "translate-x-[18px]" : "translate-x-[3px]"
+                              className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
+                                customer.is_active ? "bg-emerald-500" : "bg-slate-200"
                               }`}
-                            />
-                          </span>
-                          <span className={`text-xs font-medium ${customer.is_active ? "text-emerald-600" : "text-slate-400"}`}>
-                            {customer.is_active ? "Active" : "Inactive"}
-                          </span>
-                        </button>
-                      </td>
-                      <td className="px-5 py-3.5 text-right">
-                        <div className="flex items-center justify-end gap-1">
-                          <button
-                            onClick={() => router.push(`/customers/${customer.id}`)}
-                            className="rounded-lg p-1.5 text-slate-400 hover:bg-blue-50 hover:text-blue-600 transition-colors"
-                            title="View"
-                          >
-                            <Eye className="h-4 w-4" />
+                            >
+                              <span
+                                className={`inline-block h-3.5 w-3.5 rounded-full bg-white shadow-sm transition-transform ${
+                                  customer.is_active ? "translate-x-[18px]" : "translate-x-[3px]"
+                                }`}
+                              />
+                            </span>
+                            <span className={`text-xs font-medium ${customer.is_active ? "text-emerald-600" : "text-slate-400"}`}>
+                              {customer.is_active ? "Active" : "Inactive"}
+                            </span>
                           </button>
-                           <button
-                            onClick={() => router.push(`/customers/${customer.id}/edit`)}
-                            className="rounded-lg p-1.5 text-slate-400 hover:bg-emerald-50 hover:text-emerald-600 transition-colors"
-                            title="Edit"
-                          >
-                            <Pencil className="h-4 w-4" />
-                          </button>
-                          <button
-                            onClick={() => setShowDeleteConfirm(customer)}
-                            className="rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-500 transition-colors"
-                            title="Delete"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </button>
-                        </div>
-                      </td>
+                        </td>
+                      )}
+                      {showActions && (
+                        <td className="px-5 py-3.5 text-right">
+                          <div className="flex items-center justify-end gap-1">
+                            <button
+                              onClick={() => router.push(`/customers/${customer.id}`)}
+                              className="rounded-lg p-1.5 text-slate-400 hover:bg-blue-50 hover:text-blue-600 transition-colors"
+                              title="View"
+                            >
+                              <Eye className="h-4 w-4" />
+                            </button>
+                            {canEdit && (
+                              <button
+                                onClick={() => router.push(`/customers/${customer.id}/edit`)}
+                                className="rounded-lg p-1.5 text-slate-400 hover:bg-emerald-50 hover:text-emerald-600 transition-colors"
+                                title="Edit"
+                              >
+                                <Pencil className="h-4 w-4" />
+                              </button>
+                            )}
+                            {canDelete && (
+                              <button
+                                onClick={() => setShowDeleteConfirm(customer)}
+                                className="rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-500 transition-colors"
+                                title="Delete"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </button>
+                            )}
+                          </div>
+                        </td>
+                      )}
                     </tr>
                   );
                 })

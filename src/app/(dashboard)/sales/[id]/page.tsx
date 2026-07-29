@@ -17,11 +17,13 @@ import {
   Clock,
   Banknote,
   Image as ImageIcon,
+  ArrowDownRight,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/ui/toast";
 import { getSale, deleteSale, type Sale } from "@/lib/api/sales";
+import { useAuthStore } from "@/stores/auth-store";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL?.replace("/api/v1", "") || "http://localhost:8000";
 
@@ -37,11 +39,21 @@ const PAYMENT_STATUS_COLORS: Record<string, string> = {
   unpaid: "bg-red-100 text-red-700 border-red-200",
 };
 
+const METHOD_STYLES: Record<string, { bg: string; text: string; border: string }> = {
+  cash: { bg: "bg-emerald-50", text: "text-emerald-700", border: "border-emerald-200" },
+  credit_card: { bg: "bg-blue-50", text: "text-blue-700", border: "border-blue-200" },
+  bank_transfer: { bg: "bg-violet-50", text: "text-violet-700", border: "border-violet-200" },
+  cheque: { bg: "bg-amber-50", text: "text-amber-700", border: "border-amber-200" },
+};
+
 export default function ViewSalePage() {
   const router = useRouter();
   const params = useParams();
   const saleId = Number(params.id);
   const { toast } = useToast();
+  const { hasPermission } = useAuthStore();
+  const canEdit = hasPermission("Sale Update");
+  const canDelete = hasPermission("Sale Delete");
   const [sale, setSale] = useState<Sale | null>(null);
   const [loading, setLoading] = useState(true);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -157,6 +169,7 @@ export default function ViewSalePage() {
             </div>
           </div>
           <div className="flex items-center gap-2">
+            {canEdit && (
             <Button
               onClick={() => router.push(`/sales/${sale.id}/edit`)}
               className="bg-emerald-600 text-white hover:bg-emerald-700 font-semibold shadow-md shadow-emerald-600/20"
@@ -164,6 +177,8 @@ export default function ViewSalePage() {
               <Edit className="mr-2 h-4 w-4" />
               Edit
             </Button>
+            )}
+            {canDelete && (
             <Button
               onClick={() => setShowDeleteConfirm(true)}
               variant="outline"
@@ -172,6 +187,7 @@ export default function ViewSalePage() {
               <Trash2 className="mr-2 h-4 w-4" />
               Delete
             </Button>
+            )}
           </div>
         </div>
       </div>
@@ -318,6 +334,46 @@ export default function ViewSalePage() {
                 )}
               </div>
             ))}
+          </div>
+        </div>
+      )}
+
+      {/* Payment Settlements */}
+      {sale.payment_sales && sale.payment_sales.length > 0 && (
+        <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+          <div className="border-b border-slate-100 px-5 py-3">
+            <h2 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
+              <ArrowDownRight className="h-4 w-4 text-emerald-600" />
+              Payment Settlements ({sale.payment_sales.length})
+            </h2>
+          </div>
+          <div className="divide-y divide-slate-50">
+            {sale.payment_sales.map((ps) => {
+              const payment = ps.payment;
+              const method = payment?.payment_method || "";
+              const methodStyle = METHOD_STYLES[method] || METHOD_STYLES.cash;
+              return (
+                <div key={ps.id} className="px-5 py-3">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold capitalize ${methodStyle.border} ${methodStyle.bg} ${methodStyle.text}`}>
+                        {method.replace("_", " ")}
+                      </span>
+                      {payment?.payment_date && (
+                        <span className="text-xs text-slate-500">{new Date(payment.payment_date).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })}</span>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className="text-xs text-slate-500">Allocated</span>
+                      <span className="text-sm font-bold text-emerald-600">{formatCurrency(ps.allocated_amount)}</span>
+                    </div>
+                  </div>
+                  {payment?.notes && (
+                    <p className="text-xs text-slate-500 mt-1">{payment.notes}</p>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
       )}

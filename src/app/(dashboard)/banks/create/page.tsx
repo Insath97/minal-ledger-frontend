@@ -9,6 +9,7 @@ import { Loader2, Plus, ChevronRight as BreadcrumbSep } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { createBank } from "@/lib/api/banks";
+import { handleServerErrors } from "@/lib/api/handle-server-errors";
 import { useToast } from "@/components/ui/toast";
 
 const bankSchema = z.object({
@@ -27,6 +28,7 @@ export default function CreateBankPage() {
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors },
   } = useForm<BankInput>({
     resolver: zodResolver(bankSchema),
@@ -48,8 +50,7 @@ export default function CreateBankPage() {
       toast("Bank created successfully", "success");
       router.push("/banks");
     } catch (err: unknown) {
-      const error = err as { message?: string };
-      toast(error.message || "Failed to create bank", "error");
+      handleServerErrors(err, setError, toast, "Failed to create bank");
     } finally {
       setIsSaving(false);
     }

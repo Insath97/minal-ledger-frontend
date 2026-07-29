@@ -20,12 +20,16 @@ import { Badge } from "@/components/ui/badge";
 import { getBank, deleteBank } from "@/lib/api/banks";
 import { useToast } from "@/components/ui/toast";
 import type { Bank } from "@/lib/api/banks";
+import { useAuthStore } from "@/stores/auth-store";
 
 export default function ViewBankPage() {
   const router = useRouter();
   const params = useParams();
   const bankId = Number(params.id);
   const { toast } = useToast();
+  const { hasPermission } = useAuthStore();
+  const canEdit = hasPermission("Bank Update");
+  const canDelete = hasPermission("Bank Delete");
   const [bank, setBank] = useState<Bank | null>(null);
   const [loading, setLoading] = useState(true);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -132,6 +136,7 @@ export default function ViewBankPage() {
             </div>
           </div>
           <div className="flex items-center gap-2">
+            {canEdit && (
             <Button
               onClick={() => router.push(`/banks/${bank.id}/edit`)}
               className="bg-emerald-600 text-white hover:bg-emerald-700 font-semibold shadow-md shadow-emerald-600/20"
@@ -139,6 +144,8 @@ export default function ViewBankPage() {
               <Edit className="mr-2 h-4 w-4" />
               Edit
             </Button>
+            )}
+            {canDelete && (
             <Button
               onClick={() => setShowDeleteConfirm(true)}
               variant="outline"
@@ -147,6 +154,7 @@ export default function ViewBankPage() {
               <Trash2 className="mr-2 h-4 w-4" />
               Delete
             </Button>
+            )}
           </div>
         </div>
       </div>

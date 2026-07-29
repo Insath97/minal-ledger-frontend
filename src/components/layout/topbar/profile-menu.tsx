@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { LogOut, Settings, User } from "lucide-react";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,6 +12,14 @@ import {
 import { useAuthStore } from "@/stores/auth-store";
 import Link from "next/link";
 import { LogoutDialog } from "../sidebar/logout-dialog";
+
+const API_BASE = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1").replace("/api/v1", "");
+
+function getImageUrl(path?: string | null): string | null {
+  if (!path) return null;
+  if (path.startsWith("http")) return path;
+  return `${API_BASE}/${path}`;
+}
 
 export function ProfileMenu() {
   const { user } = useAuthStore();
@@ -25,11 +33,16 @@ export function ProfileMenu() {
         .toUpperCase()
     : "U";
 
+  const profileImageUrl = getImageUrl(user?.profile_image);
+
   return (
     <>
       <DropdownMenu>
         <DropdownMenuTrigger render={<button className="flex items-center gap-2 rounded-full outline-none ring-emerald-500 focus:ring-2" />}>
           <Avatar className="h-9 w-9">
+            {profileImageUrl && (
+              <AvatarImage src={profileImageUrl} alt={user?.name || "User"} />
+            )}
             <AvatarFallback className="bg-emerald-100 text-sm font-semibold text-emerald-700">
               {initials}
             </AvatarFallback>

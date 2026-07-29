@@ -25,6 +25,7 @@ import {
   deletePermission,
 } from "@/lib/api/permissions";
 import { useToast } from "@/components/ui/toast";
+import { useAuthStore } from "@/stores/auth-store";
 import type { Permission, PaginatedResponse } from "@/types";
 
 const PER_PAGE_OPTIONS = [5, 10, 25, 50, 100];
@@ -32,6 +33,12 @@ const PER_PAGE_OPTIONS = [5, 10, 25, 50, 100];
 export default function PermissionsPage() {
   const router = useRouter();
   const { toast } = useToast();
+  const { hasPermission } = useAuthStore();
+
+  const canCreate = hasPermission("Permission Create");
+  const canEdit = hasPermission("Permission Update");
+  const canDelete = hasPermission("Permission Delete");
+  const showActions = canEdit || canDelete;
   const [permissions, setPermissions] = useState<Permission[]>([]);
   const [pagination, setPagination] = useState<PaginatedResponse<Permission> | null>(null);
   const [permissionList, setPermissionList] = useState<Permission[]>([]);
@@ -174,10 +181,12 @@ export default function PermissionsPage() {
             <ChevronRight className="h-3 w-3 text-slate-400" />
             <span className="font-semibold text-emerald-600">Permissions</span>
           </nav>
-          <Button onClick={openCreate} className="h-11 bg-emerald-600 text-white hover:bg-emerald-700 shadow-lg shadow-emerald-600/20">
-            <Plus className="mr-2 h-4 w-4" />
-            Add Permission
-          </Button>
+          {canCreate && (
+            <Button onClick={openCreate} className="h-11 bg-emerald-600 text-white hover:bg-emerald-700 shadow-lg shadow-emerald-600/20">
+              <Plus className="mr-2 h-4 w-4" />
+              Add Permission
+            </Button>
+          )}
         </div>
       </div>
 
@@ -263,22 +272,24 @@ export default function PermissionsPage() {
                 <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">
                   Guard
                 </th>
-                <th className="px-5 py-3.5 text-right text-[11px] font-bold uppercase tracking-wider text-slate-500">
-                  Actions
-                </th>
+                {showActions && (
+                  <th className="px-5 py-3.5 text-right text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                    Actions
+                  </th>
+                )}
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50">
               {loading ? (
                 <tr>
-                  <td colSpan={5} className="px-5 py-16 text-center">
+                  <td colSpan={showActions ? 5 : 4} className="px-5 py-16 text-center">
                     <Loader2 className="mx-auto h-8 w-8 text-emerald-500 animate-spin mb-3" />
                     <p className="text-sm text-slate-500">Loading permissions...</p>
                   </td>
                 </tr>
               ) : permissions.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-5 py-16 text-center">
+                  <td colSpan={showActions ? 5 : 4} className="px-5 py-16 text-center">
                     <Shield className="mx-auto h-10 w-10 text-slate-300 mb-3" />
                     <p className="text-sm font-semibold text-slate-600">No permissions found</p>
                     <p className="text-xs text-slate-400 mt-1">Try adjusting your search or filters</p>
@@ -303,24 +314,30 @@ export default function PermissionsPage() {
                         {perm.guard_name}
                       </code>
                     </td>
-                    <td className="px-5 py-3.5 text-right">
-                      <div className="flex items-center justify-end gap-1">
-                        <button
-                          onClick={() => openEdit(perm)}
-                          className="rounded-lg p-1.5 text-slate-400 hover:bg-emerald-50 hover:text-emerald-600 transition-colors"
-                          title="Edit"
-                        >
-                          <Edit className="h-4 w-4" />
-                        </button>
-                        <button
-                          onClick={() => setShowDeleteConfirm(perm)}
-                          className="rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-500 transition-colors"
-                          title="Delete"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </button>
-                      </div>
-                    </td>
+                    {showActions && (
+                      <td className="px-5 py-3.5 text-right">
+                        <div className="flex items-center justify-end gap-1">
+                          {canEdit && (
+                            <button
+                              onClick={() => openEdit(perm)}
+                              className="rounded-lg p-1.5 text-slate-400 hover:bg-emerald-50 hover:text-emerald-600 transition-colors"
+                              title="Edit"
+                            >
+                              <Edit className="h-4 w-4" />
+                            </button>
+                          )}
+                          {canDelete && (
+                            <button
+                              onClick={() => setShowDeleteConfirm(perm)}
+                              className="rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-500 transition-colors"
+                              title="Delete"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </button>
+                          )}
+                        </div>
+                      </td>
+                    )}
                   </tr>
                 ))
               )}

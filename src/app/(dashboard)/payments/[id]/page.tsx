@@ -5,6 +5,7 @@ import { useRouter, useParams } from "next/navigation";
 import { ChevronRight as BreadcrumbSep, Loader2, Trash2, ArrowDownRight, CheckCircle, Clock } from "lucide-react";
 import { useToast } from "@/components/ui/toast";
 import { getPayment, deletePayment, type Payment } from "@/lib/api/payments";
+import { useAuthStore } from "@/stores/auth-store";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL?.replace("/api/v1", "") || "http://localhost:8000";
 
@@ -26,6 +27,8 @@ export default function PaymentDetailPage() {
   const params = useParams();
   const paymentId = Number(params.id);
   const { toast } = useToast();
+  const { hasPermission } = useAuthStore();
+  const canDelete = hasPermission("Payment Delete");
 
   const [payment, setPayment] = useState<Payment | null>(null);
   const [loading, setLoading] = useState(true);
@@ -77,7 +80,9 @@ export default function PaymentDetailPage() {
   const formatCurrency = (amount: number) => `Rs. ${Number(amount).toLocaleString("en-US")}`;
   const formatDate = (date: string) => new Date(date).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
   const formatMethod = (method: string) => method.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
-  const totalAllocated = payment.paymentSales?.reduce((sum, ps) => sum + ps.allocated_amount, 0) || 0;
+  
+  const allocations = payment.payment_sales || payment.paymentSales || [];
+  const totalAllocated = allocations.reduce((sum, ps) => sum + Number(ps.allocated_amount), 0);
 
   return (
     <div className="space-y-6">
@@ -106,12 +111,14 @@ export default function PaymentDetailPage() {
               <p className="text-2xl font-bold text-slate-900">{formatCurrency(payment.total_amount)}</p>
             </div>
           </div>
+          {canDelete && (
           <button
             onClick={() => setShowDeleteConfirm(true)}
             className="h-9 rounded-lg border border-red-200 bg-white px-3 text-xs font-semibold text-red-600 hover:bg-red-50 shadow-sm flex items-center gap-1.5"
           >
             <Trash2 className="h-3.5 w-3.5" /> Delete
           </button>
+          )}
         </div>
         <div className="mt-4 grid gap-4 sm:grid-cols-4">
           <div className="rounded-xl bg-white/80 border border-white/50 p-3">
@@ -130,7 +137,7 @@ export default function PaymentDetailPage() {
           </div>
           <div className="rounded-xl bg-white/80 border border-white/50 p-3">
             <p className="text-xs text-slate-500">Sales Linked</p>
-            <p className="text-sm font-semibold text-slate-700">{payment.paymentSales?.length || 0}</p>
+            <p className="text-sm font-semibold text-slate-700">{allocations.length}</p>
           </div>
         </div>
       </div>
@@ -185,7 +192,7 @@ export default function PaymentDetailPage() {
       </div>
 
       {/* Sale Allocations */}
-      {payment.paymentSales && payment.paymentSales.length > 0 && (
+      {allocations.length > 0 && (
         <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
           <div className="px-6 py-4 border-b border-slate-100">
             <h3 className="text-sm font-semibold text-slate-700">FIFO Sale Allocations</h3>
@@ -197,14 +204,13 @@ export default function PaymentDetailPage() {
                   <th className="px-5 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">Sale Reference</th>
                   <th className="px-5 py-3 text-right text-[11px] font-bold uppercase tracking-wider text-slate-500">Sale Total</th>
                   <th className="px-5 py-3 text-right text-[11px] font-bold uppercase tracking-wider text-slate-500">Allocated</th>
-                  <th className="px-5 py-3 text-right text-[11px] font-bold uppercase tracking-wider text-slate-500">Due After</th>
+                  <th className="px-5 py-3 text-right text-[11px] font-bold uppercase tracking-wider text-slate-500">Due Before</th>
                   <th className="px-5 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">Status</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-50">
-                {payment.paymentSales.map((ps) => {
+                {allocations.map((ps) => {
                   const sale = ps.sale;
-                  const dueAfter = sale ? sale.due_amount : 0;
                   return (
                     <tr key={ps.id} className="hover:bg-slate-50/50 transition-colors">
                       <td className="px-5 py-3">
@@ -218,9 +224,16 @@ export default function PaymentDetailPage() {
                       <td className="px-5 py-3 text-right">
                         <span className="text-sm font-bold text-emerald-600">{formatCurrency(ps.allocated_amount)}</span>
                       </td>
-                      <td className="px-5 py-3 text-right">
-                        <span className={`text-sm font-semibold ${dueAfter > 0 ? "text-red-600" : "text-emerald-600"}`}>{sale ? formatCurrency(dueAfter) : "—"}</span>
-                      </td>
+                    <td className="px-5 py-3 text-right">
+                      {sale && (() => {
+                        const dueBefore = Number(sale.due_amount) + Number(ps.allocated_amount);
+                        return (
+                          <span className={`text-sm font-semibold ${dueBefore > 0 ? "text-red-600" : "text-emerald-600"}`}>
+                            {formatCurrency(dueBefore)}
+                          </span>
+                        );
+                      })()}
+                    </td>
                       <td className="px-5 py-3">
                         {sale && (
                           <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold capitalize ${sale.payment_status === "paid" ? "bg-emerald-50 text-emerald-700" : sale.payment_status === "partial" ? "bg-amber-50 text-amber-700" : "bg-red-50 text-red-700"}`}>

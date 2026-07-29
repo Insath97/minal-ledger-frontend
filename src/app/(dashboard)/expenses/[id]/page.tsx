@@ -5,6 +5,7 @@ import { useRouter, useParams } from "next/navigation";
 import { ChevronRight as BreadcrumbSep, Loader2, Trash2, Pencil, Receipt, TrendingDown } from "lucide-react";
 import { useToast } from "@/components/ui/toast";
 import { getExpense, deleteExpense, type Expense } from "@/lib/api/expenses";
+import { useAuthStore } from "@/stores/auth-store";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL?.replace("/api/v1", "") || "http://localhost:8000";
 
@@ -28,6 +29,9 @@ export default function ExpenseDetailPage() {
   const params = useParams();
   const expenseId = Number(params.id);
   const { toast } = useToast();
+  const { hasPermission } = useAuthStore();
+  const canEdit = hasPermission("Expense Update");
+  const canDelete = hasPermission("Expense Delete");
 
   const [expense, setExpense] = useState<Expense | null>(null);
   const [loading, setLoading] = useState(true);
@@ -79,6 +83,8 @@ export default function ExpenseDetailPage() {
   const formatCurrency = (amount: number) => `Rs. ${Number(amount).toLocaleString("en-US")}`;
   const formatDate = (date: string) => new Date(date).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
 
+  const itemsList = expense.items || expense.expense_items || [];
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -110,22 +116,32 @@ export default function ExpenseDetailPage() {
             </span>
           </div>
           <div className="flex items-center gap-2">
+            {canEdit && (
             <button onClick={() => router.push(`/expenses/${expenseId}/edit`)} className="h-9 rounded-lg bg-emerald-600 px-3 text-xs font-semibold text-white hover:bg-emerald-700 shadow-sm flex items-center gap-1.5">
               <Pencil className="h-3.5 w-3.5" /> Edit
             </button>
+            )}
+            {canDelete && (
             <button onClick={() => setShowDeleteConfirm(true)} className="h-9 rounded-lg border border-red-200 bg-white px-3 text-xs font-semibold text-red-600 hover:bg-red-50 shadow-sm flex items-center gap-1.5">
               <Trash2 className="h-3.5 w-3.5" /> Delete
             </button>
+            )}
           </div>
         </div>
-        <div className="mt-4 grid gap-4 sm:grid-cols-3">
+        <div className="mt-4 grid gap-4 sm:grid-cols-4">
+          <div className="rounded-xl bg-white/80 border border-white/50 p-3">
+            <p className="text-xs text-slate-500">Category</p>
+            <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold capitalize ${catStyle.border} ${catStyle.bg} ${catStyle.text} mt-1`}>
+              {expense.category}
+            </span>
+          </div>
           <div className="rounded-xl bg-white/80 border border-white/50 p-3">
             <p className="text-xs text-slate-500">Expense Date</p>
             <p className="text-sm font-semibold text-slate-700">{formatDate(expense.expense_date)}</p>
           </div>
           <div className="rounded-xl bg-white/80 border border-white/50 p-3">
             <p className="text-xs text-slate-500">Items</p>
-            <p className="text-sm font-semibold text-slate-700">{expense.items?.length || 0} item(s)</p>
+            <p className="text-sm font-semibold text-slate-700">{itemsList.length} item(s)</p>
           </div>
           <div className="rounded-xl bg-white/80 border border-white/50 p-3">
             <p className="text-xs text-slate-500">Recorded by</p>
@@ -137,7 +153,7 @@ export default function ExpenseDetailPage() {
       {/* Details Grid */}
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Items Table */}
-        {expense.items && expense.items.length > 0 && (
+        {itemsList.length > 0 && (
           <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden lg:col-span-2">
             <div className="px-6 py-4 border-b border-slate-100">
               <h3 className="text-sm font-semibold text-slate-700">Expense Items</h3>
@@ -155,7 +171,7 @@ export default function ExpenseDetailPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-50">
-                  {expense.items.map((item, i) => (
+                  {itemsList.map((item, i) => (
                     <tr key={i} className="hover:bg-slate-50/50 transition-colors">
                       <td className="px-5 py-3 text-sm text-slate-400">{i + 1}</td>
                       <td className="px-5 py-3 text-sm font-medium text-slate-700">{item.description}</td>
@@ -171,17 +187,17 @@ export default function ExpenseDetailPage() {
           </div>
         )}
 
-        {/* Notes */}
+        {/* Notes (Full Width) */}
         {expense.notes && (
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm lg:col-span-2">
             <h3 className="mb-4 text-sm font-semibold text-slate-700">Notes</h3>
-            <p className="text-sm text-slate-600 whitespace-pre-wrap">{expense.notes}</p>
+            <p className="text-sm text-slate-600 whitespace-pre-wrap leading-relaxed">{expense.notes}</p>
           </div>
         )}
 
         {/* Images */}
         {(expense.receipt_image || expense.bill_image) && (
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm lg:col-span-2">
             <h3 className="mb-4 text-sm font-semibold text-slate-700">Images</h3>
             <div className="grid gap-4 sm:grid-cols-2">
               {expense.receipt_image && (

@@ -13,17 +13,15 @@ import {
   X,
   Loader2,
   Receipt,
-  TrendingDown,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/toast";
+import { useAuthStore } from "@/stores/auth-store";
 import {
   getExpenses,
   deleteExpense,
-  getExpenseSummary,
   type Expense,
-  type ExpenseSummary,
 } from "@/lib/api/expenses";
 import type { PaginatedResponse } from "@/types";
 
@@ -51,10 +49,15 @@ const CATEGORY_STYLES: Record<string, string> = {
 export default function ExpensesPage() {
   const router = useRouter();
   const { toast } = useToast();
+  const { hasPermission } = useAuthStore();
+
+  const canCreate = hasPermission("Expense Create");
+  const canEdit = hasPermission("Expense Update");
+  const canDelete = hasPermission("Expense Delete");
+  const showActions = true;
 
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [pagination, setPagination] = useState<PaginatedResponse<Expense> | null>(null);
-  const [summary, setSummary] = useState<ExpenseSummary | null>(null);
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
@@ -85,18 +88,7 @@ export default function ExpensesPage() {
     }
   }, [currentPage, perPage, search, categoryFilter, dateFrom, dateTo, toast]);
 
-  const fetchSummary = useCallback(async () => {
-    try {
-      const params: Record<string, string> = {};
-      if (dateFrom) params.date_from = dateFrom;
-      if (dateTo) params.date_to = dateTo;
-      const res = await getExpenseSummary(params);
-      if (res.status === "success") setSummary(res.data);
-    } catch { /* silent */ }
-  }, [dateFrom, dateTo]);
-
   useEffect(() => { fetchExpenses(); }, [fetchExpenses]);
-  useEffect(() => { fetchSummary(); }, [fetchSummary]);
 
   const handleDelete = async (expense: Expense) => {
     setIsDeleting(true);
@@ -105,7 +97,6 @@ export default function ExpensesPage() {
       toast("Expense deleted successfully", "success");
       setShowDeleteConfirm(null);
       fetchExpenses();
-      fetchSummary();
     } catch (err: unknown) {
       const error = err as { response?: { data?: { message?: string } } };
       toast(error.response?.data?.message || "Failed to delete expense", "error");
@@ -144,37 +135,13 @@ export default function ExpensesPage() {
           <h1 className="text-2xl font-bold text-slate-900">Expenses</h1>
           <p className="mt-1 text-sm text-slate-500">Track and manage business expenses.</p>
         </div>
-        <Button onClick={() => router.push("/expenses/create")} className="bg-emerald-600 text-white hover:bg-emerald-700 shadow-lg shadow-emerald-600/20">
-          <Plus className="mr-2 h-4 w-4" />
-          Add Expense
-        </Button>
+        {canCreate && (
+          <Button onClick={() => router.push("/expenses/create")} className="bg-emerald-600 text-white hover:bg-emerald-700 shadow-lg shadow-emerald-600/20">
+            <Plus className="mr-2 h-4 w-4" />
+            Add Expense
+          </Button>
+        )}
       </div>
-
-      {/* Summary Cards */}
-      {summary && (
-        <div className="grid gap-4 sm:grid-cols-4">
-          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-50"><TrendingDown className="h-5 w-5 text-red-600" /></div>
-              <div>
-                <p className="text-xs text-slate-500">Total Expenses</p>
-                <p className="text-lg font-bold text-slate-900">{formatCurrency(summary.grand_total)}</p>
-              </div>
-            </div>
-          </div>
-          {summary.by_category.slice(0, 3).map((cat) => (
-            <div key={cat.category} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-              <div className="flex items-center gap-3">
-                <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold capitalize ${CATEGORY_STYLES[cat.category] || "bg-slate-50 text-slate-600 border-slate-200"}`}>{cat.category}</span>
-                <div className="ml-auto text-right">
-                  <p className="text-sm font-bold text-slate-900">{formatCurrency(cat.total_amount)}</p>
-                  <p className="text-xs text-slate-400">{cat.total_count} items</p>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
 
       {/* Search & Filters */}
       <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
@@ -220,20 +187,22 @@ export default function ExpensesPage() {
                 <th className="px-5 py-3.5 text-right text-[11px] font-bold uppercase tracking-wider text-slate-500">Amount</th>
                 <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">Date</th>
                 <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">Items</th>
-                <th className="px-5 py-3.5 text-right text-[11px] font-bold uppercase tracking-wider text-slate-500">Actions</th>
+                {showActions && (
+                  <th className="px-5 py-3.5 text-right text-[11px] font-bold uppercase tracking-wider text-slate-500">Actions</th>
+                )}
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50">
               {loading ? (
                 <tr>
-                  <td colSpan={7} className="px-5 py-16 text-center">
+                  <td colSpan={showActions ? 7 : 6} className="px-5 py-16 text-center">
                     <Loader2 className="mx-auto h-8 w-8 text-emerald-500 animate-spin mb-3" />
                     <p className="text-sm text-slate-500">Loading expenses...</p>
                   </td>
                 </tr>
               ) : expenses.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-5 py-16 text-center">
+                  <td colSpan={showActions ? 7 : 6} className="px-5 py-16 text-center">
                     <Receipt className="mx-auto h-10 w-10 text-slate-300 mb-3" />
                     <p className="text-sm font-semibold text-slate-600">No expenses found</p>
                     <p className="text-xs text-slate-400 mt-1">Try adjusting your search or filters</p>
@@ -261,21 +230,27 @@ export default function ExpensesPage() {
                       <p className="text-sm text-slate-600">{formatDate(expense.expense_date)}</p>
                     </td>
                     <td className="px-5 py-3.5">
-                      <p className="text-sm text-slate-600">{expense.items?.length || 0}</p>
+                      <p className="text-sm text-slate-600">{(expense.items || expense.expense_items || []).length}</p>
                     </td>
-                    <td className="px-5 py-3.5 text-right">
-                      <div className="flex items-center justify-end gap-1">
-                        <button onClick={() => router.push(`/expenses/${expense.id}`)} className="rounded-lg p-1.5 text-slate-400 hover:bg-blue-50 hover:text-blue-600 transition-colors" title="View">
-                          <Eye className="h-4 w-4" />
-                        </button>
-                        <button onClick={() => router.push(`/expenses/${expense.id}/edit`)} className="rounded-lg p-1.5 text-slate-400 hover:bg-emerald-50 hover:text-emerald-600 transition-colors" title="Edit">
-                          <Pencil className="h-4 w-4" />
-                        </button>
-                        <button onClick={() => setShowDeleteConfirm(expense)} className="rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-500 transition-colors" title="Delete">
-                          <Trash2 className="h-4 w-4" />
-                        </button>
-                      </div>
-                    </td>
+                    {showActions && (
+                      <td className="px-5 py-3.5 text-right">
+                        <div className="flex items-center justify-end gap-1">
+                          <button onClick={() => router.push(`/expenses/${expense.id}`)} className="rounded-lg p-1.5 text-slate-400 hover:bg-blue-50 hover:text-blue-600 transition-colors" title="View">
+                            <Eye className="h-4 w-4" />
+                          </button>
+                          {canEdit && (
+                            <button onClick={() => router.push(`/expenses/${expense.id}/edit`)} className="rounded-lg p-1.5 text-slate-400 hover:bg-emerald-50 hover:text-emerald-600 transition-colors" title="Edit">
+                              <Pencil className="h-4 w-4" />
+                            </button>
+                          )}
+                          {canDelete && (
+                            <button onClick={() => setShowDeleteConfirm(expense)} className="rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-500 transition-colors" title="Delete">
+                              <Trash2 className="h-4 w-4" />
+                            </button>
+                          )}
+                        </div>
+                      </td>
+                    )}
                   </tr>
                 ))
               )}

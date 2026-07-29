@@ -32,15 +32,7 @@ export interface Expense {
   creator?: ExpenseCreator;
   updater?: ExpenseCreator;
   items?: ExpenseItem[];
-}
-
-export interface ExpenseSummary {
-  grand_total: number;
-  by_category: Array<{
-    category: string;
-    total_amount: number;
-    total_count: number;
-  }>;
+  expense_items?: ExpenseItem[];
 }
 
 export async function getExpenses(params?: Record<string, string | number | boolean>): Promise<ApiResponse<PaginatedResponse<Expense>>> {
@@ -70,10 +62,5 @@ export async function updateExpense(id: number, payload: FormData): Promise<ApiR
 
 export async function deleteExpense(id: number): Promise<ApiResponse<null>> {
   const { data } = await api.delete<ApiResponse<null>>(`/expenses/${id}`);
-  return data;
-}
-
-export async function getExpenseSummary(params?: { date_from?: string; date_to?: string }): Promise<ApiResponse<ExpenseSummary>> {
-  const { data } = await api.get<ApiResponse<ExpenseSummary>>("/expenses/summary", { params });
   return data;
 }

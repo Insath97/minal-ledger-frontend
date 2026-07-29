@@ -10,7 +10,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { getCustomer, updateCustomer } from "@/lib/api/customers";
 import { useToast } from "@/components/ui/toast";
+import { useAuthStore } from "@/stores/auth-store";
 import { FormSection, FormField, FormGrid, ImageUpload } from "@/components/customers/customer-form-fields";
+import { handleServerErrors } from "@/lib/api/handle-server-errors";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL?.replace("/api/v1", "") || "http://localhost:8000";
 
@@ -42,6 +44,7 @@ export default function EditCustomerPage() {
   const params = useParams();
   const customerId = Number(params.id);
   const { toast } = useToast();
+  const { hasPermission } = useAuthStore();
 
   const [loading, setLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -142,17 +145,7 @@ export default function EditCustomerPage() {
       toast("Customer updated successfully", "success");
       router.push(`/customers/${customerId}`);
     } catch (err: unknown) {
-      const error = err as { response?: { data?: { message?: string; errors?: Record<string, string[]> } } };
-      const backendErrors = error.response?.data?.errors;
-      if (backendErrors) {
-        Object.entries(backendErrors).forEach(([field, messages]) => {
-          if (messages && messages.length > 0) {
-            setError(field as keyof CustomerEditInput, { type: "server", message: messages[0] });
-          }
-        });
-      } else {
-        toast(error.response?.data?.message || "Failed to update customer", "error");
-      }
+      handleServerErrors(err, setError, toast, "Failed to update customer");
     } finally {
       setIsSaving(false);
     }
@@ -167,6 +160,23 @@ export default function EditCustomerPage() {
         </div>
         <div className="rounded-2xl bg-slate-100 h-64 animate-pulse" />
         <div className="rounded-2xl bg-slate-100 h-40 animate-pulse" />
+      </div>
+    );
+  }
+
+  if (!hasPermission("Customer Update")) {
+    return (
+      <div className="flex h-[50vh] flex-col items-center justify-center gap-4">
+        <div className="rounded-full bg-red-100 p-4">
+          <svg className="h-8 w-8 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+          </svg>
+        </div>
+        <h2 className="text-lg font-bold text-slate-900">Access Denied</h2>
+        <p className="text-sm text-slate-500">You don&apos;t have permission to edit customers.</p>
+        <button onClick={() => router.push("/customers")} className="mt-2 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700">
+          Back to Customers
+        </button>
       </div>
     );
   }

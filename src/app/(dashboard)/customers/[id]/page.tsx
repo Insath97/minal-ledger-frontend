@@ -23,6 +23,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/ui/toast";
 import { getCustomer, deleteCustomer, type Customer } from "@/lib/api/customers";
+import { useAuthStore } from "@/stores/auth-store";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL?.replace("/api/v1", "") || "http://localhost:8000";
 
@@ -37,6 +38,9 @@ export default function ViewCustomerPage() {
   const params = useParams();
   const customerId = Number(params.id);
   const { toast } = useToast();
+  const { hasPermission } = useAuthStore();
+  const canEdit = hasPermission("Customer Update");
+  const canDelete = hasPermission("Customer Delete");
   const [customer, setCustomer] = useState<Customer | null>(null);
   const [loading, setLoading] = useState(true);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -158,6 +162,7 @@ export default function ViewCustomerPage() {
             </div>
           </div>
           <div className="flex items-center gap-2">
+            {canEdit && (
             <Button
               onClick={() => router.push(`/customers/${customer.id}/edit`)}
               className="bg-emerald-600 text-white hover:bg-emerald-700 font-semibold shadow-md shadow-emerald-600/20"
@@ -165,6 +170,8 @@ export default function ViewCustomerPage() {
               <Edit className="mr-2 h-4 w-4" />
               Edit
             </Button>
+            )}
+            {canDelete && (
             <Button
               onClick={() => setShowDeleteConfirm(true)}
               variant="outline"
@@ -173,6 +180,7 @@ export default function ViewCustomerPage() {
               <Trash2 className="mr-2 h-4 w-4" />
               Delete
             </Button>
+            )}
           </div>
         </div>
       </div>

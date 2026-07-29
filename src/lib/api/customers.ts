@@ -54,8 +54,21 @@ export interface UpdateCustomerPayload {
   notes?: string;
 }
 
+export interface CustomerListItem {
+  id: number;
+  name: string;
+  code: string;
+  phone: string;
+  outstanding_balance: number;
+}
+
 export async function getCustomers(params?: Record<string, string | number | boolean>): Promise<ApiResponse<PaginatedResponse<Customer>>> {
   const { data } = await api.get<ApiResponse<PaginatedResponse<Customer>>>("/customers", { params });
+  return data;
+}
+
+export async function getCustomerList(): Promise<ApiResponse<CustomerListItem[]>> {
+  const { data } = await api.get<ApiResponse<CustomerListItem[]>>("/customers/list");
   return data;
 }
 

@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Loader2, ArrowDownRight, ChevronDown, Printer, Download } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/toast";
 import { getPaymentReport, type PaymentReportData } from "@/lib/api/reports";
-import { getCustomers, type Customer } from "@/lib/api/customers";
+import { getCustomerList, type CustomerListItem } from "@/lib/api/customers";
+import { useAuthStore } from "@/stores/auth-store";
 import * as XLSX from "xlsx";
 
 const METHOD_OPTIONS = [
@@ -25,6 +26,8 @@ const METHOD_BADGES: Record<string, string> = {
 
 export default function PaymentReportPage() {
   const { toast } = useToast();
+  const { hasPermission } = useAuthStore();
+  const canListCustomers = hasPermission("Customer List");
   const [data, setData] = useState<PaymentReportData | null>(null);
   const [loading, setLoading] = useState(true);
   const today = new Date().toISOString().split("T")[0];
@@ -33,33 +36,30 @@ export default function PaymentReportPage() {
   const [dateTo, setDateTo] = useState(today);
   const [paymentMethod, setPaymentMethod] = useState("");
 
-  const [customers, setCustomers] = useState<Customer[]>([]);
-  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
+  const [customers, setCustomers] = useState<CustomerListItem[]>([]);
+  const [selectedCustomer, setSelectedCustomer] = useState<CustomerListItem | null>(null);
   const [customerDropdownOpen, setCustomerDropdownOpen] = useState(false);
   const [customerSearch, setCustomerSearch] = useState("");
-  const [searchingCustomers, setSearchingCustomers] = useState(false);
   const customerDropdownRef = useRef<HTMLDivElement>(null);
-  const customerDebounceRef = useRef<NodeJS.Timeout | null>(null);
 
-  const fetchCustomers = useCallback(async (query: string) => {
-    setSearchingCustomers(true);
-    try {
-      const params: Record<string, string | number> = { per_page: 20, is_active: 1 };
-      if (query) params.search = query;
-      const res = await getCustomers(params);
-      if (res.status === "success") setCustomers(res.data.data);
-    } catch { setCustomers([]); } finally { setSearchingCustomers(false); }
-  }, []);
+  useEffect(() => {
+    if (!canListCustomers) return;
+    async function fetchCustomers() {
+      try {
+        const res = await getCustomerList();
+        if (res.status === "success") setCustomers(res.data);
+      } catch { setCustomers([]); }
+    }
+    fetchCustomers();
+  }, [canListCustomers]);
 
-  useEffect(() => { fetchCustomers(""); }, [fetchCustomers]);
+  const filteredCustomers = customers.filter(
+    (c) => c.name.toLowerCase().includes(customerSearch.toLowerCase()) ||
+           c.code.toLowerCase().includes(customerSearch.toLowerCase()) ||
+           c.phone.includes(customerSearch)
+  );
 
-  const handleCustomerSearch = (value: string) => {
-    setCustomerSearch(value);
-    if (customerDebounceRef.current) clearTimeout(customerDebounceRef.current);
-    customerDebounceRef.current = setTimeout(() => fetchCustomers(value), 300);
-  };
-
-  const handleSelectCustomer = (customer: Customer) => {
+  const handleSelectCustomer = (customer: CustomerListItem) => {
     setSelectedCustomer(customer);
     setCustomerDropdownOpen(false);
     setCustomerSearch("");
@@ -68,8 +68,6 @@ export default function PaymentReportPage() {
   const handleClearCustomer = () => {
     setSelectedCustomer(null);
     setCustomerSearch("");
-    setCustomers([]);
-    fetchCustomers("");
   };
 
   useEffect(() => {
@@ -88,8 +86,6 @@ export default function PaymentReportPage() {
     setPaymentMethod("");
     setSelectedCustomer(null);
     setCustomerSearch("");
-    setCustomers([]);
-    fetchCustomers("");
   };
 
   useEffect(() => {
@@ -243,12 +239,11 @@ ${paymentMethod ? `<td style="padding:0;font-size:10px;color:#475569">Method: <b
             </button>
             {customerDropdownOpen && (
               <div className="absolute z-50 mt-1 w-full overflow-hidden rounded-lg border border-slate-200 bg-white shadow-xl">
-                <div className="p-1.5"><input autoFocus value={customerSearch} onChange={(e) => handleCustomerSearch(e.target.value)} placeholder="Search by name, code, or phone..." className="h-8 w-full rounded-md border border-slate-200 bg-slate-50 px-2.5 text-xs outline-none focus:border-emerald-500" /></div>
+                <div className="p-1.5"><input autoFocus value={customerSearch} onChange={(e) => setCustomerSearch(e.target.value)} placeholder="Search by name, code, or phone..." className="h-8 w-full rounded-md border border-slate-200 bg-slate-50 px-2.5 text-xs outline-none focus:border-emerald-500" /></div>
                 <div className="max-h-56 overflow-y-auto border-t border-slate-100 scrollbar-thin">
-                  {searchingCustomers ? (<div className="flex items-center justify-center py-4"><Loader2 className="h-4 w-4 text-emerald-500 animate-spin" /></div>)
-                  : customers.length === 0 ? (<div className="px-3 py-4 text-center"><p className="text-xs text-slate-500">No customers found</p></div>)
+                  {filteredCustomers.length === 0 ? (<div className="px-3 py-4 text-center"><p className="text-xs text-slate-500">No customers found</p></div>)
                   : (<>{selectedCustomer && <button type="button" onClick={handleClearCustomer} className="flex w-full items-center px-3 py-1.5 text-xs text-red-500 hover:bg-red-50">Clear selection</button>}
-                    {customers.map((c) => (<button key={c.id} type="button" onClick={() => handleSelectCustomer(c)} className={`flex w-full items-center gap-3 px-3 py-2 text-left hover:bg-slate-50 ${selectedCustomer?.id === c.id ? "bg-emerald-50" : ""}`}>
+                    {filteredCustomers.map((c) => (<button key={c.id} type="button" onClick={() => handleSelectCustomer(c)} className={`flex w-full items-center gap-3 px-3 py-2 text-left hover:bg-slate-50 ${selectedCustomer?.id === c.id ? "bg-emerald-50" : ""}`}>
                       <div className="flex h-7 w-7 items-center justify-center rounded-full bg-emerald-100 text-[10px] font-bold text-emerald-700 shrink-0">{c.name.charAt(0).toUpperCase()}</div>
                       <div className="flex-1 min-w-0"><p className="text-xs font-medium text-slate-700 truncate">{c.name}</p><p className="text-[10px] text-slate-400">{c.code} &middot; {c.phone}</p></div>
                     </button>))}</>)}

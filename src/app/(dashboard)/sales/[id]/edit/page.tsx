@@ -10,8 +10,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/toast";
+import { useAuthStore } from "@/stores/auth-store";
 import { getSale, updateSale, type Sale } from "@/lib/api/sales";
-import { getCustomers, type Customer } from "@/lib/api/customers";
+import { handleServerErrors } from "@/lib/api/handle-server-errors";
+import { getCustomerList, type CustomerListItem } from "@/lib/api/customers";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL?.replace("/api/v1", "") || "http://localhost:8000";
 
@@ -45,11 +47,12 @@ export default function EditSalePage() {
   const params = useParams();
   const saleId = Number(params.id);
   const { toast } = useToast();
+  const { hasPermission } = useAuthStore();
 
   const [loading, setLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [sale, setSale] = useState<Sale | null>(null);
-  const [customers, setCustomers] = useState<Customer[]>([]);
+  const [customers, setCustomers] = useState<CustomerListItem[]>([]);
   const [billImage, setBillImage] = useState<File | null>(null);
   const [billImagePreview, setBillImagePreview] = useState<string | null>(null);
   const [customerDropdownOpen, setCustomerDropdownOpen] = useState(false);
@@ -62,6 +65,7 @@ export default function EditSalePage() {
     watch,
     setValue,
     reset,
+    setError,
     formState: { errors },
   } = useForm<SaleEditInput>({
     resolver: zodResolver(saleEditSchema),
@@ -84,13 +88,18 @@ export default function EditSalePage() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const [saleRes, custRes] = await Promise.all([
-          getSale(saleId),
-          getCustomers({ per_page: 100 }),
-        ]);
+        const promises: Promise<unknown>[] = [getSale(saleId)];
+        if (hasPermission("Customer List")) {
+          promises.push(getCustomerList());
+        }
+        const results = await Promise.all(promises);
+        const saleRes = results[0] as { data: Sale; status: string };
         const s = saleRes.data;
         setSale(s);
-        setCustomers(custRes.data.data);
+        if (hasPermission("Customer List") && results[1]) {
+          const custRes = results[1] as { data: CustomerListItem[]; status: string };
+          if (custRes.status === "success") setCustomers(custRes.data);
+        }
         reset({
           business_type: s.business_type,
           customer_id: s.customer_id,
@@ -159,17 +168,7 @@ export default function EditSalePage() {
       toast("Sale updated successfully", "success");
       router.push(`/sales/${saleId}`);
     } catch (err: unknown) {
-      const error = err as { response?: { data?: { message?: string; errors?: Array<{ field: string; messages: string[] }> } } };
-      const backendErrors = error.response?.data?.errors;
-      if (backendErrors && Array.isArray(backendErrors)) {
-        backendErrors.forEach((e) => {
-          if (e.messages && e.messages.length > 0) {
-            toast(e.messages[0], "error");
-          }
-        });
-      } else {
-        toast(error.response?.data?.message || "Failed to update sale", "error");
-      }
+      handleServerErrors(err, setError, toast, "Failed to update sale");
     } finally {
       setIsSaving(false);
     }
@@ -183,6 +182,23 @@ export default function EditSalePage() {
           <div className="h-7 w-40 rounded bg-slate-100 animate-pulse" />
         </div>
         <div className="rounded-2xl bg-slate-100 h-64 animate-pulse" />
+      </div>
+    );
+  }
+
+  if (!hasPermission("Sale Update")) {
+    return (
+      <div className="flex h-[50vh] flex-col items-center justify-center gap-4">
+        <div className="rounded-full bg-red-100 p-4">
+          <svg className="h-8 w-8 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+          </svg>
+        </div>
+        <h2 className="text-lg font-bold text-slate-900">Access Denied</h2>
+        <p className="text-sm text-slate-500">You don&apos;t have permission to edit sales.</p>
+        <button onClick={() => router.push("/sales")} className="mt-2 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700">
+          Back to Sales
+        </button>
       </div>
     );
   }

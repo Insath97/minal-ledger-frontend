@@ -5,6 +5,7 @@ import { useRouter, useParams } from "next/navigation";
 import { ChevronRight as BreadcrumbSep, Loader2, Trash2, CheckCircle, XCircle, Ban, CreditCard } from "lucide-react";
 import { useToast } from "@/components/ui/toast";
 import { getCheque, updateChequeStatus, deleteCheque, type Cheque } from "@/lib/api/cheques";
+import { useAuthStore } from "@/stores/auth-store";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL?.replace("/api/v1", "") || "http://localhost:8000";
 
@@ -26,6 +27,9 @@ export default function ChequeDetailPage() {
   const params = useParams();
   const chequeId = Number(params.id);
   const { toast } = useToast();
+  const { hasPermission } = useAuthStore();
+  const canDelete = hasPermission("Cheque Delete");
+  const canUpdateStatus = hasPermission("Cheque Update Status");
 
   const [cheque, setCheque] = useState<Cheque | null>(null);
   const [loading, setLoading] = useState(true);
@@ -142,7 +146,7 @@ export default function ChequeDetailPage() {
             </span>
           </div>
           <div className="flex items-center gap-2">
-            {cheque.status === "pending" && (
+            {cheque.status === "pending" && canUpdateStatus && (
               <>
                 <button
                   onClick={() => setShowStatusModal("cleared")}
@@ -164,7 +168,7 @@ export default function ChequeDetailPage() {
                 </button>
               </>
             )}
-            {cheque.status !== "cleared" && (
+            {cheque.status !== "cleared" && canDelete && (
               <button
                 onClick={() => setShowDeleteConfirm(true)}
                 className="h-9 rounded-lg border border-red-200 bg-white px-3 text-xs font-semibold text-red-600 hover:bg-red-50 shadow-sm flex items-center gap-1.5"

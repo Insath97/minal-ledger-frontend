@@ -18,6 +18,7 @@ import { Badge } from "@/components/ui/badge";
 import { getRole, deleteRole } from "@/lib/api/roles";
 import { useToast } from "@/components/ui/toast";
 import type { Role } from "@/types";
+import { useAuthStore } from "@/stores/auth-store";
 
 const GROUP_COLORS: Record<string, string> = {
   "Dashboard": "bg-blue-500",
@@ -41,6 +42,9 @@ export default function ViewRolePage() {
   const params = useParams();
   const roleId = Number(params.id);
   const { toast } = useToast();
+  const { hasPermission } = useAuthStore();
+  const canEdit = hasPermission("Role Update");
+  const canDelete = hasPermission("Role Delete");
   const [role, setRole] = useState<Role | null>(null);
   const [loading, setLoading] = useState(true);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -159,6 +163,7 @@ export default function ViewRolePage() {
           <div className="flex items-center gap-2">
             {!role.is_protected && (
               <>
+                {canEdit && (
                 <Button
                   onClick={() => router.push(`/roles/${role.id}/edit`)}
                   className="bg-emerald-600 text-white hover:bg-emerald-700 font-semibold shadow-md shadow-emerald-600/20"
@@ -166,6 +171,8 @@ export default function ViewRolePage() {
                   <Edit className="mr-2 h-4 w-4" />
                   Edit
                 </Button>
+                )}
+                {canDelete && (
                 <Button
                   onClick={() => setShowDeleteConfirm(true)}
                   variant="outline"
@@ -174,6 +181,7 @@ export default function ViewRolePage() {
                   <Trash2 className="mr-2 h-4 w-4" />
                   Delete
                 </Button>
+                )}
               </>
             )}
           </div>

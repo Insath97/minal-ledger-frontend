@@ -101,9 +101,11 @@ export async function deleteCheque(id: number): Promise<ApiResponse<null>> {
   return data;
 }
 
-export async function getPendingCheques(customerId?: number): Promise<ApiResponse<Cheque[]>> {
-  const params: Record<string, string | number> = {};
-  if (customerId) params.customer_id = customerId;
+export async function getChequeList(params?: Record<string, string | number>): Promise<ApiResponse<Cheque[]>> {
   const { data } = await api.get<ApiResponse<Cheque[]>>("/cheques/list", { params });
   return data;
+}
+
+export async function getPendingCheques(customerId?: number): Promise<ApiResponse<Cheque[]>> {
+  return getChequeList({ status: "pending", ...(customerId ? { customer_id: customerId } : {}) });
 }

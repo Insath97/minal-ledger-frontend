@@ -18,6 +18,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { getBanks, createBank, updateBank, deleteBank, toggleBankStatus } from "@/lib/api/banks";
 import { useToast } from "@/components/ui/toast";
+import { useAuthStore } from "@/stores/auth-store";
 import type { Bank } from "@/lib/api/banks";
 import type { PaginatedResponse } from "@/types";
 
@@ -25,6 +26,13 @@ const PER_PAGE_OPTIONS = [5, 10, 25, 50, 100];
 
 export default function BanksPage() {
   const { toast } = useToast();
+  const { hasPermission } = useAuthStore();
+
+  const canCreate = hasPermission("Bank Create");
+  const canEdit = hasPermission("Bank Update");
+  const canDelete = hasPermission("Bank Delete");
+  const canToggleStatus = hasPermission("Bank Toggle Status");
+  const showActions = canEdit || canDelete;
   const [banks, setBanks] = useState<Bank[]>([]);
   const [pagination, setPagination] = useState<PaginatedResponse<Bank> | null>(null);
   const [search, setSearch] = useState("");
@@ -137,10 +145,12 @@ export default function BanksPage() {
           <h1 className="text-2xl font-bold text-slate-900">Banks</h1>
           <p className="mt-1 text-sm text-slate-500">Manage banks and financial institutions.</p>
         </div>
-        <Button onClick={openCreate} className="bg-emerald-600 text-white hover:bg-emerald-700 shadow-lg shadow-emerald-600/20">
-          <Plus className="mr-2 h-4 w-4" />
-          Add Bank
-        </Button>
+        {canCreate && (
+          <Button onClick={openCreate} className="bg-emerald-600 text-white hover:bg-emerald-700 shadow-lg shadow-emerald-600/20">
+            <Plus className="mr-2 h-4 w-4" />
+            Add Bank
+          </Button>
+        )}
       </div>
 
       {/* Search & Filters */}
@@ -182,21 +192,25 @@ export default function BanksPage() {
                 <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">Bank</th>
                 <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">Code</th>
                 <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">Description</th>
-                <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">Status</th>
-                <th className="px-5 py-3.5 text-right text-[11px] font-bold uppercase tracking-wider text-slate-500">Actions</th>
+                {canToggleStatus && (
+                  <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">Status</th>
+                )}
+                {showActions && (
+                  <th className="px-5 py-3.5 text-right text-[11px] font-bold uppercase tracking-wider text-slate-500">Actions</th>
+                )}
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50">
               {loading ? (
                 <tr>
-                  <td colSpan={6} className="px-5 py-16 text-center">
+                  <td colSpan={canToggleStatus ? (showActions ? 6 : 5) : (showActions ? 5 : 4)} className="px-5 py-16 text-center">
                     <Loader2 className="mx-auto h-8 w-8 text-emerald-500 animate-spin mb-3" />
                     <p className="text-sm text-slate-500">Loading banks...</p>
                   </td>
                 </tr>
               ) : banks.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-5 py-16 text-center">
+                  <td colSpan={canToggleStatus ? (showActions ? 6 : 5) : (showActions ? 5 : 4)} className="px-5 py-16 text-center">
                     <Building2 className="mx-auto h-10 w-10 text-slate-300 mb-3" />
                     <p className="text-sm font-semibold text-slate-600">No banks found</p>
                     <p className="text-xs text-slate-400 mt-1">Try adjusting your search or filters</p>
@@ -224,46 +238,54 @@ export default function BanksPage() {
                     <td className="px-5 py-3.5">
                       <p className="max-w-xs truncate text-sm text-slate-500">{bank.description || "—"}</p>
                     </td>
-                    <td className="px-5 py-3.5">
-                      <button
-                        onClick={() => handleToggleStatus(bank)}
-                        className="inline-flex items-center gap-1.5 cursor-pointer"
-                        title={`Click to ${bank.is_active ? "deactivate" : "activate"}`}
-                      >
-                        <span
-                          className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
-                            bank.is_active ? "bg-emerald-500" : "bg-slate-200"
-                          }`}
+                    {canToggleStatus && (
+                      <td className="px-5 py-3.5">
+                        <button
+                          onClick={() => handleToggleStatus(bank)}
+                          className="inline-flex items-center gap-1.5 cursor-pointer"
+                          title={`Click to ${bank.is_active ? "deactivate" : "activate"}`}
                         >
                           <span
-                            className={`inline-block h-3.5 w-3.5 rounded-full bg-white shadow-sm transition-transform ${
-                              bank.is_active ? "translate-x-[18px]" : "translate-x-[3px]"
+                            className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
+                              bank.is_active ? "bg-emerald-500" : "bg-slate-200"
                             }`}
-                          />
-                        </span>
-                        <span className={`text-xs font-medium ${bank.is_active ? "text-emerald-600" : "text-slate-400"}`}>
-                          {bank.is_active ? "Active" : "Inactive"}
-                        </span>
-                      </button>
-                    </td>
-                    <td className="px-5 py-3.5 text-right">
-                      <div className="flex items-center justify-end gap-1">
-                        <button
-                          onClick={() => openEdit(bank)}
-                          className="rounded-lg p-1.5 text-slate-400 hover:bg-emerald-50 hover:text-emerald-600 transition-colors"
-                          title="Edit"
-                        >
-                          <Edit className="h-4 w-4" />
+                          >
+                            <span
+                              className={`inline-block h-3.5 w-3.5 rounded-full bg-white shadow-sm transition-transform ${
+                                bank.is_active ? "translate-x-[18px]" : "translate-x-[3px]"
+                              }`}
+                            />
+                          </span>
+                          <span className={`text-xs font-medium ${bank.is_active ? "text-emerald-600" : "text-slate-400"}`}>
+                            {bank.is_active ? "Active" : "Inactive"}
+                          </span>
                         </button>
-                        <button
-                          onClick={() => setShowDeleteConfirm(bank)}
-                          className="rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-500 transition-colors"
-                          title="Delete"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </button>
-                      </div>
-                    </td>
+                      </td>
+                    )}
+                    {showActions && (
+                      <td className="px-5 py-3.5 text-right">
+                        <div className="flex items-center justify-end gap-1">
+                          {canEdit && (
+                            <button
+                              onClick={() => openEdit(bank)}
+                              className="rounded-lg p-1.5 text-slate-400 hover:bg-emerald-50 hover:text-emerald-600 transition-colors"
+                              title="Edit"
+                            >
+                              <Edit className="h-4 w-4" />
+                            </button>
+                          )}
+                          {canDelete && (
+                            <button
+                              onClick={() => setShowDeleteConfirm(bank)}
+                              className="rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-500 transition-colors"
+                              title="Delete"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </button>
+                          )}
+                        </div>
+                      </td>
+                    )}
                   </tr>
                 ))
               )}

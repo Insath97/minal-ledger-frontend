@@ -4,12 +4,12 @@ export const NAV_SECTIONS: NavSection[] = [
   {
     title: "MAIN MENU",
     items: [
-      { label: "Dashboard", href: "/dashboard", icon: "LayoutDashboard", permission: ["Dashboard"] },
-      { label: "Sales", href: "/sales", icon: "ShoppingCart", permission: ["Sale Index", "Sale List", "Sale Create", "Sale Update", "Sale Delete"] },
-      { label: "Cheques", href: "/cheques", icon: "CreditCard", permission: ["Cheque Index", "Cheque List", "Cheque Create", "Cheque Update Status", "Cheque Delete"] },
+      { label: "Dashboard", href: "/dashboard", icon: "LayoutDashboard", permission: ["Dashboard Index"] },
+      { label: "Sales", href: "/sales", icon: "ShoppingCart", permission: ["Sale Index", "Sale Create", "Sale Update", "Sale Delete"] },
+      { label: "Cheques", href: "/cheques", icon: "CreditCard", permission: ["Cheque Index", "Cheque Create", "Cheque Update Status", "Cheque Delete"] },
       { label: "Payments", href: "/payments", icon: "ArrowDownRight", permission: ["Payment Index", "Payment Create", "Payment Delete"] },
       { label: "Expenses", href: "/expenses", icon: "Receipt", permission: ["Expense Index", "Expense Create", "Expense Update", "Expense Delete"] },
-      { label: "Customers", href: "/customers", icon: "UserCheck", permission: ["Customer Index", "Customer List", "Customer Create", "Customer Update", "Customer Delete"] },
+      { label: "Customers", href: "/customers", icon: "UserCheck", permission: ["Customer Index", "Customer Create", "Customer Update", "Customer Delete"] },
     ],
   },
   {
@@ -32,9 +32,9 @@ export const NAV_SECTIONS: NavSection[] = [
   {
     title: "GENERAL",
     items: [
-      { label: "Banks", href: "/banks", icon: "Building2", permission: ["Bank Index", "Bank List", "Bank Create", "Bank Update", "Bank Delete"] },
-      { label: "Users", href: "/users", icon: "Users", permission: ["User Index", "User List", "User Create", "User Update", "User Delete"] },
-      { label: "Roles", href: "/roles", icon: "Shield", permission: ["Role Index", "Role List", "Role Create", "Role Update", "Role Delete"] },
+      { label: "Banks", href: "/banks", icon: "Building2", permission: ["Bank Index", "Bank Create", "Bank Update", "Bank Delete"] },
+      { label: "Users", href: "/users", icon: "Users", permission: ["User Index", "User Create", "User Update", "User Delete"] },
+      { label: "Roles", href: "/roles", icon: "Shield", permission: ["Role Index", "Role Create", "Role Update", "Role Delete"] },
       { label: "Settings", href: "/settings", icon: "Settings" },
     ],
   },

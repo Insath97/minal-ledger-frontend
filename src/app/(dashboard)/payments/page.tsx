@@ -16,6 +16,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/toast";
+import { useAuthStore } from "@/stores/auth-store";
 import {
   getPayments,
   deletePayment,
@@ -43,6 +44,11 @@ const METHOD_STYLES: Record<string, string> = {
 export default function PaymentsPage() {
   const router = useRouter();
   const { toast } = useToast();
+  const { hasPermission } = useAuthStore();
+
+  const canCreate = hasPermission("Payment Create");
+  const canDelete = hasPermission("Payment Delete");
+  const showActions = true; // Always show Actions column for View details button
 
   const [payments, setPayments] = useState<Payment[]>([]);
   const [pagination, setPagination] = useState<PaginatedResponse<Payment> | null>(null);
@@ -126,10 +132,12 @@ export default function PaymentsPage() {
           <h1 className="text-2xl font-bold text-slate-900">Payments</h1>
           <p className="mt-1 text-sm text-slate-500">Track customer payments and FIFO allocations.</p>
         </div>
-        <Button onClick={() => router.push("/payments/create")} className="bg-emerald-600 text-white hover:bg-emerald-700 shadow-lg shadow-emerald-600/20">
-          <Plus className="mr-2 h-4 w-4" />
-          Record Payment
-        </Button>
+        {canCreate && (
+          <Button onClick={() => router.push("/payments/create")} className="bg-emerald-600 text-white hover:bg-emerald-700 shadow-lg shadow-emerald-600/20">
+            <Plus className="mr-2 h-4 w-4" />
+            Record Payment
+          </Button>
+        )}
       </div>
 
       {/* Search & Filters */}
@@ -192,20 +200,22 @@ export default function PaymentsPage() {
                 <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">Method</th>
                 <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">Date</th>
                 <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">Allocations</th>
-                <th className="px-5 py-3.5 text-right text-[11px] font-bold uppercase tracking-wider text-slate-500">Actions</th>
+                {showActions && (
+                  <th className="px-5 py-3.5 text-right text-[11px] font-bold uppercase tracking-wider text-slate-500">Actions</th>
+                )}
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50">
               {loading ? (
                 <tr>
-                  <td colSpan={7} className="px-5 py-16 text-center">
+                  <td colSpan={showActions ? 7 : 6} className="px-5 py-16 text-center">
                     <Loader2 className="mx-auto h-8 w-8 text-emerald-500 animate-spin mb-3" />
                     <p className="text-sm text-slate-500">Loading payments...</p>
                   </td>
                 </tr>
               ) : payments.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-5 py-16 text-center">
+                  <td colSpan={showActions ? 7 : 6} className="px-5 py-16 text-center">
                     <ArrowDownRight className="mx-auto h-10 w-10 text-slate-300 mb-3" />
                     <p className="text-sm font-semibold text-slate-600">No payments found</p>
                     <p className="text-xs text-slate-400 mt-1">Try adjusting your search or filters</p>
@@ -233,26 +243,30 @@ export default function PaymentsPage() {
                       <p className="text-sm text-slate-600">{formatDate(payment.payment_date)}</p>
                     </td>
                     <td className="px-5 py-3.5">
-                      <p className="text-sm text-slate-600">{payment.paymentSales?.length || 0} sale(s)</p>
+                      <p className="text-sm text-slate-600">{(payment.payment_sales || payment.paymentSales || []).length} sale(s)</p>
                     </td>
-                    <td className="px-5 py-3.5 text-right">
-                      <div className="flex items-center justify-end gap-1">
-                        <button
-                          onClick={() => router.push(`/payments/${payment.id}`)}
-                          className="rounded-lg p-1.5 text-slate-400 hover:bg-blue-50 hover:text-blue-600 transition-colors"
-                          title="View"
-                        >
-                          <Eye className="h-4 w-4" />
-                        </button>
-                        <button
-                          onClick={() => setShowDeleteConfirm(payment)}
-                          className="rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-500 transition-colors"
-                          title="Delete"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </button>
-                      </div>
-                    </td>
+                    {showActions && (
+                      <td className="px-5 py-3.5 text-right">
+                        <div className="flex items-center justify-end gap-1">
+                          <button
+                            onClick={() => router.push(`/payments/${payment.id}`)}
+                            className="rounded-lg p-1.5 text-slate-400 hover:bg-blue-50 hover:text-blue-600 transition-colors"
+                            title="View"
+                          >
+                            <Eye className="h-4 w-4" />
+                          </button>
+                          {canDelete && (
+                            <button
+                              onClick={() => setShowDeleteConfirm(payment)}
+                              className="rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-500 transition-colors"
+                              title="Delete"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </button>
+                          )}
+                        </div>
+                      </td>
+                    )}
                   </tr>
                 ))
               )}

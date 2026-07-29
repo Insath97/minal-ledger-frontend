@@ -18,8 +18,10 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { getUser, updateUser } from "@/lib/api/users";
+import { handleServerErrors } from "@/lib/api/handle-server-errors";
 import { getRoleList } from "@/lib/api/roles";
 import { useToast } from "@/components/ui/toast";
+import { useAuthStore } from "@/stores/auth-store";
 import type { RoleList } from "@/types";
 
 const userEditSchema = z.object({
@@ -47,6 +49,7 @@ export default function EditUserPage() {
   const params = useParams();
   const userId = Number(params.id);
   const { toast } = useToast();
+  const { hasPermission } = useAuthStore();
   const [roles, setRoles] = useState<RoleList[]>([]);
   const [loading, setLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -62,6 +65,7 @@ export default function EditUserPage() {
     setValue,
     watch,
     reset,
+    setError,
     formState: { errors },
   } = useForm<UserEditInput>({
     resolver: zodResolver(userEditSchema),
@@ -143,8 +147,7 @@ export default function EditUserPage() {
       toast("User updated successfully", "success");
       router.push("/users");
     } catch (err: unknown) {
-      const error = err as { message?: string };
-      toast(error.message || "Failed to update user", "error");
+      handleServerErrors(err, setError, toast, "Failed to update user");
     } finally {
       setIsSaving(false);
     }
@@ -159,6 +162,23 @@ export default function EditUserPage() {
         </div>
         <div className="rounded-2xl bg-slate-100 h-64 animate-pulse" />
         <div className="rounded-2xl bg-slate-100 h-40 animate-pulse" />
+      </div>
+    );
+  }
+
+  if (!hasPermission("User Update")) {
+    return (
+      <div className="flex h-[50vh] flex-col items-center justify-center gap-4">
+        <div className="rounded-full bg-red-100 p-4">
+          <svg className="h-8 w-8 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+          </svg>
+        </div>
+        <h2 className="text-lg font-bold text-slate-900">Access Denied</h2>
+        <p className="text-sm text-slate-500">You don&apos;t have permission to edit users.</p>
+        <button onClick={() => router.push("/users")} className="mt-2 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700">
+          Back to Users
+        </button>
       </div>
     );
   }
@@ -267,9 +287,9 @@ export default function EditUserPage() {
               {selectedRole ? (
                 <span className="inline-flex items-center gap-1.5 rounded-md bg-emerald-100 px-2.5 py-1 text-xs font-semibold text-emerald-700">
                   {selectedRole}
-                  <button type="button" onClick={(e) => { e.stopPropagation(); setRole(""); }}>
+                  <span role="button" onClick={(e) => { e.stopPropagation(); setRole(""); }} className="cursor-pointer">
                     <X className="h-3 w-3" />
-                  </button>
+                  </span>
                 </span>
               ) : (
                 <span className="text-slate-400">Select a role...</span>

@@ -77,7 +77,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     const user = get().user;
     if (!user) return false;
     return user.roles.some((role) =>
-      role.permissions.some((p) => p.name === permissionName)
+      role.permissions?.some((p) => p.name === permissionName)
     );
   },
 
@@ -85,7 +85,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     const user = get().user;
     if (!user) return false;
     return user.roles.some((role) =>
-      role.permissions.some((p) => permissionNames.includes(p.name))
+      role.permissions?.some((p) => permissionNames.includes(p.name))
     );
   },
 }));

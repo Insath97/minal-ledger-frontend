@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/toast";
 import { createExpense, type ExpenseItem } from "@/lib/api/expenses";
+import { handleServerErrors } from "@/lib/api/handle-server-errors";
 
 const expenseSchema = z.object({
   title: z.string().min(1, "Title is required").max(255),
@@ -52,6 +53,7 @@ export default function CreateExpensePage() {
     handleSubmit,
     watch,
     control,
+    setError,
     formState: { errors },
   } = useForm<ExpenseInput>({
     resolver: zodResolver(expenseSchema),
@@ -106,13 +108,7 @@ export default function CreateExpensePage() {
       toast("Expense recorded successfully", "success");
       router.push("/expenses");
     } catch (err: unknown) {
-      const error = err as { response?: { data?: { message?: string; errors?: Array<{ field: string; messages: string[] }> } } };
-      const backendErrors = error.response?.data?.errors;
-      if (backendErrors && Array.isArray(backendErrors)) {
-        backendErrors.forEach((e) => { if (e.messages?.length) toast(e.messages[0], "error"); });
-      } else {
-        toast(error.response?.data?.message || "Failed to record expense", "error");
-      }
+      handleServerErrors(err, setError, toast, "Failed to record expense");
     } finally {
       setIsSaving(false);
     }

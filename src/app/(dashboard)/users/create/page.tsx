@@ -18,8 +18,10 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { createUser } from "@/lib/api/users";
+import { handleServerErrors } from "@/lib/api/handle-server-errors";
 import { getRoleList } from "@/lib/api/roles";
 import { useToast } from "@/components/ui/toast";
+import { useAuthStore } from "@/stores/auth-store";
 import type { RoleList } from "@/types";
 
 const userSchema = z.object({
@@ -40,6 +42,7 @@ type UserInput = z.infer<typeof userSchema>;
 export default function CreateUserPage() {
   const router = useRouter();
   const { toast } = useToast();
+  const { hasPermission } = useAuthStore();
   const [roles, setRoles] = useState<RoleList[]>([]);
   const [loading, setLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -52,6 +55,7 @@ export default function CreateUserPage() {
     handleSubmit,
     setValue,
     watch,
+    setError,
     formState: { errors },
   } = useForm<UserInput>({
     resolver: zodResolver(userSchema),
@@ -114,12 +118,28 @@ export default function CreateUserPage() {
       toast("User created successfully", "success");
       router.push("/users");
     } catch (err: unknown) {
-      const error = err as { message?: string };
-      toast(error.message || "Failed to create user", "error");
+      handleServerErrors(err, setError, toast, "Failed to create user");
     } finally {
       setIsSaving(false);
     }
   };
+
+  if (!hasPermission("User Create")) {
+    return (
+      <div className="flex h-[50vh] flex-col items-center justify-center gap-4">
+        <div className="rounded-full bg-red-100 p-4">
+          <svg className="h-8 w-8 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+          </svg>
+        </div>
+        <h2 className="text-lg font-bold text-slate-900">Access Denied</h2>
+        <p className="text-sm text-slate-500">You don&apos;t have permission to create users.</p>
+        <button onClick={() => router.push("/users")} className="mt-2 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700">
+          Back to Users
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

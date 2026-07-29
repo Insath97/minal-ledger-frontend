@@ -9,6 +9,7 @@ import { Loader2, Save, ChevronRight as BreadcrumbSep } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { getBank, updateBank } from "@/lib/api/banks";
+import { handleServerErrors } from "@/lib/api/handle-server-errors";
 import { useToast } from "@/components/ui/toast";
 
 const bankEditSchema = z.object({
@@ -31,6 +32,7 @@ export default function EditBankPage() {
     register,
     handleSubmit,
     reset,
+    setError,
     formState: { errors },
   } = useForm<BankEditInput>({
     resolver: zodResolver(bankEditSchema),
@@ -73,8 +75,7 @@ export default function EditBankPage() {
       toast("Bank updated successfully", "success");
       router.push("/banks");
     } catch (err: unknown) {
-      const error = err as { message?: string };
-      toast(error.message || "Failed to update bank", "error");
+      handleServerErrors(err, setError, toast, "Failed to update bank");
     } finally {
       setIsSaving(false);
     }

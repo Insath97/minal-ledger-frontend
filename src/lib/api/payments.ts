@@ -49,6 +49,7 @@ export interface Payment {
   cheque?: { id: number; cheque_number: string; bank_name: string };
   creator?: PaymentCreator;
   paymentSales?: PaymentSaleAllocation[];
+  payment_sales?: PaymentSaleAllocation[];
 }
 
 export interface CreatePaymentPayload {

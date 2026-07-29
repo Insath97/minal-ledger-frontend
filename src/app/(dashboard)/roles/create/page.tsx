@@ -18,6 +18,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { createRole } from "@/lib/api/roles";
+import { handleServerErrors } from "@/lib/api/handle-server-errors";
 import { getPermissionList } from "@/lib/api/permissions";
 import { useToast } from "@/components/ui/toast";
 import type { Permission } from "@/types";
@@ -43,6 +44,7 @@ export default function CreateRolePage() {
     handleSubmit,
     setValue,
     watch,
+    setError,
     formState: { errors },
   } = useForm<RoleInput>({
     resolver: zodResolver(roleSchema),
@@ -136,8 +138,7 @@ export default function CreateRolePage() {
       toast("Role created successfully", "success");
       router.push("/roles");
     } catch (err: unknown) {
-      const error = err as { message?: string };
-      toast(error.message || "Failed to create role", "error");
+      handleServerErrors(err, setError, toast, "Failed to create role");
     } finally {
       setIsSaving(false);
     }

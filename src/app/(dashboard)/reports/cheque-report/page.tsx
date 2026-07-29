@@ -4,8 +4,9 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { Loader2, CreditCard, ChevronDown, Printer, Download } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/toast";
+import { useAuthStore } from "@/stores/auth-store";
+import { getChequeList, type Cheque } from "@/lib/api/cheques";
 import { getChequeReport, type ChequeReportData } from "@/lib/api/reports";
-import * as XLSX from "xlsx";
 
 const STATUS_OPTIONS = [
   { value: "", label: "All Statuses" },
@@ -24,6 +25,9 @@ const STATUS_BADGES: Record<string, string> = {
 
 export default function ChequeReportPage() {
   const { toast } = useToast();
+  const { hasPermission } = useAuthStore();
+  const canListCheques = hasPermission("Cheque List");
+
   const [data, setData] = useState<ChequeReportData | null>(null);
   const [loading, setLoading] = useState(true);
   const today = new Date().toISOString().split("T")[0];
@@ -33,25 +37,22 @@ export default function ChequeReportPage() {
   const [status, setStatus] = useState("");
   const [bankName, setBankName] = useState("");
 
-  const [chequeSearch, setChequeSearch] = useState("");
-  const [searchResults, setSearchResults] = useState<{ cheque_number: string }[]>([]);
-  const [searchingCheques, setSearchingCheques] = useState(false);
+  const [chequeList, setChequeList] = useState<Cheque[]>([]);
+  const [selectedCheque, setSelectedCheque] = useState<Cheque | null>(null);
   const [chequeDropdownOpen, setChequeDropdownOpen] = useState(false);
+  const [chequeSearch, setChequeSearch] = useState("");
   const chequeDropdownRef = useRef<HTMLDivElement>(null);
-  const chequeDebounceRef = useRef<NodeJS.Timeout | null>(null);
 
-  const fetchCheques = useCallback(async (query: string) => {
-    if (!query) { setSearchResults([]); return; }
-    setSearchingCheques(true);
-    try {
-      const params: Record<string, string> = { search: query, per_page: "20" };
-      const res = await getChequeReport(params);
-      if (res.status === "success") {
-        const unique = [...new Map(res.data.cheques.map((c: { cheque_number: string }) => [c.cheque_number, c])).values()];
-        setSearchResults(unique);
-      }
-    } catch { setSearchResults([]); } finally { setSearchingCheques(false); }
-  }, []);
+  useEffect(() => {
+    if (!canListCheques) return;
+    async function fetchChequeList() {
+      try {
+        const res = await getChequeList();
+        if (res.status === "success") setChequeList(res.data);
+      } catch { setChequeList([]); }
+    }
+    fetchChequeList();
+  }, [canListCheques]);
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -61,27 +62,31 @@ export default function ChequeReportPage() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleChequeSearch = (value: string) => {
-    setChequeSearch(value);
-    setChequeDropdownOpen(true);
-    if (chequeDebounceRef.current) clearTimeout(chequeDebounceRef.current);
-    chequeDebounceRef.current = setTimeout(() => fetchCheques(value), 300);
-  };
+  const filteredChequeList = chequeList.filter(
+    (c) => c.cheque_number.toLowerCase().includes(chequeSearch.toLowerCase()) ||
+           c.bank_name.toLowerCase().includes(chequeSearch.toLowerCase())
+  );
 
-  const handleSelectCheque = (chequeNumber: string) => {
-    setChequeSearch(chequeNumber);
+  const handleSelectCheque = (cheque: Cheque) => {
+    setSelectedCheque(cheque);
     setChequeDropdownOpen(false);
+    setChequeSearch("");
   };
 
-  const hasFilters = dateFrom !== firstOfYear || dateTo !== today || status || bankName || chequeSearch;
+  const handleClearCheque = () => {
+    setSelectedCheque(null);
+    setChequeSearch("");
+  };
+
+  const hasFilters = selectedCheque || dateFrom !== firstOfYear || dateTo !== today || status || bankName;
 
   const clearFilters = () => {
+    setSelectedCheque(null);
+    setChequeSearch("");
     setDateFrom(firstOfYear);
     setDateTo(today);
     setStatus("");
     setBankName("");
-    setChequeSearch("");
-    setSearchResults([]);
   };
 
   useEffect(() => {
@@ -93,13 +98,16 @@ export default function ChequeReportPage() {
         if (dateTo) params.date_to = dateTo;
         if (status) params.status = status;
         if (bankName) params.bank_name = bankName;
-        if (chequeSearch) params.search = chequeSearch;
+        if (selectedCheque) params.search = selectedCheque.cheque_number;
         const res = await getChequeReport(params);
         if (res.status === "success") setData(res.data);
-      } catch { toast("Failed to load cheque report", "error"); } finally { setLoading(false); }
+      } catch (err: unknown) {
+        const error = err as { response?: { data?: { message?: string } } };
+        toast(error.response?.data?.message || "Failed to load cheque report", "error");
+      } finally { setLoading(false); }
     }
     fetch();
-  }, [dateFrom, dateTo, status, bankName, chequeSearch, toast]);
+  }, [dateFrom, dateTo, status, bankName, selectedCheque, toast]);
 
   const formatCurrency = (amount: number) => `Rs. ${Number(amount).toLocaleString("en-US")}`;
 
@@ -234,19 +242,18 @@ ${chequeSearch ? `<td style="padding:0;font-size:10px;color:#475569">Cheque: <b>
           <div className="relative sm:col-span-1" ref={chequeDropdownRef}>
             <label className="mb-1.5 block text-[13px] font-semibold text-slate-700">Cheque #</label>
             <button type="button" onClick={() => setChequeDropdownOpen(!chequeDropdownOpen)} className="flex h-11 w-full items-center justify-between gap-2 rounded-lg border border-slate-200 bg-white px-3 text-sm transition-all hover:border-slate-300 focus:border-emerald-500">
-              <span className={`truncate ${chequeSearch ? "text-slate-700 font-medium" : "text-slate-400"}`}>{chequeSearch || "Search cheque #"}</span>
+              <span className={`truncate ${selectedCheque ? "text-slate-700 font-medium" : "text-slate-400"}`}>{selectedCheque ? `${selectedCheque.cheque_number} (${selectedCheque.bank_name})` : "All Cheques"}</span>
               <ChevronDown className={`h-4 w-4 shrink-0 text-slate-500 transition-transform ${chequeDropdownOpen ? "rotate-180" : ""}`} />
             </button>
             {chequeDropdownOpen && (
               <div className="absolute z-50 mt-1 w-full overflow-hidden rounded-lg border border-slate-200 bg-white shadow-xl">
-                <div className="p-1.5"><input autoFocus value={chequeSearch} onChange={(e) => handleChequeSearch(e.target.value)} placeholder="Type cheque number..." className="h-8 w-full rounded-md border border-slate-200 bg-slate-50 px-2.5 text-xs outline-none focus:border-emerald-500" /></div>
+                <div className="p-1.5"><input autoFocus value={chequeSearch} onChange={(e) => setChequeSearch(e.target.value)} placeholder="Search by cheque # or bank..." className="h-8 w-full rounded-md border border-slate-200 bg-slate-50 px-2.5 text-xs outline-none focus:border-emerald-500" /></div>
                 <div className="max-h-56 overflow-y-auto border-t border-slate-100 scrollbar-thin">
-                  {searchingCheques ? (<div className="flex items-center justify-center py-4"><Loader2 className="h-4 w-4 text-emerald-500 animate-spin" /></div>)
-                  : searchResults.length === 0 ? (<div className="px-3 py-4 text-center"><p className="text-xs text-slate-500">No cheques found</p></div>)
-                  : (<>{chequeSearch && <button type="button" onClick={() => { setChequeSearch(""); setSearchResults([]); }} className="flex w-full items-center px-3 py-1.5 text-xs text-red-500 hover:bg-red-50">Clear selection</button>}
-                    {searchResults.map((c) => (<button key={c.cheque_number} type="button" onClick={() => handleSelectCheque(c.cheque_number)} className={`flex w-full items-center gap-3 px-3 py-2 text-left hover:bg-slate-50 ${chequeSearch === c.cheque_number ? "bg-emerald-50" : ""}`}>
+                  {filteredChequeList.length === 0 ? (<div className="px-3 py-4 text-center"><p className="text-xs text-slate-500">No cheques found</p></div>)
+                  : (<>{selectedCheque && <button type="button" onClick={handleClearCheque} className="flex w-full items-center px-3 py-1.5 text-xs text-red-500 hover:bg-red-50">Clear selection</button>}
+                    {filteredChequeList.map((c) => (<button key={c.id} type="button" onClick={() => handleSelectCheque(c)} className={`flex w-full items-center gap-3 px-3 py-2 text-left hover:bg-slate-50 ${selectedCheque?.id === c.id ? "bg-emerald-50" : ""}`}>
                       <div className="flex h-7 w-7 items-center justify-center rounded-full bg-amber-100 text-[10px] font-bold text-amber-700 shrink-0"><CreditCard className="h-3.5 w-3.5" /></div>
-                      <div className="flex-1 min-w-0"><p className="text-xs font-medium text-slate-700 font-mono">{c.cheque_number}</p></div>
+                      <div className="flex-1 min-w-0"><p className="text-xs font-medium text-slate-700 font-mono">{c.cheque_number}</p><p className="text-[10px] text-slate-400">{c.bank_name} &middot; Rs. {Number(c.amount).toLocaleString("en-US")}</p></div>
                     </button>))}</>)}
                 </div>
               </div>

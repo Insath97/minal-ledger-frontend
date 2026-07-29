@@ -28,6 +28,22 @@ export interface SaleCheque {
   status: string;
 }
 
+export interface SalePayment {
+  id: number;
+  total_amount: number;
+  payment_method: string;
+  payment_date: string;
+  notes: string | null;
+}
+
+export interface SalePaymentSale {
+  id: number;
+  payment_id: number;
+  sale_id: number;
+  allocated_amount: number;
+  payment?: SalePayment;
+}
+
 export interface Sale {
   id: number;
   reference_number: string;
@@ -48,6 +64,7 @@ export interface Sale {
   customer?: SaleCustomer;
   creator?: SaleCreator;
   cheques?: SaleCheque[];
+  payment_sales?: SalePaymentSale[];
 }
 
 export interface CreateSalePayload {

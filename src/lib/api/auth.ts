@@ -82,7 +82,7 @@ export async function getMe(): Promise<ApiResponse<{ user: User }>> {
 }
 
 /**
- * Update profile - PUT /api/v1/profile
+ * Update profile - POST /api/v1/profile
  */
 export async function updateProfile(payload: {
   name?: string;
@@ -90,8 +90,9 @@ export async function updateProfile(payload: {
   phone?: string;
   current_password?: string;
   password?: string;
+  confirm_password?: string;
   profile_image?: File | null;
-}): Promise<ApiResponse<User>> {
+}): Promise<ApiResponse<{ user: User }>> {
   const formData = new FormData();
   if (payload.name !== undefined) formData.append("name", payload.name);
   if (payload.email !== undefined) formData.append("email", payload.email);
@@ -102,13 +103,16 @@ export async function updateProfile(payload: {
   if (payload.password !== undefined && payload.password !== "") {
     formData.append("password", payload.password);
   }
+  if (payload.confirm_password !== undefined && payload.confirm_password !== "") {
+    formData.append("confirm_password", payload.confirm_password);
+  }
   if (payload.profile_image instanceof File) {
     formData.append("profile_image", payload.profile_image);
   } else if (payload.profile_image === null) {
     formData.append("profile_image", "");
   }
 
-  const { data } = await api.put<ApiResponse<User>>("/profile", formData, {
+  const { data } = await api.post<ApiResponse<{ user: User }>>("/profile", formData, {
     headers: { "Content-Type": "multipart/form-data" },
   });
   return data;

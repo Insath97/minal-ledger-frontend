@@ -9,23 +9,20 @@ import {
   Camera,
   Loader2,
   ChevronRight,
-  User,
+  ChevronDown,
   Shield,
   Calendar,
-  Clock,
   X,
   Eye,
   EyeOff,
   Check,
-  Lock,
-  Mail,
-  Phone,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/toast";
 import { useAuthStore } from "@/stores/auth-store";
 import { updateProfile } from "@/lib/api/auth";
+import { handleServerErrors } from "@/lib/api/handle-server-errors";
 
 const API_BASE = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1").replace("/api/v1", "");
 
@@ -39,19 +36,36 @@ const profileSchema = z.object({
   name: z.string().min(1, "Name is required").max(255),
   email: z.string().email("Invalid email").max(255).optional().or(z.literal("")),
   phone: z.string().max(20).optional().or(z.literal("")),
-});
-
-const passwordSchema = z.object({
-  current_password: z.string().min(1, "Current password is required"),
-  password: z.string().min(6, "New password must be at least 6 characters"),
-  password_confirmation: z.string().min(6, "Please confirm your password"),
-}).refine((d) => d.password === d.password_confirmation, {
+  current_password: z.string().optional().or(z.literal("")),
+  password: z.string().optional().or(z.literal("")),
+  password_confirmation: z.string().optional().or(z.literal("")),
+}).refine((data) => {
+  if (data.password && data.password.length > 0) {
+    return data.current_password && data.current_password.length > 0;
+  }
+  return true;
+}, {
+  message: "Current password is required when setting a new password",
+  path: ["current_password"],
+}).refine((data) => {
+  if (data.password && data.password.length > 0) {
+    return data.password.length >= 6;
+  }
+  return true;
+}, {
+  message: "New password must be at least 6 characters",
+  path: ["password"],
+}).refine((data) => {
+  if (data.password && data.password.length > 0) {
+    return data.password === data.password_confirmation;
+  }
+  return true;
+}, {
   message: "Passwords don't match",
   path: ["password_confirmation"],
 });
 
 type ProfileInput = z.infer<typeof profileSchema>;
-type PasswordInput = z.infer<typeof passwordSchema>;
 
 function PasswordInputField({
   register,
@@ -61,7 +75,7 @@ function PasswordInputField({
   onToggle,
   error,
 }: {
-  register: UseFormReturn<PasswordInput>["register"];
+  register: UseFormReturn<ProfileInput>["register"];
   name: "current_password" | "password" | "password_confirmation";
   placeholder: string;
   show: boolean;
@@ -101,55 +115,53 @@ export default function ProfilePage() {
 
   const [profileImage, setProfileImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [isSavingProfile, setIsSavingProfile] = useState(false);
-  const [isSavingPassword, setIsSavingPassword] = useState(false);
+  const [removeExistingImage, setRemoveExistingImage] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [showPasswordSection, setShowPasswordSection] = useState(false);
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [imageCacheBust, setImageCacheBust] = useState(0);
 
-  const currentImage = imagePreview || getImageUrl(user?.profile_image);
+  const currentImage = imagePreview || (removeExistingImage ? null : getImageUrl(user?.profile_image));
+  const displayImage = currentImage
+    ? (currentImage.startsWith("blob:") ? currentImage : `${currentImage}?t=${imageCacheBust}`)
+    : null;
 
   const {
-    register: registerProfile,
-    handleSubmit: handleSubmitProfile,
-    formState: { errors: profileErrors },
+    register,
+    handleSubmit,
+    setError,
+    reset,
+    formState: { errors },
   } = useForm<ProfileInput>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
       name: user?.name || "",
       email: user?.email || "",
       phone: user?.phone || "",
+      current_password: "",
+      password: "",
+      password_confirmation: "",
     },
-  });
-
-  const {
-    register: registerPassword,
-    handleSubmit: handleSubmitPassword,
-    formState: { errors: passwordErrors },
-    reset: resetPassword,
-  } = useForm<PasswordInput>({
-    resolver: zodResolver(passwordSchema),
   });
 
   const handleImageChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (file.size > 2 * 1024 * 1024) {
-      toast("Image must be less than 2MB", "error");
-      return;
-    }
     setProfileImage(file);
     setImagePreview(URL.createObjectURL(file));
-  }, [toast]);
+  }, []);
 
   const removeImage = useCallback(() => {
     setProfileImage(null);
     setImagePreview(null);
+    setRemoveExistingImage(true);
     if (fileInputRef.current) fileInputRef.current.value = "";
   }, []);
 
-  const onProfileSubmit = async (data: ProfileInput) => {
-    setIsSavingProfile(true);
+  const onSubmit = async (data: ProfileInput) => {
+    setIsSaving(true);
     try {
       const payload: Parameters<typeof updateProfile>[0] = {
         name: data.name,
@@ -158,38 +170,35 @@ export default function ProfilePage() {
       };
       if (profileImage) {
         payload.profile_image = profileImage;
+      } else if (removeExistingImage) {
+        payload.profile_image = null;
+      }
+      if (data.password && data.password.length > 0) {
+        payload.current_password = data.current_password;
+        payload.password = data.password;
+        payload.confirm_password = data.password_confirmation;
       }
       const res = await updateProfile(payload);
       if (res.status === "success") {
-        updateUser(res.data);
+        updateUser(res.data.user);
         setProfileImage(null);
         setImagePreview(null);
+        setRemoveExistingImage(false);
+        setImageCacheBust(Date.now());
+        reset({
+          name: res.data.user.name || "",
+          email: res.data.user.email || "",
+          phone: res.data.user.phone || "",
+          current_password: "",
+          password: "",
+          password_confirmation: "",
+        });
         toast("Profile updated successfully", "success");
       }
     } catch (err: unknown) {
-      const error = err as { response?: { data?: { message?: string } } };
-      toast(error.response?.data?.message || "Failed to update profile", "error");
+      handleServerErrors(err, setError, toast, "Failed to update profile");
     } finally {
-      setIsSavingProfile(false);
-    }
-  };
-
-  const onPasswordSubmit = async (data: PasswordInput) => {
-    setIsSavingPassword(true);
-    try {
-      const res = await updateProfile({
-        current_password: data.current_password,
-        password: data.password,
-      });
-      if (res.status === "success") {
-        resetPassword();
-        toast("Password updated successfully", "success");
-      }
-    } catch (err: unknown) {
-      const error = err as { response?: { data?: { message?: string } } };
-      toast(error.response?.data?.message || "Failed to update password", "error");
-    } finally {
-      setIsSavingPassword(false);
+      setIsSaving(false);
     }
   };
 
@@ -210,166 +219,175 @@ export default function ProfilePage() {
         </nav>
       </div>
 
-      {/* Profile Photo Section */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-        <h2 className="mb-4 text-lg font-semibold text-slate-900">Profile Photo</h2>
-        <div className="flex items-center gap-6">
-          <div className="relative group shrink-0">
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={handleImageChange}
-            />
-            {currentImage ? (
-              <div className="relative h-24 w-24 overflow-hidden rounded-2xl border-2 border-slate-200">
-                <img src={currentImage} alt={user?.name} className="h-full w-full object-cover" />
-                <div className="absolute inset-0 flex items-center justify-center gap-1 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl">
-                  <button
-                    onClick={() => fileInputRef.current?.click()}
-                    className="rounded-lg bg-white/90 p-1.5 text-slate-700 hover:bg-white"
-                  >
-                    <Camera className="h-3.5 w-3.5" />
-                  </button>
-                  {imagePreview && (
+      {/* Profile Card */}
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+          <div className="flex flex-col lg:flex-row">
+            {/* Left - Photo & Info */}
+            <div className="lg:w-80 bg-slate-50 border-b lg:border-b-0 lg:border-r border-slate-200 p-8">
+              <div className="flex flex-col items-center">
+                {/* Avatar */}
+                <div className="relative group mb-5">
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleImageChange}
+                  />
+                  {displayImage ? (
+                    <div className="relative h-48 w-48 overflow-hidden rounded-2xl border-4 border-white shadow-lg">
+                      <img src={displayImage} alt={user?.name} className="h-full w-full object-cover" />
+                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl flex items-center justify-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => fileInputRef.current?.click()}
+                          className="rounded-xl bg-white p-2 text-slate-700 hover:bg-white/90 shadow-md"
+                        >
+                          <Camera className="h-4 w-4" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={removeImage}
+                          className="rounded-xl bg-white p-2 text-red-500 hover:bg-white/90 shadow-md"
+                        >
+                          <X className="h-4 w-4" />
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
                     <button
-                      onClick={removeImage}
-                      className="rounded-lg bg-white/90 p-1.5 text-red-500 hover:bg-white"
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="flex h-48 w-48 items-center justify-center rounded-2xl border-4 border-dashed border-slate-300 bg-white text-slate-400 transition-all hover:border-emerald-400 hover:text-emerald-500"
                     >
-                      <X className="h-3.5 w-3.5" />
+                      <div className="text-center">
+                        <Camera className="mx-auto h-10 w-10 mb-1.5" />
+                        <span className="text-xs font-medium">Upload</span>
+                      </div>
                     </button>
                   )}
                 </div>
+
+                {/* User Info */}
+                <h3 className="text-base font-bold text-slate-900">{user?.name}</h3>
+                <p className="text-sm text-slate-500">@{user?.username}</p>
+
+                <div className="mt-4 flex flex-col items-center gap-2 w-full">
+                  <div className="flex items-center gap-2 text-sm text-slate-600">
+                    <Shield className="h-4 w-4 text-emerald-500" />
+                    <span>{roleName}</span>
+                  </div>
+                  {user?.created_at && (
+                    <div className="flex items-center gap-2 text-sm text-slate-500">
+                      <Calendar className="h-4 w-4" />
+                      <span>Joined {new Date(user.created_at).toLocaleDateString("en-US", { month: "short", year: "numeric" })}</span>
+                    </div>
+                  )}
+                </div>
               </div>
-            ) : (
+            </div>
+
+            {/* Right - Form */}
+            <div className="flex-1 p-8">
+              {/* Profile Information */}
+              <h2 className="text-lg font-bold text-slate-900 mb-1">Profile Information</h2>
+              <p className="text-sm text-slate-500 mb-6">Update your personal details and contact information.</p>
+
+              <div className="space-y-5">
+                <div className="grid gap-5 sm:grid-cols-2">
+                  <div>
+                    <label className="mb-1.5 block text-[13px] font-semibold text-slate-700">
+                      Full Name <span className="text-red-500">*</span>
+                    </label>
+                    <Input {...register("name")} className="h-11 rounded-xl" placeholder="Enter your full name" />
+                    {errors.name && <p className="mt-1 text-xs text-red-500">{errors.name.message}</p>}
+                  </div>
+                  <div>
+                    <label className="mb-1.5 block text-[13px] font-semibold text-slate-700">
+                      Email Address
+                    </label>
+                    <Input {...register("email")} type="email" className="h-11 rounded-xl" placeholder="Enter your email" />
+                    {errors.email && <p className="mt-1 text-xs text-red-500">{errors.email.message}</p>}
+                  </div>
+                </div>
+                <div className="grid gap-5 sm:grid-cols-2">
+                  <div>
+                    <label className="mb-1.5 block text-[13px] font-semibold text-slate-700">
+                      Phone Number
+                    </label>
+                    <Input {...register("phone")} className="h-11 rounded-xl" placeholder="Enter your phone number" />
+                    {errors.phone && <p className="mt-1 text-xs text-red-500">{errors.phone.message}</p>}
+                  </div>
+                  <div>
+                    <label className="mb-1.5 block text-[13px] font-semibold text-slate-700">
+                      Username
+                    </label>
+                    <Input value={user?.username || ""} className="h-11 rounded-xl bg-slate-50" disabled />
+                  </div>
+                </div>
+              </div>
+
+              {/* Divider */}
+              <div className="my-8 border-t border-slate-200" />
+
+              {/* Change Password */}
               <button
-                onClick={() => fileInputRef.current?.click()}
-                className="flex h-24 w-24 items-center justify-center rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50 text-slate-400 transition-all hover:border-emerald-400 hover:bg-emerald-50 hover:text-emerald-500"
+                type="button"
+                onClick={() => setShowPasswordSection(!showPasswordSection)}
+                className="flex w-full items-center justify-between text-left group"
               >
-                <div className="text-center">
-                  <Camera className="mx-auto h-6 w-6 mb-1" />
-                  <span className="text-[10px] font-medium">Upload</span>
+                <div>
+                  <h2 className="text-lg font-bold text-slate-900 group-hover:text-emerald-600 transition-colors">Change Password</h2>
+                  <p className="text-sm text-slate-500 mt-0.5">Update your password to keep your account secure.</p>
+                </div>
+                <div className="rounded-lg bg-slate-100 p-2 group-hover:bg-emerald-50 transition-colors">
+                  <ChevronDown className={`h-5 w-5 text-slate-400 group-hover:text-emerald-500 transition-all ${showPasswordSection ? "rotate-180" : ""}`} />
                 </div>
               </button>
-            )}
-          </div>
-          <div className="flex-1">
-            <h3 className="text-sm font-semibold text-slate-900">{user?.name}</h3>
-            <p className="text-xs text-slate-500">@{user?.username}</p>
-            <div className="mt-2 flex flex-wrap items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-50 px-2 py-0.5 text-[11px] font-medium text-emerald-700">
-                <Shield className="h-3 w-3" />
-                {roleName}
-              </span>
-              {user?.created_at && (
-                <span className="inline-flex items-center gap-1 text-[11px] text-slate-500">
-                  <Calendar className="h-3 w-3" />
-                  Joined {new Date(user.created_at).toLocaleDateString("en-US", { month: "short", year: "numeric" })}
-                </span>
-              )}
-              {user?.last_login_at && (
-                <span className="inline-flex items-center gap-1 text-[11px] text-slate-500">
-                  <Clock className="h-3 w-3" />
-                  Last login {new Date(user.last_login_at).toLocaleDateString()}
-                </span>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
 
-      {/* Profile Information Section */}
-      <form onSubmit={handleSubmitProfile(onProfileSubmit)}>
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-          <h2 className="mb-4 text-lg font-semibold text-slate-900">Profile Information</h2>
-          <div className="space-y-4">
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div>
-                <label className="mb-1.5 block text-[13px] font-semibold text-slate-700">
-                  Full Name <span className="text-red-500">*</span>
-                </label>
-                <Input {...registerProfile("name")} className="h-11 rounded-xl" placeholder="Enter your full name" />
-                {profileErrors.name && <p className="mt-1 text-xs text-red-500">{profileErrors.name.message}</p>}
-              </div>
-              <div>
-                <label className="mb-1.5 block text-[13px] font-semibold text-slate-700">
-                  Email Address
-                </label>
-                <Input {...registerProfile("email")} type="email" className="h-11 rounded-xl" placeholder="Enter your email" />
-                {profileErrors.email && <p className="mt-1 text-xs text-red-500">{profileErrors.email.message}</p>}
-              </div>
-            </div>
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div>
-                <label className="mb-1.5 block text-[13px] font-semibold text-slate-700">
-                  Phone Number
-                </label>
-                <Input {...registerProfile("phone")} className="h-11 rounded-xl" placeholder="Enter your phone number" />
-                {profileErrors.phone && <p className="mt-1 text-xs text-red-500">{profileErrors.phone.message}</p>}
-              </div>
-              <div>
-                <label className="mb-1.5 block text-[13px] font-semibold text-slate-700">
-                  Username
-                </label>
-                <Input value={user?.username || ""} className="h-11 rounded-xl bg-slate-50" disabled />
-              </div>
-            </div>
-          </div>
-          <div className="flex justify-end gap-3 mt-6">
-            <Button type="button" variant="outline" className="h-11 px-6 border-slate-200 text-slate-600 font-semibold" onClick={() => router.push("/settings")}>
-              Cancel
-            </Button>
-            <Button type="submit" disabled={isSavingProfile} className="h-11 px-8 bg-emerald-600 text-white hover:bg-emerald-700 font-semibold shadow-lg shadow-emerald-600/20">
-              {isSavingProfile ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Check className="mr-2 h-4 w-4" />}
-              Save Changes
-            </Button>
-          </div>
-        </div>
-      </form>
+              {showPasswordSection && (
+                <div className="mt-5 space-y-4 p-5 rounded-xl bg-slate-50 border border-slate-200">
+                  <PasswordInputField
+                    register={register}
+                    name="current_password"
+                    placeholder="Enter current password"
+                    show={showCurrentPassword}
+                    onToggle={() => setShowCurrentPassword(!showCurrentPassword)}
+                    error={errors.current_password?.message}
+                  />
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <PasswordInputField
+                      register={register}
+                      name="password"
+                      placeholder="Enter new password"
+                      show={showNewPassword}
+                      onToggle={() => setShowNewPassword(!showNewPassword)}
+                      error={errors.password?.message}
+                    />
+                    <PasswordInputField
+                      register={register}
+                      name="password_confirmation"
+                      placeholder="Confirm new password"
+                      show={showConfirm}
+                      onToggle={() => setShowConfirm(!showConfirm)}
+                      error={errors.password_confirmation?.message}
+                    />
+                  </div>
+                </div>
+              )}
 
-      {/* Change Password Section */}
-      <form onSubmit={handleSubmitPassword(onPasswordSubmit)}>
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-          <h2 className="mb-4 text-lg font-semibold text-slate-900">Change Password</h2>
-          <div className="space-y-4">
-            <div className="max-w-md">
-              <PasswordInputField
-                register={registerPassword}
-                name="current_password"
-                placeholder="Enter current password"
-                show={showCurrentPassword}
-                onToggle={() => setShowCurrentPassword(!showCurrentPassword)}
-                error={passwordErrors.current_password?.message}
-              />
+              {/* Action Buttons */}
+              <div className="flex justify-end gap-3 mt-8 pt-6 border-t border-slate-200">
+                <Button type="button" variant="outline" className="h-11 px-6 border-slate-200 text-slate-600 font-semibold" onClick={() => router.push("/settings")}>
+                  Cancel
+                </Button>
+                <Button type="submit" disabled={isSaving} className="h-11 px-8 bg-emerald-600 text-white hover:bg-emerald-700 font-semibold shadow-lg shadow-emerald-600/20">
+                  {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Check className="mr-2 h-4 w-4" />}
+                  Update Profile
+                </Button>
+              </div>
             </div>
-            <div className="grid gap-4 sm:grid-cols-2">
-              <PasswordInputField
-                register={registerPassword}
-                name="password"
-                placeholder="Enter new password"
-                show={showNewPassword}
-                onToggle={() => setShowNewPassword(!showNewPassword)}
-                error={passwordErrors.password?.message}
-              />
-              <PasswordInputField
-                register={registerPassword}
-                name="password_confirmation"
-                placeholder="Confirm new password"
-                show={showConfirm}
-                onToggle={() => setShowConfirm(!showConfirm)}
-                error={passwordErrors.password_confirmation?.message}
-              />
-            </div>
-          </div>
-          <div className="flex justify-end gap-3 mt-6">
-            <Button type="button" variant="outline" className="h-11 px-6 border-slate-200 text-slate-600 font-semibold" onClick={() => resetPassword()}>
-              Cancel
-            </Button>
-            <Button type="submit" disabled={isSavingPassword} className="h-11 px-8 bg-emerald-600 text-white hover:bg-emerald-700 font-semibold shadow-lg shadow-emerald-600/20">
-              {isSavingPassword ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Lock className="mr-2 h-4 w-4" />}
-              Update Password
-            </Button>
           </div>
         </div>
       </form>

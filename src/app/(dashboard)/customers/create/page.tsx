@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { createCustomer } from "@/lib/api/customers";
 import { useToast } from "@/components/ui/toast";
 import { FormSection, FormField, FormGrid, ImageUpload } from "@/components/customers/customer-form-fields";
+import { handleServerErrors } from "@/lib/api/handle-server-errors";
 
 const customerSchema = z.object({
   name: z.string().min(1, "Name is required").max(255),
@@ -39,6 +40,7 @@ export default function CreateCustomerPage() {
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors },
   } = useForm<CustomerInput>({
     resolver: zodResolver(customerSchema),
@@ -96,10 +98,7 @@ export default function CreateCustomerPage() {
       toast("Customer created successfully", "success");
       router.push("/customers");
     } catch (err: unknown) {
-      const error = err as { response?: { data?: { message?: string; errors?: Array<{ messages?: string[] }> } } };
-      const message = error.response?.data?.message || "Failed to create customer";
-      const errors = error.response?.data?.errors;
-      toast(errors?.[0]?.messages?.[0] || message, "error");
+      handleServerErrors(err, setError, toast, "Failed to create customer");
     } finally {
       setIsSaving(false);
     }

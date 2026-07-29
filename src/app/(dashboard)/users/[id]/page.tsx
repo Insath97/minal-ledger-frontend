@@ -24,6 +24,7 @@ import { Badge } from "@/components/ui/badge";
 import { getUser, deleteUser } from "@/lib/api/users";
 import { useToast } from "@/components/ui/toast";
 import type { User as UserType } from "@/lib/api/users";
+import { useAuthStore } from "@/stores/auth-store";
 
 const ROLE_COLORS = [
   "bg-emerald-100 text-emerald-700 border-emerald-200",
@@ -44,6 +45,9 @@ export default function ViewUserPage() {
   const params = useParams();
   const userId = Number(params.id);
   const { toast } = useToast();
+  const { hasPermission } = useAuthStore();
+  const canEdit = hasPermission("User Update");
+  const canDelete = hasPermission("User Delete");
   const [user, setUser] = useState<UserType | null>(null);
   const [loading, setLoading] = useState(true);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -172,6 +176,7 @@ export default function ViewUserPage() {
             </div>
           </div>
           <div className="flex items-center gap-2">
+            {canEdit && (
             <Button
               onClick={() => router.push(`/users/${user.id}/edit`)}
               className="bg-emerald-600 text-white hover:bg-emerald-700 font-semibold shadow-md shadow-emerald-600/20"
@@ -179,6 +184,8 @@ export default function ViewUserPage() {
               <Edit className="mr-2 h-4 w-4" />
               Edit
             </Button>
+            )}
+            {canDelete && (
             <Button
               onClick={() => setShowDeleteConfirm(true)}
               variant="outline"
@@ -187,6 +194,7 @@ export default function ViewUserPage() {
               <Trash2 className="mr-2 h-4 w-4" />
               Delete
             </Button>
+            )}
           </div>
         </div>
       </div>

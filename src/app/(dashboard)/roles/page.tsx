@@ -19,6 +19,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { getRoles, deleteRole } from "@/lib/api/roles";
 import { useToast } from "@/components/ui/toast";
+import { useAuthStore } from "@/stores/auth-store";
 import type { Role, PaginatedResponse } from "@/types";
 
 const PER_PAGE_OPTIONS = [5, 10, 25, 50, 100];
@@ -26,6 +27,11 @@ const PER_PAGE_OPTIONS = [5, 10, 25, 50, 100];
 export default function RolesPage() {
   const router = useRouter();
   const { toast } = useToast();
+  const { hasPermission } = useAuthStore();
+
+  const canCreate = hasPermission("Role Create");
+  const canEdit = hasPermission("Role Update");
+  const canDelete = hasPermission("Role Delete");
   const [roles, setRoles] = useState<Role[]>([]);
   const [pagination, setPagination] = useState<PaginatedResponse<Role> | null>(null);
   const [search, setSearch] = useState("");
@@ -87,10 +93,12 @@ export default function RolesPage() {
             Manage user roles and permission assignments.
           </p>
         </div>
-        <Button onClick={() => router.push("/roles/create")} className="bg-emerald-600 text-white hover:bg-emerald-700 shadow-lg shadow-emerald-600/20">
-          <Plus className="mr-2 h-4 w-4" />
-          Add Role
-        </Button>
+        {canCreate && (
+          <Button onClick={() => router.push("/roles/create")} className="bg-emerald-600 text-white hover:bg-emerald-700 shadow-lg shadow-emerald-600/20">
+            <Plus className="mr-2 h-4 w-4" />
+            Add Role
+          </Button>
+        )}
       </div>
 
       {/* Search */}
@@ -182,24 +190,28 @@ export default function RolesPage() {
                         </button>
                         {!role.is_protected && (
                           <>
-                            <button
-                              onClick={() => router.push(`/roles/${role.id}/edit`)}
-                              className="rounded-lg p-1.5 text-slate-400 hover:bg-emerald-50 hover:text-emerald-600 transition-colors"
-                              title="Edit"
-                            >
-                              <Edit className="h-4 w-4" />
-                            </button>
-                            <button
-                              onClick={() => setShowDeleteConfirm(role)}
-                              className="rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-500 transition-colors"
-                              title="Delete"
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </button>
-                          </>
-                        )}
-                      </div>
-                    </td>
+                            {canEdit && (
+                              <button
+                                onClick={() => router.push(`/roles/${role.id}/edit`)}
+                                className="rounded-lg p-1.5 text-slate-400 hover:bg-emerald-50 hover:text-emerald-600 transition-colors"
+                                title="Edit"
+                              >
+                                <Edit className="h-4 w-4" />
+                              </button>
+                            )}
+                            {canDelete && (
+                              <button
+                                onClick={() => setShowDeleteConfirm(role)}
+                                className="rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-500 transition-colors"
+                                  title="Delete"
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </button>
+                              )}
+                            </>
+                          )}
+                        </div>
+                      </td>
                   </tr>
                 ))
               )}

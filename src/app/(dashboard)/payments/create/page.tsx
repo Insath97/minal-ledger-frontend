@@ -11,8 +11,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/toast";
 import { createPayment, type CreatePaymentPayload } from "@/lib/api/payments";
-import { getCustomers, type Customer } from "@/lib/api/customers";
-import { getSales, type Sale } from "@/lib/api/sales";
+import { handleServerErrors } from "@/lib/api/handle-server-errors";
+import { getCustomerList, type CustomerListItem } from "@/lib/api/customers";
+import { getUnpaidSales, type Sale } from "@/lib/api/sales";
+import { useAuthStore } from "@/stores/auth-store";
 
 const paymentSchema = z.object({
   customer_id: z.number().min(1, "Customer is required"),
@@ -28,15 +30,17 @@ const PAYMENT_METHODS = [
   { value: "cash", label: "Cash" },
   { value: "credit_card", label: "Credit Card" },
   { value: "bank_transfer", label: "Bank Transfer" },
-  { value: "cheque", label: "Cheque" },
 ];
 
 export default function CreatePaymentPage() {
   const router = useRouter();
   const { toast } = useToast();
+  const { hasPermission } = useAuthStore();
 
+  const canListCustomers = hasPermission("Customer List");
+  const canListSales = hasPermission("Sale List");
   const [isSaving, setIsSaving] = useState(false);
-  const [customers, setCustomers] = useState<Customer[]>([]);
+  const [customers, setCustomers] = useState<CustomerListItem[]>([]);
   const [sales, setSales] = useState<Sale[]>([]);
   const [selectedSaleIds, setSelectedSaleIds] = useState<number[]>([]);
   const [proofImage, setProofImage] = useState<File | null>(null);
@@ -51,6 +55,7 @@ export default function CreatePaymentPage() {
     watch,
     setValue,
     control,
+    setError,
     formState: { errors },
   } = useForm<PaymentInput>({
     resolver: zodResolver(paymentSchema),
@@ -68,28 +73,27 @@ export default function CreatePaymentPage() {
   const selectedCustomer = customers.find((c) => c.id === selectedCustomerId);
 
   useEffect(() => {
+    if (!canListCustomers) return;
     async function fetchCustomers() {
       try {
-        const res = await getCustomers({ per_page: 100 });
-        if (res.status === "success") setCustomers(res.data.data);
+        const res = await getCustomerList();
+        if (res.status === "success") setCustomers(res.data);
       } catch { /* silent */ }
     }
     fetchCustomers();
-  }, []);
+  }, [canListCustomers]);
 
   useEffect(() => {
+    if (!canListSales) return;
     async function fetchSales() {
       if (!selectedCustomerId) { setSales([]); return; }
       try {
-        const res = await getSales({ per_page: 100, customer_id: selectedCustomerId, payment_status: "unpaid" });
-        const partialRes = await getSales({ per_page: 100, customer_id: selectedCustomerId, payment_status: "partial" });
-        const allSales = [...(res.status === "success" ? res.data.data : []), ...(partialRes.status === "success" ? partialRes.data.data : [])];
-        const unique = Array.from(new Map(allSales.map((s) => [s.id, s])).values());
-        setSales(unique);
+        const res = await getUnpaidSales(selectedCustomerId);
+        if (res.status === "success") setSales(res.data);
       } catch { /* silent */ }
     }
     fetchSales();
-  }, [selectedCustomerId]);
+  }, [selectedCustomerId, canListSales]);
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -144,15 +148,7 @@ export default function CreatePaymentPage() {
       toast("Payment recorded and allocated successfully", "success");
       router.push("/payments");
     } catch (err: unknown) {
-      const error = err as { response?: { data?: { message?: string; errors?: Array<{ field: string; messages: string[] }> } } };
-      const backendErrors = error.response?.data?.errors;
-      if (backendErrors && Array.isArray(backendErrors)) {
-        backendErrors.forEach((e) => {
-          if (e.messages && e.messages.length > 0) toast(e.messages[0], "error");
-        });
-      } else {
-        toast(error.response?.data?.message || "Failed to record payment", "error");
-      }
+      handleServerErrors(err, setError, toast, "Failed to record payment");
     } finally {
       setIsSaving(false);
     }
