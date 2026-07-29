@@ -28,9 +28,9 @@ export interface GetUsersParams {
 export interface CreateUserPayload {
   name: string;
   username: string;
-  email?: string;
+  email: string;
   phone?: string;
-  password: string;
+  password?: string;
   is_active?: boolean;
   can_login?: boolean;
   roles?: string[];

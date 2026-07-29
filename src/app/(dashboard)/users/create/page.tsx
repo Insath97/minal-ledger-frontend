@@ -27,14 +27,9 @@ import type { RoleList } from "@/types";
 const userSchema = z.object({
   name: z.string().min(1, "Name is required").max(255),
   username: z.string().min(1, "Username is required").max(100),
-  email: z.string().email("Invalid email").max(255).optional().or(z.literal("")),
+  email: z.string().email("Invalid email").max(255),
   phone: z.string().max(20).optional().or(z.literal("")),
-  password: z.string().min(6, "Password must be at least 6 characters"),
-  confirm_password: z.string().min(1, "Please confirm your password"),
   role: z.string().optional().or(z.literal("")),
-}).refine((data) => data.password === data.confirm_password, {
-  message: "Passwords don't match",
-  path: ["confirm_password"],
 });
 
 type UserInput = z.infer<typeof userSchema>;
@@ -64,8 +59,6 @@ export default function CreateUserPage() {
       username: "",
       email: "",
       phone: "",
-      password: "",
-      confirm_password: "",
       role: "",
     },
   });
@@ -110,9 +103,8 @@ export default function CreateUserPage() {
       await createUser({
         name: data.name,
         username: data.username,
-        email: data.email || undefined,
+        email: data.email,
         phone: data.phone || undefined,
-        password: data.password,
         roles: data.role ? [data.role] : [],
       });
       toast("User created successfully", "success");
@@ -172,7 +164,7 @@ export default function CreateUserPage() {
               {errors.username && <p className="mt-1 text-xs text-red-500">{errors.username.message}</p>}
             </div>
             <div>
-              <label className="mb-1.5 block text-[13px] font-semibold text-slate-700">Email</label>
+              <label className="mb-1.5 block text-[13px] font-semibold text-slate-700">Email *</label>
               <Input {...register("email")} type="email" placeholder="e.g. john@example.com" className="h-11" />
               {errors.email && <p className="mt-1 text-xs text-red-500">{errors.email.message}</p>}
             </div>
@@ -180,16 +172,11 @@ export default function CreateUserPage() {
               <label className="mb-1.5 block text-[13px] font-semibold text-slate-700">Phone</label>
               <Input {...register("phone")} placeholder="e.g. +1234567890" className="h-11" />
             </div>
-            <div>
-              <label className="mb-1.5 block text-[13px] font-semibold text-slate-700">Password *</label>
-              <Input {...register("password")} type="password" placeholder="Min 6 characters" className="h-11" />
-              {errors.password && <p className="mt-1 text-xs text-red-500">{errors.password.message}</p>}
-            </div>
-            <div>
-              <label className="mb-1.5 block text-[13px] font-semibold text-slate-700">Confirm Password *</label>
-              <Input {...register("confirm_password")} type="password" placeholder="Re-enter password" className="h-11" />
-              {errors.confirm_password && <p className="mt-1 text-xs text-red-500">{errors.confirm_password.message}</p>}
-            </div>
+          </div>
+          <div className="mt-4 rounded-xl bg-emerald-50 border border-emerald-100 p-3.5">
+            <p className="text-[13px] text-emerald-700 leading-relaxed">
+              A strong password will be <strong>auto-generated</strong> and sent to the user&apos;s email address. You don&apos;t need to set one manually.
+            </p>
           </div>
         </div>
 
