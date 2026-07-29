@@ -207,12 +207,12 @@ export default function ProfilePage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-start justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold text-slate-900">My Profile</h1>
           <p className="mt-0.5 text-sm text-slate-500">Manage your personal information and settings.</p>
         </div>
-        <nav className="flex items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-1.5 text-xs">
+        <nav className="flex items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-1.5 text-xs shrink-0">
           <button onClick={() => router.push("/settings")} className="font-medium text-slate-500 hover:text-emerald-600 transition-colors">Settings</button>
           <ChevronRight className="h-3 w-3 text-slate-400" />
           <span className="font-semibold text-emerald-600">My Profile</span>
@@ -224,7 +224,7 @@ export default function ProfilePage() {
         <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
           <div className="flex flex-col lg:flex-row">
             {/* Left - Photo & Info */}
-            <div className="lg:w-80 bg-slate-50 border-b lg:border-b-0 lg:border-r border-slate-200 p-8">
+            <div className="lg:w-80 bg-slate-50 border-b lg:border-b-0 lg:border-r border-slate-200 p-5 sm:p-8">
               <div className="flex flex-col items-center">
                 {/* Avatar */}
                 <div className="relative group mb-5">
@@ -236,7 +236,7 @@ export default function ProfilePage() {
                     onChange={handleImageChange}
                   />
                   {displayImage ? (
-                    <div className="relative h-48 w-48 overflow-hidden rounded-2xl border-4 border-white shadow-lg">
+                    <div className="relative h-32 w-32 sm:h-48 sm:w-48 overflow-hidden rounded-2xl border-4 border-white shadow-lg">
                       <img src={displayImage} alt={user?.name} className="h-full w-full object-cover" />
                       <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl flex items-center justify-center gap-2">
                         <button
@@ -259,10 +259,10 @@ export default function ProfilePage() {
                     <button
                       type="button"
                       onClick={() => fileInputRef.current?.click()}
-                      className="flex h-48 w-48 items-center justify-center rounded-2xl border-4 border-dashed border-slate-300 bg-white text-slate-400 transition-all hover:border-emerald-400 hover:text-emerald-500"
+                      className="flex h-32 w-32 sm:h-48 sm:w-48 items-center justify-center rounded-2xl border-4 border-dashed border-slate-300 bg-white text-slate-400 transition-all hover:border-emerald-400 hover:text-emerald-500"
                     >
                       <div className="text-center">
-                        <Camera className="mx-auto h-10 w-10 mb-1.5" />
+                        <Camera className="mx-auto h-8 w-8 sm:h-10 sm:w-10 mb-1.5" />
                         <span className="text-xs font-medium">Upload</span>
                       </div>
                     </button>
@@ -289,7 +289,7 @@ export default function ProfilePage() {
             </div>
 
             {/* Right - Form */}
-            <div className="flex-1 p-8">
+            <div className="flex-1 p-5 sm:p-8">
               {/* Profile Information */}
               <h2 className="text-lg font-bold text-slate-900 mb-1">Profile Information</h2>
               <p className="text-sm text-slate-500 mb-6">Update your personal details and contact information.</p>
@@ -347,7 +347,7 @@ export default function ProfilePage() {
               </button>
 
               {showPasswordSection && (
-                <div className="mt-5 space-y-4 p-5 rounded-xl bg-slate-50 border border-slate-200">
+                <div className="mt-5 space-y-4 p-4 sm:p-5 rounded-xl bg-slate-50 border border-slate-200">
                   <PasswordInputField
                     register={register}
                     name="current_password"
@@ -378,7 +378,7 @@ export default function ProfilePage() {
               )}
 
               {/* Action Buttons */}
-              <div className="flex justify-end gap-3 mt-8 pt-6 border-t border-slate-200">
+              <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 mt-8 pt-6 border-t border-slate-200">
                 <Button type="button" variant="outline" className="h-11 px-6 border-slate-200 text-slate-600 font-semibold" onClick={() => router.push("/settings")}>
                   Cancel
                 </Button>

@@ -18,7 +18,7 @@ export default function DashboardLayout({
 }) {
   const router = useRouter();
   const { isCollapsed } = useSidebarStore();
-  const isMobile = useMediaQuery("(max-width: 768px)");
+  const isMobile = useMediaQuery("(max-width: 1023px)");
   const { isAuthenticated, fetchUser } = useAuthStore();
   const [checking, setChecking] = useState(true);
 

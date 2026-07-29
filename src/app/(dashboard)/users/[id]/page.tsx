@@ -89,7 +89,7 @@ export default function ViewUserPage() {
           <div className="h-7 w-40 rounded bg-slate-100 animate-pulse" />
         </div>
         <div className="rounded-2xl bg-slate-100 h-36 animate-pulse" />
-        <div className="grid gap-4 sm:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 sm:gap-4 sm:grid-cols-4">
           {[1, 2, 3, 4].map((i) => (
             <div key={i} className="h-24 rounded-2xl bg-slate-100 animate-pulse" />
           ))}
@@ -115,12 +115,12 @@ export default function ViewUserPage() {
   return (
     <div className="space-y-6">
       {/* Header with Breadcrumb */}
-      <div className="flex items-start justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold text-slate-900">User Details</h1>
           <p className="mt-0.5 text-sm text-slate-500">View user information and settings.</p>
         </div>
-        <nav className="flex items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-1.5 text-xs">
+        <nav className="flex items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-1.5 text-xs shrink-0">
           <button onClick={() => router.push("/users")} className="font-medium text-slate-500 hover:text-emerald-600 transition-colors">
             Users
           </button>
@@ -130,23 +130,23 @@ export default function ViewUserPage() {
       </div>
 
       {/* Hero Card */}
-      <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-6">
-        <div className="flex items-center justify-between">
+      <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4 sm:p-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="flex items-center gap-4">
             {user.profile_image ? (
               <img
                 src={user.profile_image}
                 alt={user.name}
-                className="h-16 w-16 rounded-2xl object-cover border-2 border-emerald-600 shadow-lg shadow-emerald-600/20"
+                className="h-14 w-14 sm:h-16 sm:w-16 rounded-2xl object-cover border-2 border-emerald-600 shadow-lg shadow-emerald-600/20 shrink-0"
               />
             ) : (
-              <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-600 shadow-lg shadow-emerald-600/20">
-                <span className="text-2xl font-bold text-white">{initials}</span>
+              <div className="flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-emerald-600 shadow-lg shadow-emerald-600/20 shrink-0">
+                <span className="text-xl sm:text-2xl font-bold text-white">{initials}</span>
               </div>
             )}
             <div>
-              <h2 className="text-2xl font-bold text-slate-900">{user.name}</h2>
-              <div className="mt-1 flex items-center gap-3">
+              <h2 className="text-xl sm:text-2xl font-bold text-slate-900">{user.name}</h2>
+              <div className="mt-1 flex flex-wrap items-center gap-2">
                 <Badge variant="outline" className="border-emerald-200 bg-emerald-100 text-emerald-700 text-xs font-semibold">
                   @{user.username}
                 </Badge>
@@ -175,7 +175,7 @@ export default function ViewUserPage() {
               </div>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 sm:shrink-0">
             {canEdit && (
             <Button
               onClick={() => router.push(`/users/${user.id}/edit`)}
@@ -253,33 +253,33 @@ export default function ViewUserPage() {
 
       {/* Details */}
       <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
-        <div className="border-b border-slate-100 px-6 py-4">
+        <div className="border-b border-slate-100 px-4 sm:px-6 py-4">
           <h2 className="text-lg font-semibold text-slate-900">Contact Information</h2>
         </div>
         <div className="divide-y divide-slate-100">
-          <div className="flex items-center gap-4 px-6 py-4">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100">
+          <div className="flex items-center gap-3 sm:gap-4 px-4 sm:px-6 py-3 sm:py-4">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100 shrink-0">
               <Mail className="h-4 w-4 text-slate-500" />
             </div>
-            <div>
+            <div className="min-w-0">
               <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Email</p>
-              <p className="text-sm text-slate-700">{user.email || "Not provided"}</p>
+              <p className="text-sm text-slate-700 truncate">{user.email || "Not provided"}</p>
             </div>
           </div>
-          <div className="flex items-center gap-4 px-6 py-4">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100">
+          <div className="flex items-center gap-3 sm:gap-4 px-4 sm:px-6 py-3 sm:py-4">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100 shrink-0">
               <Phone className="h-4 w-4 text-slate-500" />
             </div>
-            <div>
+            <div className="min-w-0">
               <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Phone</p>
               <p className="text-sm text-slate-700">{user.phone || "Not provided"}</p>
             </div>
           </div>
-          <div className="flex items-center gap-4 px-6 py-4">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100">
+          <div className="flex items-center gap-3 sm:gap-4 px-4 sm:px-6 py-3 sm:py-4">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100 shrink-0">
               <ImageIcon className="h-4 w-4 text-slate-500" />
             </div>
-            <div>
+            <div className="min-w-0">
               <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Profile Image</p>
               {user.profile_image ? (
                 <img src={user.profile_image} alt={user.name} className="h-10 w-10 rounded-lg object-cover mt-1" />
@@ -293,13 +293,13 @@ export default function ViewUserPage() {
 
       {/* Assigned Roles */}
       <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
-        <div className="border-b border-slate-100 px-6 py-4">
+        <div className="border-b border-slate-100 px-4 sm:px-6 py-4">
           <h2 className="text-lg font-semibold text-slate-900">Assigned Roles</h2>
           <p className="text-xs text-slate-500 mt-1">
             {user.roles?.length ?? 0} roles assigned to this user
           </p>
         </div>
-        <div className="px-6 py-4">
+        <div className="px-4 sm:px-6 py-4">
           {user.roles && user.roles.length > 0 ? (
             <div className="flex flex-wrap gap-2">
               {user.roles.map((role, i) => (
@@ -329,7 +329,7 @@ export default function ViewUserPage() {
           <div className="relative z-10 w-full max-w-sm mx-4 animate-in zoom-in-95 fade-in duration-200">
             <div className="rounded-2xl bg-white shadow-2xl border border-slate-100 overflow-hidden">
               <div className="h-1.5 bg-gradient-to-r from-red-500 via-red-400 to-red-500" />
-              <div className="p-6 text-center">
+              <div className="p-4 sm:p-6 text-center">
                 <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-red-50 border border-red-100">
                   <Trash2 className="h-7 w-7 text-red-500" />
                 </div>
@@ -338,7 +338,7 @@ export default function ViewUserPage() {
                   This will permanently remove <span className="font-semibold text-slate-700">{user.name}</span>. This action cannot be undone.
                 </p>
               </div>
-              <div className="flex gap-3 px-6 pb-6">
+              <div className="flex gap-3 px-4 sm:px-6 pb-4 sm:pb-6">
                 <button
                   onClick={() => setShowDeleteConfirm(false)}
                   className="flex-1 h-11 rounded-xl border border-slate-200 text-sm font-semibold text-slate-700 hover:bg-slate-50"

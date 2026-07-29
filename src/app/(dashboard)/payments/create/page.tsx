@@ -159,12 +159,12 @@ export default function CreatePaymentPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-start justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold text-slate-900">Record Payment</h1>
           <p className="mt-0.5 text-sm text-slate-500">Record a customer payment with FIFO allocation.</p>
         </div>
-        <nav className="flex items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-1.5 text-xs">
+        <nav className="flex items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-1.5 text-xs shrink-0">
           <button onClick={() => router.push("/payments")} className="font-medium text-slate-500 hover:text-emerald-600 transition-colors">Payments</button>
           <BreadcrumbSep className="h-3 w-3 text-slate-400" />
           <span className="font-semibold text-emerald-600">Record</span>
@@ -173,7 +173,7 @@ export default function CreatePaymentPage() {
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* Customer & Method */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-sm">
           <h3 className="mb-4 text-sm font-semibold text-slate-700">Payment Details</h3>
           <div className="grid gap-4 sm:grid-cols-2">
             {/* Customer */}
@@ -247,7 +247,7 @@ export default function CreatePaymentPage() {
 
         {/* Sale Allocation */}
         {Number(selectedCustomerId) > 0 && sales.length > 0 && (
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-sm">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-sm font-semibold text-slate-700">Sale Allocation (Optional)</h3>
               <p className="text-xs text-slate-400">Leave empty for FIFO auto-allocation</p>
@@ -292,7 +292,7 @@ export default function CreatePaymentPage() {
         )}
 
         {/* Proof Image & Notes */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-sm">
           <h3 className="mb-4 text-sm font-semibold text-slate-700">Additional Details</h3>
           <div className="space-y-4">
             <div className="space-y-2">
@@ -319,7 +319,7 @@ export default function CreatePaymentPage() {
         </div>
 
         {/* Actions */}
-        <div className="flex items-center justify-end gap-3">
+        <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-3">
           <Button type="button" variant="outline" onClick={() => router.push("/payments")} className="h-11 px-6 border-slate-200 text-slate-600 font-semibold">Cancel</Button>
           <Button type="submit" disabled={isSaving} className="h-11 px-8 bg-emerald-600 text-white hover:bg-emerald-700 font-semibold shadow-lg shadow-emerald-600/20">
             {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}

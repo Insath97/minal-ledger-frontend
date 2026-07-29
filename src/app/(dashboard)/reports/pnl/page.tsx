@@ -45,23 +45,23 @@ export default function PnLPage() {
         <div className="flex items-center justify-center py-20"><Loader2 className="h-8 w-8 text-emerald-500 animate-spin" /></div>
       ) : (
         <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
-          <div className="overflow-x-auto scrollbar-thin">
+          <div className="hidden md:block overflow-x-auto scrollbar-thin">
             <table className="w-full">
               <thead>
                 <tr className="border-b border-slate-100 bg-slate-50/80">
-                  <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">Month</th>
-                  <th className="px-5 py-3.5 text-right text-[11px] font-bold uppercase tracking-wider text-slate-500">Income</th>
-                  <th className="px-5 py-3.5 text-right text-[11px] font-bold uppercase tracking-wider text-slate-500">Expense</th>
-                  <th className="px-5 py-3.5 text-right text-[11px] font-bold uppercase tracking-wider text-slate-500">Net Profit</th>
+                  <th className="px-4 sm:px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">Month</th>
+                  <th className="px-4 sm:px-5 py-3.5 text-right text-[11px] font-bold uppercase tracking-wider text-slate-500">Income</th>
+                  <th className="px-4 sm:px-5 py-3.5 text-right text-[11px] font-bold uppercase tracking-wider text-slate-500">Expense</th>
+                  <th className="px-4 sm:px-5 py-3.5 text-right text-[11px] font-bold uppercase tracking-wider text-slate-500">Net Profit</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-50">
                 {data.map((m) => (
                   <tr key={m.month_number} className="hover:bg-slate-50/50 transition-colors">
-                    <td className="px-5 py-3.5 text-sm font-semibold text-slate-700">{m.month_name}</td>
-                    <td className="px-5 py-3.5 text-right text-sm text-emerald-600 font-medium">{m.income > 0 ? formatCurrency(m.income) : "—"}</td>
-                    <td className="px-5 py-3.5 text-right text-sm text-red-600 font-medium">{m.expense > 0 ? formatCurrency(m.expense) : "—"}</td>
-                    <td className={`px-5 py-3.5 text-right text-sm font-bold ${m.net_profit >= 0 ? "text-emerald-600" : "text-red-600"}`}>
+                    <td className="px-4 sm:px-5 py-3.5 text-sm font-semibold text-slate-700">{m.month_name}</td>
+                    <td className="px-4 sm:px-5 py-3.5 text-right text-sm text-emerald-600 font-medium">{m.income > 0 ? formatCurrency(m.income) : "—"}</td>
+                    <td className="px-4 sm:px-5 py-3.5 text-right text-sm text-red-600 font-medium">{m.expense > 0 ? formatCurrency(m.expense) : "—"}</td>
+                    <td className={`px-4 sm:px-5 py-3.5 text-right text-sm font-bold ${m.net_profit >= 0 ? "text-emerald-600" : "text-red-600"}`}>
                       {m.net_profit !== 0 ? formatCurrency(m.net_profit) : "—"}
                     </td>
                   </tr>
@@ -69,13 +69,36 @@ export default function PnLPage() {
               </tbody>
               <tfoot>
                 <tr className="border-t-2 border-slate-200 bg-slate-50">
-                  <td className="px-5 py-3.5 text-sm font-bold text-slate-900">Total</td>
-                  <td className="px-5 py-3.5 text-right text-sm font-bold text-emerald-600">{formatCurrency(totalIncome)}</td>
-                  <td className="px-5 py-3.5 text-right text-sm font-bold text-red-600">{formatCurrency(totalExpense)}</td>
-                  <td className={`px-5 py-3.5 text-right text-sm font-bold ${totalProfit >= 0 ? "text-emerald-600" : "text-red-600"}`}>{formatCurrency(totalProfit)}</td>
+                  <td className="px-4 sm:px-5 py-3.5 text-sm font-bold text-slate-900">Total</td>
+                  <td className="px-4 sm:px-5 py-3.5 text-right text-sm font-bold text-emerald-600">{formatCurrency(totalIncome)}</td>
+                  <td className="px-4 sm:px-5 py-3.5 text-right text-sm font-bold text-red-600">{formatCurrency(totalExpense)}</td>
+                  <td className={`px-4 sm:px-5 py-3.5 text-right text-sm font-bold ${totalProfit >= 0 ? "text-emerald-600" : "text-red-600"}`}>{formatCurrency(totalProfit)}</td>
                 </tr>
               </tfoot>
             </table>
+          </div>
+
+          <div className="md:hidden divide-y divide-slate-50">
+            {data.length === 0 ? (
+              <div className="px-4 py-16 text-center"><p className="text-sm font-semibold text-slate-600">No data</p></div>
+            ) : (
+              data.map((m) => (
+                <div key={m.month_number} className="px-4 py-3 space-y-1">
+                  <p className="text-sm font-semibold text-slate-700">{m.month_name}</p>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-emerald-600">Income: {m.income > 0 ? formatCurrency(m.income) : "—"}</span>
+                    <span className="text-red-600">Expense: {m.expense > 0 ? formatCurrency(m.expense) : "—"}</span>
+                  </div>
+                  <p className={`text-sm font-bold ${m.net_profit >= 0 ? "text-emerald-600" : "text-red-600"}`}>Net: {m.net_profit !== 0 ? formatCurrency(m.net_profit) : "—"}</p>
+                </div>
+              ))
+            )}
+            <div className="px-4 py-3 bg-slate-50 flex justify-between text-sm font-bold">
+              <span className="text-slate-900">Total</span>
+              <span className="text-emerald-600">{formatCurrency(totalIncome)}</span>
+              <span className="text-red-600">{formatCurrency(totalExpense)}</span>
+              <span className={totalProfit >= 0 ? "text-emerald-600" : "text-red-600"}>{formatCurrency(totalProfit)}</span>
+            </div>
           </div>
         </div>
       )}

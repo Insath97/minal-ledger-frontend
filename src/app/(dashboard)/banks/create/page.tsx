@@ -59,12 +59,12 @@ export default function CreateBankPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-start justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold text-slate-900">Create Bank</h1>
           <p className="mt-0.5 text-sm text-slate-500">Add a new bank to the system.</p>
         </div>
-        <nav className="flex items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-1.5 text-xs">
+        <nav className="flex items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-1.5 text-xs shrink-0">
           <button onClick={() => router.push("/banks")} className="font-medium text-slate-500 hover:text-emerald-600 transition-colors">Banks</button>
           <BreadcrumbSep className="h-3 w-3 text-slate-400" />
           <span className="font-semibold text-emerald-600">Create</span>
@@ -72,7 +72,7 @@ export default function CreateBankPage() {
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-sm">
           <h2 className="mb-4 text-lg font-semibold text-slate-900">Bank Information</h2>
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
@@ -93,7 +93,7 @@ export default function CreateBankPage() {
         </div>
 
         {/* Actions */}
-        <div className="flex items-center justify-end gap-3">
+        <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-3">
           <Button type="button" variant="outline" onClick={() => router.push("/banks")} className="h-11 px-6 border-slate-200 text-slate-600 font-semibold">
             Cancel
           </Button>

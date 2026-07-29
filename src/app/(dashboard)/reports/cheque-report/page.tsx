@@ -230,7 +230,7 @@ ${chequeSearch ? `<td style="padding:0;font-size:10px;color:#475569">Cheque: <b>
         )}
       </div>
 
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-sm">
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
           <div className="sm:col-span-1">
             <label className="mb-1.5 block text-[13px] font-semibold text-slate-700">Date From</label>
@@ -282,34 +282,34 @@ ${chequeSearch ? `<td style="padding:0;font-size:10px;color:#475569">Cheque: <b>
         <div className="flex items-center justify-center py-20"><Loader2 className="h-8 w-8 text-emerald-500 animate-spin" /></div>
       ) : data ? (
         <>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-              <p className="text-xs text-slate-500">Total Cheques</p>
-              <p className="text-lg font-bold text-slate-900">{data.summary.total_count}</p>
-              <p className="text-xs text-slate-400">{formatCurrency(data.summary.total_amount)}</p>
+          <div className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-4">
+            <div className="rounded-2xl border border-slate-200 bg-white p-3 sm:p-5 shadow-sm">
+              <p className="text-[11px] sm:text-xs text-slate-500">Total Cheques</p>
+              <p className="text-base sm:text-lg font-bold text-slate-900">{data.summary.total_count}</p>
+              <p className="text-[11px] sm:text-xs text-slate-400">{formatCurrency(data.summary.total_amount)}</p>
             </div>
-            <div className="rounded-2xl border border-amber-200 bg-amber-50 p-5 shadow-sm">
-              <p className="text-xs text-amber-600">Pending</p>
-              <p className="text-lg font-bold text-amber-700">{data.summary.pending_count}</p>
-              <p className="text-xs text-amber-500">{formatCurrency(data.summary.pending_amount)}</p>
+            <div className="rounded-2xl border border-amber-200 bg-amber-50 p-3 sm:p-5 shadow-sm">
+              <p className="text-[11px] sm:text-xs text-amber-600">Pending</p>
+              <p className="text-base sm:text-lg font-bold text-amber-700">{data.summary.pending_count}</p>
+              <p className="text-[11px] sm:text-xs text-amber-500">{formatCurrency(data.summary.pending_amount)}</p>
             </div>
-            <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-5 shadow-sm">
-              <p className="text-xs text-emerald-600">Cleared</p>
-              <p className="text-lg font-bold text-emerald-700">{data.summary.cleared_count}</p>
-              <p className="text-xs text-emerald-500">{formatCurrency(data.summary.cleared_amount)}</p>
+            <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-3 sm:p-5 shadow-sm">
+              <p className="text-[11px] sm:text-xs text-emerald-600">Cleared</p>
+              <p className="text-base sm:text-lg font-bold text-emerald-700">{data.summary.cleared_count}</p>
+              <p className="text-[11px] sm:text-xs text-emerald-500">{formatCurrency(data.summary.cleared_amount)}</p>
             </div>
-            <div className="rounded-2xl border border-red-200 bg-red-50 p-5 shadow-sm">
-              <p className="text-xs text-red-600">Bounced</p>
-              <p className="text-lg font-bold text-red-700">{data.summary.bounced_count}</p>
-              <p className="text-xs text-red-500">{formatCurrency(data.summary.bounced_amount)}</p>
+            <div className="rounded-2xl border border-red-200 bg-red-50 p-3 sm:p-5 shadow-sm">
+              <p className="text-[11px] sm:text-xs text-red-600">Bounced</p>
+              <p className="text-base sm:text-lg font-bold text-red-700">{data.summary.bounced_count}</p>
+              <p className="text-[11px] sm:text-xs text-red-500">{formatCurrency(data.summary.bounced_amount)}</p>
             </div>
           </div>
 
           <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
-            <div className="px-6 py-4 border-b border-slate-100">
+            <div className="px-4 sm:px-6 py-4 border-b border-slate-100">
               <h3 className="text-sm font-semibold text-slate-700">Cheque Details</h3>
             </div>
-            <div className="overflow-x-auto scrollbar-thin">
+            <div className="hidden md:block overflow-x-auto scrollbar-thin">
               <table className="w-full">
                 <thead>
                   <tr className="border-b border-slate-100 bg-slate-50/80">
@@ -339,6 +339,29 @@ ${chequeSearch ? `<td style="padding:0;font-size:10px;color:#475569">Cheque: <b>
                 </tbody>
               </table>
             </div>
+
+            <div className="md:hidden divide-y divide-slate-50">
+              {data.cheques.length === 0 ? (
+                <div className="px-4 py-16 text-center"><CreditCard className="mx-auto h-10 w-10 text-slate-300 mb-3" /><p className="text-sm font-semibold text-slate-600">No cheques found</p></div>
+              ) : (
+                data.cheques.map((c) => (
+                  <div key={c.id} className="px-4 py-3 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <p className="text-sm font-mono font-semibold text-slate-700">{c.cheque_number}</p>
+                      <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${STATUS_BADGES[c.status] || ""}`}>{c.status}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <p className="text-sm text-slate-700">{c.customer?.name || "—"}</p>
+                      <p className="text-sm font-bold text-slate-900">{formatCurrency(c.amount)}</p>
+                    </div>
+                    <div className="flex items-center justify-between text-xs text-slate-400">
+                      <span>{c.bank_name}</span>
+                      <span>{new Date(c.cheque_date).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })}</span>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
           </div>
         </>
       ) : null}
@@ -346,15 +369,15 @@ ${chequeSearch ? `<td style="padding:0;font-size:10px;color:#475569">Cheque: <b>
       {printConfirmOpen && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center">
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setPrintConfirmOpen(false)} />
-          <div className="relative z-10 w-full max-w-sm rounded-2xl bg-white p-6 shadow-2xl">
-            <div className="mb-5 text-center">
-              <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100">
-                <Printer className="h-6 w-6 text-emerald-600" />
+          <div className="relative z-10 w-full max-w-sm rounded-2xl bg-white p-4 sm:p-6 shadow-2xl">
+            <div className="mb-3 sm:mb-5 text-center">
+              <div className="mx-auto mb-2 sm:mb-3 flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-emerald-100">
+                <Printer className="h-5 w-5 sm:h-6 sm:w-6 text-emerald-600" />
               </div>
-              <h3 className="text-base font-bold text-slate-900">Print Cheque Report</h3>
-              <p className="mt-1 text-sm text-slate-500">Do you want to print this report?</p>
+              <h3 className="text-sm sm:text-base font-bold text-slate-900">Print Cheque Report</h3>
+              <p className="mt-1 text-xs sm:text-sm text-slate-500">Do you want to print this report?</p>
             </div>
-            <div className="flex gap-3">
+            <div className="flex flex-col-reverse sm:flex-row gap-2 sm:gap-3">
               <button onClick={() => setPrintConfirmOpen(false)} className="flex-1 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition-all hover:bg-slate-50">No</button>
               <button onClick={handlePrint} className="flex-1 rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-emerald-700">Yes</button>
             </div>

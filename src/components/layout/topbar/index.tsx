@@ -30,12 +30,12 @@ export function Topbar() {
     <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-slate-200 bg-white px-4 md:px-6">
       <button
         onClick={() => setMobileOpen(true)}
-        className="rounded-lg p-2 text-slate-500 hover:bg-slate-100 md:hidden"
+        className="rounded-lg p-2 text-slate-500 hover:bg-slate-100 lg:hidden"
       >
         <Menu className="h-5 w-5" />
       </button>
 
-      <div className="flex-1 max-w-xl ml-4">
+      <div className="flex-1 max-w-xl ml-4 hidden sm:block">
         <SearchCommand />
       </div>
 

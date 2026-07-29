@@ -195,12 +195,12 @@ export default function EditRolePage() {
   return (
     <div className="space-y-6">
       {/* Header with Breadcrumb */}
-      <div className="flex items-start justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold text-slate-900">Edit Role</h1>
           <p className="mt-0.5 text-sm text-slate-500">Update role details and permissions.</p>
         </div>
-        <nav className="flex items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-1.5 text-xs">
+        <nav className="flex flex-wrap items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-1.5 text-xs shrink-0">
           <button onClick={() => router.push("/roles")} className="font-medium text-slate-500 hover:text-emerald-600 transition-colors">
             Roles
           </button>
@@ -215,7 +215,7 @@ export default function EditRolePage() {
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* Role Name */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-sm">
           <h2 className="mb-4 text-lg font-semibold text-slate-900">Role Details</h2>
           <div>
             <label className="mb-1.5 block text-[13px] font-semibold text-slate-700">Name *</label>
@@ -232,20 +232,20 @@ export default function EditRolePage() {
 
         {/* Permissions */}
         <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
-          <div className="p-6 pb-4">
+          <div className="p-4 sm:p-6 pb-4">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <h2 className="text-lg font-semibold text-slate-900">Permissions *</h2>
                 <p className="text-xs text-slate-500 mt-1">{selectedPermissionIds.length} of {permissions.length} selected</p>
               </div>
               <div className="flex items-center gap-2">
-                <div className="relative">
+                <div className="relative flex-1 sm:flex-none">
                   <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-400" />
                   <input
                     value={permSearch}
                     onChange={(e) => setPermSearch(e.target.value)}
                     placeholder="Search permissions..."
-                    className="h-9 w-56 rounded-lg border border-slate-200 bg-white pl-8 pr-8 text-xs text-slate-600 outline-none focus:border-emerald-500"
+                    className="h-9 w-full sm:w-56 rounded-lg border border-slate-200 bg-white pl-8 pr-8 text-xs text-slate-600 outline-none focus:border-emerald-500"
                   />
                   {permSearch && (
                     <button onClick={() => setPermSearch("")} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
@@ -294,7 +294,7 @@ export default function EditRolePage() {
 
               return (
                   <div key={group} className="border-b border-slate-100 last:border-b-0">
-                    <div className="flex items-center gap-3 bg-slate-50/80 px-6 py-3">
+                    <div className="flex items-center gap-3 bg-slate-50/80 px-4 sm:px-6 py-3">
                       <button
                         type="button"
                         onClick={() => toggleGroup(group)}
@@ -338,7 +338,7 @@ export default function EditRolePage() {
                             key={perm.id}
                             type="button"
                             onClick={() => togglePermission(perm.id)}
-                            className={`flex items-center gap-2.5 bg-white px-6 py-2.5 text-left transition-colors hover:bg-emerald-50/50 ${isSelected ? "bg-emerald-50/70" : ""}`}
+                            className={`flex items-center gap-2.5 bg-white px-4 sm:px-6 py-2.5 text-left transition-colors hover:bg-emerald-50/50 ${isSelected ? "bg-emerald-50/70" : ""}`}
                           >
                             <div className={`flex h-4 w-4 shrink-0 items-center justify-center rounded border-2 transition-colors ${
                               isSelected ? "border-emerald-500 bg-emerald-500" : "border-slate-300 bg-white"
@@ -364,7 +364,7 @@ export default function EditRolePage() {
         </div>
 
         {/* Actions */}
-        <div className="flex items-center justify-end gap-3">
+        <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-3">
           <Button
             type="button"
             variant="outline"

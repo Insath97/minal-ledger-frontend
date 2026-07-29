@@ -4,6 +4,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { useSidebarStore } from "@/stores/sidebar-store";
+import { useMediaQuery } from "@/hooks/use-media-query";
 import type { NavItem } from "@/types";
 import {
   LayoutDashboard,
@@ -65,6 +67,8 @@ interface SidebarItemProps {
 
 export function SidebarItem({ item, isCollapsed }: SidebarItemProps) {
   const pathname = usePathname();
+  const { setMobileOpen, isMobileOpen } = useSidebarStore();
+  const isMobile = useMediaQuery("(max-width: 1023px)");
   const [showLogout, setShowLogout] = useState(false);
   const [isOpen, setIsOpen] = useState(() => {
     if (item.children) {
@@ -86,12 +90,12 @@ export function SidebarItem({ item, isCollapsed }: SidebarItemProps) {
           className={cn(
             "flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all",
             "bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700",
-            isCollapsed && "justify-center px-2"
+            isCollapsed && !isMobileOpen && "justify-center px-2"
           )}
-          title={isCollapsed ? item.label : undefined}
+          title={isCollapsed && !isMobileOpen ? item.label : undefined}
         >
           {Icon && <Icon className="h-5 w-5 shrink-0" />}
-          {!isCollapsed && <span>{item.label}</span>}
+          {(!isCollapsed || isMobileOpen) && <span>{item.label}</span>}
         </button>
         <LogoutDialog open={showLogout} onOpenChange={setShowLogout} />
       </>
@@ -105,12 +109,12 @@ export function SidebarItem({ item, isCollapsed }: SidebarItemProps) {
           onClick={() => setIsOpen(!isOpen)}
           className={cn(
             "flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all",
-            isCollapsed && "justify-center px-2",
+            isCollapsed && !isMobileOpen && "justify-center px-2",
             isChildActive
               ? "bg-emerald-50 text-emerald-700"
               : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
           )}
-          title={isCollapsed ? item.label : undefined}
+          title={isCollapsed && !isMobileOpen ? item.label : undefined}
         >
           {Icon && (
             <Icon
@@ -120,7 +124,7 @@ export function SidebarItem({ item, isCollapsed }: SidebarItemProps) {
               )}
             />
           )}
-          {!isCollapsed && (
+          {(!isCollapsed || isMobileOpen) && (
             <>
               <span className="flex-1 text-left">{item.label}</span>
               <ChevronDown
@@ -133,7 +137,7 @@ export function SidebarItem({ item, isCollapsed }: SidebarItemProps) {
             </>
           )}
         </button>
-        {!isCollapsed && isOpen && (
+        {(!isCollapsed || isMobileOpen) && isOpen && (
           <div className="mt-1 ml-4 space-y-0.5">
             {item.children.map((child) => {
               const ChildIcon = iconMap[child.icon];
@@ -142,6 +146,7 @@ export function SidebarItem({ item, isCollapsed }: SidebarItemProps) {
                 <Link
                   key={child.href}
                   href={child.href}
+                  onClick={() => { if (isMobile) setMobileOpen(false); }}
                   className={cn(
                     "flex items-center gap-2.5 rounded-lg px-3 py-2 text-[13px] font-medium transition-all",
                     isChildItemActive
@@ -170,14 +175,15 @@ export function SidebarItem({ item, isCollapsed }: SidebarItemProps) {
   return (
     <Link
       href={item.href}
+      onClick={() => { if (isMobile) setMobileOpen(false); }}
       className={cn(
         "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all",
-        isCollapsed && "justify-center px-2",
+        isCollapsed && !isMobileOpen && "justify-center px-2",
         isActive
           ? "bg-emerald-50 text-emerald-700"
           : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
       )}
-      title={isCollapsed ? item.label : undefined}
+      title={isCollapsed && !isMobileOpen ? item.label : undefined}
     >
       {Icon && (
         <Icon
@@ -187,10 +193,10 @@ export function SidebarItem({ item, isCollapsed }: SidebarItemProps) {
           )}
         />
       )}
-      {!isCollapsed && (
+      {(!isCollapsed || isMobileOpen) && (
         <span className="flex-1">{item.label}</span>
       )}
-      {!isCollapsed && item.badge !== undefined && (
+      {(!isCollapsed || isMobileOpen) && item.badge !== undefined && (
         <span
           className={cn(
             "rounded-full px-2 py-0.5 text-xs font-medium",

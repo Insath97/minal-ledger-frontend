@@ -54,7 +54,7 @@ export default function ExpenseSummaryPage() {
         <div className="flex items-center justify-center py-20"><Loader2 className="h-8 w-8 text-emerald-500 animate-spin" /></div>
       ) : data ? (
         <>
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-sm">
             <div className="mb-4">
               <p className="text-xs text-slate-500">Total Expenses ({data.year})</p>
               <p className="text-2xl font-bold text-red-600">{formatCurrency(data.grand_total)}</p>
@@ -75,7 +75,7 @@ export default function ExpenseSummaryPage() {
           </div>
 
           {data.by_category.length > 0 && (
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+            <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-sm">
               <h3 className="text-sm font-semibold text-slate-700 mb-4">By Category</h3>
               <div className="space-y-3">
                 {data.by_category.map((cat) => {

@@ -100,7 +100,7 @@ export default function DatabaseBackupPage() {
   if (!canExport) {
     return (
       <div className="space-y-6">
-        <div className="flex items-start justify-between">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <h1 className="text-2xl font-bold text-slate-900">Database Backup</h1>
             <p className="mt-0.5 text-sm text-slate-500">Export your database and download a secure SQL dump file.</p>
@@ -133,17 +133,17 @@ export default function DatabaseBackupPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-start justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900">Database Backup</h1>
-          <p className="mt-0.5 text-sm text-slate-500">Export your database and download a secure SQL dump file.</p>
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-slate-900">Database Backup</h1>
+            <p className="mt-0.5 text-sm text-slate-500">Export your database and download a secure SQL dump file.</p>
+          </div>
+          <nav className="flex items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-1.5 text-xs">
+            <button onClick={() => router.push("/settings")} className="font-medium text-slate-500 hover:text-emerald-600 transition-colors">Settings</button>
+            <BreadcrumbSep className="h-3 w-3 text-slate-400" />
+            <span className="font-semibold text-emerald-600">Backup</span>
+          </nav>
         </div>
-        <nav className="flex items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-1.5 text-xs">
-          <button onClick={() => router.push("/settings")} className="font-medium text-slate-500 hover:text-emerald-600 transition-colors">Settings</button>
-          <BreadcrumbSep className="h-3 w-3 text-slate-400" />
-          <span className="font-semibold text-emerald-600">Backup</span>
-        </nav>
-      </div>
 
       {/* Status Cards */}
       <div className="grid gap-4 sm:grid-cols-3">

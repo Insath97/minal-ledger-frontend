@@ -195,12 +195,12 @@ export default function EditCustomerPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-start justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold text-slate-900">Edit Customer</h1>
           <p className="mt-0.5 text-sm text-slate-500">Update customer information.</p>
         </div>
-        <nav className="flex items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-1.5 text-xs">
+        <nav className="flex items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-1.5 text-xs shrink-0">
           <button onClick={() => router.push("/customers")} className="font-medium text-slate-500 hover:text-emerald-600 transition-colors">Customers</button>
           <BreadcrumbSep className="h-3 w-3 text-slate-400" />
           <span className="font-semibold text-emerald-600">Edit</span>
@@ -286,7 +286,7 @@ export default function EditCustomerPage() {
         </FormSection>
 
         {/* Status & Balance */}
-        <div className="rounded-2xl border border-slate-200 bg-white px-6 py-4 shadow-sm">
+        <div className="rounded-2xl border border-slate-200 bg-white px-4 sm:px-6 py-4 shadow-sm">
           <div className="grid gap-4 sm:grid-cols-2">
             <FormField label="Status" error={errors.is_active?.message}>
               <button
@@ -327,7 +327,7 @@ export default function EditCustomerPage() {
         </FormSection>
 
         {/* Actions */}
-        <div className="flex items-center justify-end gap-3">
+        <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-3">
           <Button type="button" variant="outline" onClick={() => router.push("/customers")} className="h-11 px-6 border-slate-200 text-slate-600 font-semibold">
             Cancel
           </Button>

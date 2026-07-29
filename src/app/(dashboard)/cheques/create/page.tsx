@@ -163,12 +163,12 @@ export default function CreateChequePage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-start justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold text-slate-900">Record Cheque</h1>
           <p className="mt-0.5 text-sm text-slate-500">Record a new pending cheque for tracking.</p>
         </div>
-        <nav className="flex items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-1.5 text-xs">
+        <nav className="flex items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-1.5 text-xs shrink-0">
           <button onClick={() => router.push("/cheques")} className="font-medium text-slate-500 hover:text-emerald-600 transition-colors">Cheques</button>
           <BreadcrumbSep className="h-3 w-3 text-slate-400" />
           <span className="font-semibold text-emerald-600">Record</span>
@@ -177,7 +177,7 @@ export default function CreateChequePage() {
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* Customer & Sale */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-sm">
           <h3 className="mb-4 text-sm font-semibold text-slate-700">Customer & Sale</h3>
           <div className="grid gap-4 sm:grid-cols-2">
             {/* Customer Dropdown */}
@@ -270,7 +270,7 @@ export default function CreateChequePage() {
         </div>
 
         {/* Cheque Details */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-sm">
           <h3 className="mb-4 text-sm font-semibold text-slate-700">Cheque Details</h3>
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
@@ -316,13 +316,13 @@ export default function CreateChequePage() {
         </div>
 
         {/* Notes */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-sm">
           <h3 className="mb-4 text-sm font-semibold text-slate-700">Notes (Optional)</h3>
           <textarea {...register("notes")} placeholder="Additional notes about this cheque" rows={3} className="flex w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition-all placeholder:text-slate-400 hover:border-slate-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20" />
         </div>
 
         {/* Actions */}
-        <div className="flex items-center justify-end gap-3">
+        <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-3">
           <Button type="button" variant="outline" onClick={() => router.push("/cheques")} className="h-11 px-6 border-slate-200 text-slate-600 font-semibold">Cancel</Button>
           <Button type="submit" disabled={isSaving} className="h-11 px-8 bg-emerald-600 text-white hover:bg-emerald-700 font-semibold shadow-lg shadow-emerald-600/20">
             {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}

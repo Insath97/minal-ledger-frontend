@@ -15,7 +15,7 @@ import type { NavSection, NavItem } from "@/types";
 export function Sidebar() {
   const { isCollapsed, isMobileOpen, toggle, setMobileOpen, setCollapsed } = useSidebarStore();
   const { hasAnyPermission, user } = useAuthStore();
-  const isMobile = useMediaQuery("(max-width: 768px)");
+  const isMobile = useMediaQuery("(max-width: 1023px)");
 
   useEffect(() => {
     if (isMobile) {
@@ -51,7 +51,7 @@ export function Sidebar() {
           "fixed left-0 top-0 z-50 flex h-full flex-col border-r border-slate-200 bg-white transition-all duration-300",
           isMobile
             ? isMobileOpen
-              ? "translate-x-0"
+              ? "translate-x-0 w-[260px]"
               : "-translate-x-full"
             : isCollapsed
               ? "w-[72px]"
@@ -62,7 +62,7 @@ export function Sidebar() {
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-600">
             <Wallet className="h-4 w-4 text-white" />
           </div>
-          {!isCollapsed && (
+          {(!isCollapsed || isMobileOpen) && (
             <span className="text-lg font-bold text-slate-900">Minal Ledger</span>
           )}
         </div>

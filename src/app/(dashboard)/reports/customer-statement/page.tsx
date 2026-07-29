@@ -236,7 +236,7 @@ td{padding:7px 8px;font-size:10px}
 
           <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
             <div className="px-4 sm:px-6 py-4 border-b border-slate-100"><h3 className="text-sm font-semibold text-slate-700">Transactions</h3></div>
-            <div className="overflow-x-auto scrollbar-thin">
+            <div className="hidden md:block overflow-x-auto scrollbar-thin">
               <table className="w-full min-w-[640px]">
                 <thead><tr className="border-b border-slate-100 bg-slate-50/80">
                   {["Date","Type","Description","Ref","Debit","Credit","Balance"].map((h) => <th key={h} className={`px-4 sm:px-5 py-3 text-[11px] font-bold uppercase tracking-wider text-slate-500 ${["Debit","Credit","Balance"].includes(h) ? "text-right" : "text-left"}`}>{h}</th>)}
@@ -258,6 +258,28 @@ td{padding:7px 8px;font-size:10px}
                 </tbody>
               </table>
             </div>
+
+            <div className="md:hidden divide-y divide-slate-50">
+              {data.transactions.length === 0 ? (
+                <div className="px-4 py-16 text-center"><UserCheck className="mx-auto h-10 w-10 text-slate-300 mb-3" /><p className="text-sm font-semibold text-slate-600">No transactions found</p></div>
+              ) : data.transactions.map((txn, i) => (
+                <div key={i} className="px-4 py-3 space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${txn.type === "sale" ? "bg-blue-50 text-blue-700 border border-blue-200" : "bg-emerald-50 text-emerald-700 border border-emerald-200"}`}>{txn.type === "sale" ? "Sale" : "Payment"}</span>
+                    <span className="text-xs text-slate-400">{new Date(txn.date).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })}</span>
+                  </div>
+                  <p className="text-sm text-slate-700 truncate">{txn.description}</p>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="font-mono text-slate-500 text-xs">{txn.reference}</span>
+                    <div className="flex gap-3">
+                      {txn.debit > 0 && <span className="font-semibold text-slate-700">Dr {formatCurrency(txn.debit)}</span>}
+                      {txn.credit > 0 && <span className="font-semibold text-emerald-600">Cr {formatCurrency(txn.credit)}</span>}
+                    </div>
+                  </div>
+                  <p className="text-right text-sm font-bold text-slate-900">Bal: {formatCurrency(txn.balance)}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </>
       ) : (
@@ -270,15 +292,15 @@ td{padding:7px 8px;font-size:10px}
       {printConfirmOpen && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center">
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setPrintConfirmOpen(false)} />
-          <div className="relative z-10 w-full max-w-sm rounded-2xl bg-white p-6 shadow-2xl">
-            <div className="mb-5 text-center">
-              <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100">
-                <Printer className="h-6 w-6 text-emerald-600" />
+          <div className="relative z-10 w-full max-w-sm rounded-2xl bg-white p-4 sm:p-6 shadow-2xl">
+            <div className="mb-3 sm:mb-5 text-center">
+              <div className="mx-auto mb-2 sm:mb-3 flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-emerald-100">
+                <Printer className="h-5 w-5 sm:h-6 sm:w-6 text-emerald-600" />
               </div>
-              <h3 className="text-base font-bold text-slate-900">Print Statement</h3>
-              <p className="mt-1 text-sm text-slate-500">Do you want to print this report?</p>
+              <h3 className="text-sm sm:text-base font-bold text-slate-900">Print Statement</h3>
+              <p className="mt-1 text-xs sm:text-sm text-slate-500">Do you want to print this report?</p>
             </div>
-            <div className="flex gap-3">
+            <div className="flex flex-col-reverse sm:flex-row gap-2 sm:gap-3">
               <button onClick={() => setPrintConfirmOpen(false)} className="flex-1 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition-all hover:bg-slate-50">No</button>
               <button onClick={handlePrint} className="flex-1 rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-emerald-700">Yes</button>
             </div>

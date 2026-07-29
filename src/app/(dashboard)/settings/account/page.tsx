@@ -30,12 +30,12 @@ export default function AccountSettingsPage() {
       />
 
       <Card className="border-slate-200 bg-white shadow-sm">
-        <CardContent className="space-y-6 p-6">
+        <CardContent className="space-y-6 p-4 sm:p-6">
           <div>
             <h3 className="mb-4 text-sm font-semibold text-slate-900">Email Address</h3>
-            <div className="flex items-center gap-3">
-              <Input defaultValue="sajib@minaledger.com" className="h-11 max-w-md" />
-              <Button variant="outline" className="border-slate-200">Change</Button>
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+              <Input defaultValue="sajib@minaledger.com" className="h-11 w-full sm:max-w-md" />
+              <Button variant="outline" className="border-slate-200 self-start sm:self-auto">Change</Button>
             </div>
           </div>
 

@@ -210,12 +210,12 @@ export default function EditSalePage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-start justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold text-slate-900">Edit Sale</h1>
           <p className="mt-0.5 text-sm text-slate-500">Update sale for <span className="font-semibold text-slate-700">{sale.reference_number}</span></p>
         </div>
-        <nav className="flex items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-1.5 text-xs">
+        <nav className="flex items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-1.5 text-xs shrink-0">
           <button onClick={() => router.push("/sales")} className="font-medium text-slate-500 hover:text-emerald-600 transition-colors">Sales</button>
           <BreadcrumbSep className="h-3 w-3 text-slate-400" />
           <span className="font-semibold text-emerald-600">Edit</span>
@@ -223,8 +223,8 @@ export default function EditSalePage() {
       </div>
 
       {/* Sale Summary */}
-      <div className="rounded-2xl border border-slate-200 bg-white px-6 py-4 shadow-sm">
-        <div className="grid gap-4 sm:grid-cols-4">
+      <div className="rounded-2xl border border-slate-200 bg-white px-4 sm:px-6 py-3 sm:py-4 shadow-sm">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
           <div>
             <p className="text-xs text-slate-500">Reference</p>
             <p className="text-sm font-semibold text-slate-700 font-mono">{sale.reference_number}</p>
@@ -248,7 +248,7 @@ export default function EditSalePage() {
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* Sale Type */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-sm">
           <h3 className="mb-4 text-sm font-semibold text-slate-700">Sale Type</h3>
           <div className="flex gap-3">
             {(["retail", "wholesale"] as const).map((type) => (
@@ -269,7 +269,7 @@ export default function EditSalePage() {
         </div>
 
         {/* Sale Details */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-sm">
           <h3 className="mb-4 text-sm font-semibold text-slate-700">Sale Details</h3>
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
@@ -408,7 +408,7 @@ export default function EditSalePage() {
         </div>
 
         {/* Notes */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-sm">
           <h3 className="mb-4 text-sm font-semibold text-slate-700">Notes</h3>
           <textarea
             {...register("notes")}
@@ -419,7 +419,7 @@ export default function EditSalePage() {
         </div>
 
         {/* Actions */}
-        <div className="flex items-center justify-end gap-3">
+        <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-3">
           <Button type="button" variant="outline" onClick={() => router.push(`/sales/${saleId}`)} className="h-11 px-6 border-slate-200 text-slate-600 font-semibold">
             Cancel
           </Button>

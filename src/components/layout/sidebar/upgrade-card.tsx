@@ -1,13 +1,16 @@
 "use client";
 
 import { LifeBuoy, ExternalLink } from "lucide-react";
+import { useSidebarStore } from "@/stores/sidebar-store";
 
 interface HelpCardProps {
   isCollapsed: boolean;
 }
 
 export function HelpCard({ isCollapsed }: HelpCardProps) {
-  if (isCollapsed) return null;
+  const { isMobileOpen } = useSidebarStore();
+
+  if (isCollapsed && !isMobileOpen) return null;
 
   return (
     <div className="mx-3 mb-1 rounded-lg bg-emerald-600 p-3">

@@ -96,7 +96,7 @@ export default function ViewSalePage() {
           <div className="h-7 w-40 rounded bg-slate-100 animate-pulse" />
         </div>
         <div className="rounded-2xl bg-slate-100 h-36 animate-pulse" />
-        <div className="grid gap-4 sm:grid-cols-4">
+        <div className="grid grid-cols-2 gap-3 sm:gap-4">
           {[1, 2, 3, 4].map((i) => (
             <div key={i} className="h-24 rounded-2xl bg-slate-100 animate-pulse" />
           ))}
@@ -123,12 +123,12 @@ export default function ViewSalePage() {
   return (
     <div className="space-y-6">
       {/* Header with Breadcrumb */}
-      <div className="flex items-start justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold text-slate-900">Sale Details</h1>
           <p className="mt-0.5 text-sm text-slate-500">View sale information and payment status.</p>
         </div>
-        <nav className="flex items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-1.5 text-xs">
+        <nav className="flex items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-1.5 text-xs shrink-0">
           <button onClick={() => router.push("/sales")} className="font-medium text-slate-500 hover:text-emerald-600 transition-colors">
             Sales
           </button>
@@ -138,15 +138,15 @@ export default function ViewSalePage() {
       </div>
 
       {/* Hero Card */}
-      <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-6">
-        <div className="flex items-center justify-between">
+      <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4 sm:p-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="flex items-center gap-4">
-            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-600 shadow-lg shadow-emerald-600/20">
-              <ShoppingCart className="h-8 w-8 text-white" />
+            <div className="flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-emerald-600 shadow-lg shadow-emerald-600/20 shrink-0">
+              <ShoppingCart className="h-7 w-7 sm:h-8 sm:w-8 text-white" />
             </div>
             <div>
-              <h2 className="text-2xl font-bold text-slate-900">{sale.reference_number}</h2>
-              <div className="mt-1 flex items-center gap-3">
+              <h2 className="text-xl sm:text-2xl font-bold text-slate-900">{sale.reference_number}</h2>
+              <div className="mt-1 flex flex-wrap items-center gap-2">
                 {sale.invoice_number && (
                   <Badge variant="outline" className="border-emerald-200 bg-emerald-100 text-emerald-700 text-xs font-semibold">
                     INV: {sale.invoice_number}
@@ -168,7 +168,7 @@ export default function ViewSalePage() {
               </div>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 sm:shrink-0">
             {canEdit && (
             <Button
               onClick={() => router.push(`/sales/${sale.id}/edit`)}
@@ -193,7 +193,7 @@ export default function ViewSalePage() {
       </div>
 
       {/* Stats */}
-      <div className="grid gap-4 sm:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 sm:gap-4">
         <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
           <div className="flex items-center gap-3">
             <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-100">
@@ -244,22 +244,22 @@ export default function ViewSalePage() {
       <div className="grid gap-4 sm:grid-cols-2">
         {/* Customer Info */}
         <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
-          <div className="border-b border-slate-100 px-5 py-3">
+          <div className="border-b border-slate-100 px-4 sm:px-5 py-3">
             <h2 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
               <User className="h-4 w-4 text-emerald-600" />
               Customer Information
             </h2>
           </div>
           <div className="divide-y divide-slate-50">
-            <div className="flex items-center justify-between px-5 py-2.5">
+            <div className="flex items-center justify-between px-4 sm:px-5 py-2.5">
               <span className="text-xs text-slate-500">Name</span>
-              <span className="text-sm text-slate-700">{sale.customer?.name || "Walk-in"}</span>
+              <span className="text-sm text-slate-700 truncate ml-4 text-right">{sale.customer?.name || "Walk-in"}</span>
             </div>
-            <div className="flex items-center justify-between px-5 py-2.5">
+            <div className="flex items-center justify-between px-4 sm:px-5 py-2.5">
               <span className="text-xs text-slate-500">Phone</span>
               <span className="text-sm text-slate-700">{sale.customer?.phone || "—"}</span>
             </div>
-            <div className="flex items-center justify-between px-5 py-2.5">
+            <div className="flex items-center justify-between px-4 sm:px-5 py-2.5">
               <span className="text-xs text-slate-500">Code</span>
               <span className="text-sm text-slate-700 font-mono">{sale.customer?.code || "—"}</span>
             </div>
@@ -268,22 +268,22 @@ export default function ViewSalePage() {
 
         {/* Sale Info */}
         <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
-          <div className="border-b border-slate-100 px-5 py-3">
+          <div className="border-b border-slate-100 px-4 sm:px-5 py-3">
             <h2 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
               <FileText className="h-4 w-4 text-emerald-600" />
               Sale Information
             </h2>
           </div>
           <div className="divide-y divide-slate-50">
-            <div className="flex items-center justify-between px-5 py-2.5">
+            <div className="flex items-center justify-between px-4 sm:px-5 py-2.5">
               <span className="text-xs text-slate-500">Reference</span>
               <span className="text-sm text-slate-700 font-mono">{sale.reference_number}</span>
             </div>
-            <div className="flex items-center justify-between px-5 py-2.5">
+            <div className="flex items-center justify-between px-4 sm:px-5 py-2.5">
               <span className="text-xs text-slate-500">Invoice</span>
               <span className="text-sm text-slate-700">{sale.invoice_number || "—"}</span>
             </div>
-            <div className="flex items-center justify-between px-5 py-2.5">
+            <div className="flex items-center justify-between px-4 sm:px-5 py-2.5">
               <span className="text-xs text-slate-500">Created By</span>
               <span className="text-sm text-slate-700">{sale.creator?.name || "—"}</span>
             </div>
@@ -294,13 +294,13 @@ export default function ViewSalePage() {
       {/* Bill Image */}
       {sale.bill_image && (
         <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
-          <div className="border-b border-slate-100 px-5 py-3">
+          <div className="border-b border-slate-100 px-4 sm:px-5 py-3">
             <h2 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
               <ImageIcon className="h-4 w-4 text-emerald-600" />
               Bill Image
             </h2>
           </div>
-          <div className="px-5 py-3">
+          <div className="px-4 sm:px-5 py-3">
             <img src={getImageUrl(sale.bill_image) || ""} alt="Bill" className="h-32 rounded-lg object-cover border border-slate-200" />
           </div>
         </div>
@@ -309,7 +309,7 @@ export default function ViewSalePage() {
       {/* Cheques */}
       {sale.cheques && sale.cheques.length > 0 && (
         <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
-          <div className="border-b border-slate-100 px-5 py-3">
+          <div className="border-b border-slate-100 px-4 sm:px-5 py-3">
             <h2 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
               <CreditCard className="h-4 w-4 text-emerald-600" />
               Cheque Deposits ({sale.cheques.length})
@@ -317,12 +317,12 @@ export default function ViewSalePage() {
           </div>
           <div className="divide-y divide-slate-50">
             {sale.cheques.map((cheque) => (
-              <div key={cheque.id} className="px-5 py-3">
+              <div key={cheque.id} className="px-4 sm:px-5 py-3">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm font-semibold text-slate-700 font-mono">{cheque.cheque_number}</span>
                   <span className="text-sm font-bold text-slate-900">{formatCurrency(cheque.amount)}</span>
                 </div>
-                <div className="flex items-center gap-4 text-xs text-slate-500">
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-500">
                   <span>Bank: {cheque.bank_name}</span>
                   <span>Date: {new Date(cheque.cheque_date).toLocaleDateString()}</span>
                   <span className={`capitalize font-semibold ${cheque.status === "cleared" ? "text-emerald-600" : cheque.status === "bounced" ? "text-red-600" : "text-amber-600"}`}>
@@ -341,7 +341,7 @@ export default function ViewSalePage() {
       {/* Payment Settlements */}
       {sale.payment_sales && sale.payment_sales.length > 0 && (
         <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
-          <div className="border-b border-slate-100 px-5 py-3">
+          <div className="border-b border-slate-100 px-4 sm:px-5 py-3">
             <h2 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
               <ArrowDownRight className="h-4 w-4 text-emerald-600" />
               Payment Settlements ({sale.payment_sales.length})
@@ -353,9 +353,9 @@ export default function ViewSalePage() {
               const method = payment?.payment_method || "";
               const methodStyle = METHOD_STYLES[method] || METHOD_STYLES.cash;
               return (
-                <div key={ps.id} className="px-5 py-3">
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center gap-2">
+                <div key={ps.id} className="px-4 sm:px-5 py-3">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
+                    <div className="flex flex-wrap items-center gap-2">
                       <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold capitalize ${methodStyle.border} ${methodStyle.bg} ${methodStyle.text}`}>
                         {method.replace("_", " ")}
                       </span>
@@ -381,13 +381,13 @@ export default function ViewSalePage() {
       {/* Notes */}
       {sale.notes && (
         <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
-          <div className="border-b border-slate-100 px-5 py-3">
+          <div className="border-b border-slate-100 px-4 sm:px-5 py-3">
             <h2 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
               <FileText className="h-4 w-4 text-emerald-600" />
               Notes
             </h2>
           </div>
-          <div className="px-5 py-3">
+          <div className="px-4 sm:px-5 py-3">
             <p className="text-sm text-slate-700 whitespace-pre-wrap">{sale.notes}</p>
           </div>
         </div>
@@ -395,10 +395,12 @@ export default function ViewSalePage() {
 
       {/* Timestamps */}
       <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
-        <div className="px-5 py-3">
-          <div className="flex items-center gap-3 text-xs text-slate-500">
-            <Calendar className="h-3.5 w-3.5" />
-            <span>Created: {new Date(sale.created_at).toLocaleString()} · Updated: {new Date(sale.updated_at).toLocaleString()}</span>
+        <div className="px-4 sm:px-5 py-3">
+          <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
+            <Calendar className="h-3.5 w-3.5 shrink-0" />
+            <span>Created: {new Date(sale.created_at).toLocaleDateString()} {new Date(sale.created_at).toLocaleTimeString()}</span>
+            <span className="hidden sm:inline">·</span>
+            <span>Updated: {new Date(sale.updated_at).toLocaleDateString()} {new Date(sale.updated_at).toLocaleTimeString()}</span>
           </div>
         </div>
       </div>
@@ -410,7 +412,7 @@ export default function ViewSalePage() {
           <div className="relative z-10 w-full max-w-sm mx-4 animate-in zoom-in-95 fade-in duration-200">
             <div className="rounded-2xl bg-white shadow-2xl border border-slate-100 overflow-hidden">
               <div className="h-1.5 bg-gradient-to-r from-red-500 via-red-400 to-red-500" />
-              <div className="p-6 text-center">
+              <div className="p-4 sm:p-6 text-center">
                 <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-red-50 border border-red-100">
                   <Trash2 className="h-7 w-7 text-red-500" />
                 </div>
@@ -419,7 +421,7 @@ export default function ViewSalePage() {
                   This will permanently remove <span className="font-semibold text-slate-700">{sale.reference_number}</span>. This action cannot be undone.
                 </p>
               </div>
-              <div className="flex gap-3 px-6 pb-6">
+              <div className="flex gap-3 px-4 sm:px-6 pb-4 sm:pb-6">
                 <button
                   onClick={() => setShowDeleteConfirm(false)}
                   className="flex-1 h-11 rounded-xl border border-slate-200 text-sm font-semibold text-slate-700 hover:bg-slate-50"

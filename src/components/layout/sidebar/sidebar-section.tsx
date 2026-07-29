@@ -2,6 +2,7 @@
 
 import type { NavItem } from "@/types";
 import { SidebarItem } from "./sidebar-item";
+import { useSidebarStore } from "@/stores/sidebar-store";
 
 interface SidebarSectionProps {
   title: string;
@@ -10,9 +11,11 @@ interface SidebarSectionProps {
 }
 
 export function SidebarSection({ title, items, isCollapsed }: SidebarSectionProps) {
+  const { isMobileOpen } = useSidebarStore();
+
   return (
     <div className="mb-6">
-      {!isCollapsed && (
+      {(!isCollapsed || isMobileOpen) && (
         <p className="mb-2 px-3 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
           {title}
         </p>

@@ -126,8 +126,8 @@ export default function SalesPage() {
 
       {/* Search & Filters */}
       <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-        <div className="flex items-center gap-3">
-          <div className="relative flex-1">
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="relative min-w-0 flex-1 sm:flex-1">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
             <Input
               placeholder="Search by reference, invoice, customer..."
@@ -144,7 +144,7 @@ export default function SalesPage() {
           <select
             value={businessTypeFilter}
             onChange={(e) => { setBusinessTypeFilter(e.target.value as typeof businessTypeFilter); setCurrentPage(1); }}
-            className="h-10 min-w-[140px] rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-600 outline-none transition-all hover:border-slate-300 focus:border-emerald-500"
+            className="h-10 w-full sm:w-auto sm:min-w-[140px] rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-600 outline-none transition-all hover:border-slate-300 focus:border-emerald-500"
           >
             <option value="all">All Types</option>
             <option value="retail">Retail</option>
@@ -153,7 +153,7 @@ export default function SalesPage() {
           <select
             value={paymentStatusFilter}
             onChange={(e) => { setPaymentStatusFilter(e.target.value as typeof paymentStatusFilter); setCurrentPage(1); }}
-            className="h-10 min-w-[140px] rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-600 outline-none transition-all hover:border-slate-300 focus:border-emerald-500"
+            className="h-10 w-full sm:w-auto sm:min-w-[140px] rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-600 outline-none transition-all hover:border-slate-300 focus:border-emerald-500"
           >
             <option value="all">All Status</option>
             <option value="paid">Paid</option>
@@ -163,8 +163,8 @@ export default function SalesPage() {
         </div>
       </div>
 
-      {/* Data Table */}
-      <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+      {/* Data Table - Desktop */}
+      <div className="hidden md:block rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
         <div className="overflow-x-auto scrollbar-thin">
           <table className="w-full">
             <thead>
@@ -172,7 +172,7 @@ export default function SalesPage() {
                 <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">#</th>
                 <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">Reference</th>
                 <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">Customer</th>
-                <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">Type</th>
+                <th className="hidden lg:table-cell px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">Type</th>
                 <th className="px-5 py-3.5 text-right text-[11px] font-bold uppercase tracking-wider text-slate-500">Total</th>
                 <th className="px-5 py-3.5 text-right text-[11px] font-bold uppercase tracking-wider text-slate-500">Paid</th>
                 <th className="px-5 py-3.5 text-right text-[11px] font-bold uppercase tracking-wider text-slate-500">Due</th>
@@ -223,7 +223,7 @@ export default function SalesPage() {
                         <span className="text-xs text-slate-400">Walk-in</span>
                       )}
                     </td>
-                    <td className="px-5 py-3.5">
+                    <td className="hidden lg:table-cell px-5 py-3.5">
                       <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold capitalize ${
                         sale.business_type === "wholesale"
                           ? "bg-blue-100 text-blue-700 border border-blue-200"
@@ -306,6 +306,104 @@ export default function SalesPage() {
         )}
       </div>
 
+      {/* Mobile Cards */}
+      {loading ? (
+        <div className="md:hidden rounded-2xl border border-slate-200 bg-white shadow-sm p-8 text-center">
+          <Loader2 className="mx-auto h-8 w-8 text-emerald-500 animate-spin mb-3" />
+          <p className="text-sm text-slate-500">Loading sales...</p>
+        </div>
+      ) : sales.length === 0 ? (
+        <div className="md:hidden rounded-2xl border border-slate-200 bg-white shadow-sm p-8 text-center">
+          <ShoppingCart className="mx-auto h-10 w-10 text-slate-300 mb-3" />
+          <p className="text-sm font-semibold text-slate-600">No sales found</p>
+          <p className="text-xs text-slate-400 mt-1">Try adjusting your search or filters</p>
+        </div>
+      ) : (
+        <div className="md:hidden space-y-3">
+          {sales.map((sale, i) => (
+            <div
+              key={sale.id}
+              className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
+            >
+              {/* Card Header */}
+              <div className="flex items-start justify-between mb-3">
+                <div>
+                  <p className="font-mono text-xs font-semibold text-slate-700">{sale.reference_number}</p>
+                  {sale.customer ? (
+                    <p className="text-sm font-semibold text-slate-800 mt-0.5">{sale.customer.name}</p>
+                  ) : (
+                    <p className="text-sm text-slate-400 mt-0.5">Walk-in</p>
+                  )}
+                </div>
+                <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-semibold capitalize ${PAYMENT_STATUS_COLORS[sale.payment_status] || ""}`}>
+                  {sale.payment_status}
+                </span>
+              </div>
+
+              {/* Card Body - Amounts */}
+              <div className="flex items-center gap-3 mb-3">
+                <div className="flex-1 min-w-0">
+                  <p className="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">Total</p>
+                  <p className="text-sm font-bold text-slate-800 truncate">{formatCurrency(sale.total_amount)}</p>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">Paid</p>
+                  <p className="text-sm text-slate-600 truncate">{formatCurrency(sale.paid_amount)}</p>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">Due</p>
+                  <p className={`text-sm font-semibold truncate ${sale.due_amount > 0 ? "text-red-600" : "text-slate-400"}`}>
+                    {formatCurrency(sale.due_amount)}
+                  </p>
+                </div>
+              </div>
+
+              {/* Card Footer */}
+              <div className="flex items-center justify-between pt-2 border-t border-slate-100">
+                <div className="flex items-center gap-3">
+                  <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold capitalize ${
+                    sale.business_type === "wholesale"
+                      ? "bg-blue-100 text-blue-700"
+                      : "bg-violet-100 text-violet-700"
+                  }`}>
+                    {sale.business_type}
+                  </span>
+                  <span className="text-xs text-slate-400">
+                    {new Date(sale.sale_date).toLocaleDateString()}
+                  </span>
+                </div>
+                {showActions && (
+                  <div className="flex items-center gap-1">
+                    <button
+                      onClick={() => router.push(`/sales/${sale.id}`)}
+                      className="rounded-lg p-1.5 text-slate-400 hover:bg-blue-50 hover:text-blue-600 transition-colors"
+                    >
+                      <Eye className="h-4 w-4" />
+                    </button>
+                    {canEdit && (
+                      <button
+                        onClick={() => router.push(`/sales/${sale.id}/edit`)}
+                        className="rounded-lg p-1.5 text-slate-400 hover:bg-emerald-50 hover:text-emerald-600 transition-colors"
+                      >
+                        <Pencil className="h-4 w-4" />
+                      </button>
+                    )}
+                    {canDelete && (
+                      <button
+                        onClick={() => setShowDeleteConfirm(sale)}
+                        className="rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-500 transition-colors"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
       {/* Delete Confirmation */}
       {showDeleteConfirm && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center">
@@ -313,7 +411,7 @@ export default function SalesPage() {
           <div className="relative z-10 w-full max-w-sm mx-4 animate-in zoom-in-95 fade-in duration-200">
             <div className="rounded-2xl bg-white shadow-2xl border border-slate-100 overflow-hidden">
               <div className="h-1.5 bg-gradient-to-r from-red-500 via-red-400 to-red-500" />
-              <div className="p-6 text-center">
+              <div className="p-4 sm:p-6 text-center">
                 <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-red-50 border border-red-100">
                   <Trash2 className="h-7 w-7 text-red-500" />
                 </div>
@@ -322,7 +420,7 @@ export default function SalesPage() {
                   This will permanently remove <span className="font-semibold text-slate-700">{showDeleteConfirm.reference_number}</span>. This action cannot be undone.
                 </p>
               </div>
-              <div className="flex gap-3 px-6 pb-6">
+              <div className="flex gap-3 px-4 sm:px-6 pb-4 sm:pb-6">
                 <button
                   onClick={() => setShowDeleteConfirm(null)}
                   className="flex-1 h-11 rounded-xl border border-slate-200 text-sm font-semibold text-slate-700 hover:bg-slate-50"

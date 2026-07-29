@@ -126,8 +126,8 @@ export default function ChequesPage() {
 
       {/* Search & Filters */}
       <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-        <div className="flex items-center gap-3">
-          <div className="relative flex-1">
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="relative min-w-0 flex-1 sm:flex-1">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
             <Input
               placeholder="Search by cheque number, bank, customer..."
@@ -144,7 +144,7 @@ export default function ChequesPage() {
           <select
             value={statusFilter}
             onChange={(e) => { setStatusFilter(e.target.value); setCurrentPage(1); }}
-            className="h-10 min-w-[160px] rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-600 outline-none transition-all hover:border-slate-300 focus:border-emerald-500"
+            className="h-10 w-full sm:w-auto sm:min-w-[160px] rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-600 outline-none transition-all hover:border-slate-300 focus:border-emerald-500"
           >
             {STATUS_OPTIONS.map((opt) => (
               <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -153,8 +153,8 @@ export default function ChequesPage() {
         </div>
       </div>
 
-      {/* Data Table */}
-      <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+      {/* Data Table - Desktop */}
+      <div className="hidden md:block rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
         <div className="overflow-x-auto scrollbar-thin">
           <table className="w-full">
             <thead>
@@ -260,6 +260,53 @@ export default function ChequesPage() {
         )}
       </div>
 
+      {/* Mobile Cards */}
+      {loading ? (
+        <div className="md:hidden rounded-2xl border border-slate-200 bg-white shadow-sm p-8 text-center">
+          <Loader2 className="mx-auto h-8 w-8 text-emerald-500 animate-spin mb-3" />
+          <p className="text-sm text-slate-500">Loading cheques...</p>
+        </div>
+      ) : cheques.length === 0 ? (
+        <div className="md:hidden rounded-2xl border border-slate-200 bg-white shadow-sm p-8 text-center">
+          <CreditCard className="mx-auto h-10 w-10 text-slate-300 mb-3" />
+          <p className="text-sm font-semibold text-slate-600">No cheques found</p>
+          <p className="text-xs text-slate-400 mt-1">Try adjusting your search or filters</p>
+        </div>
+      ) : (
+        <div className="md:hidden space-y-3">
+          {cheques.map((cheque) => (
+            <div key={cheque.id} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+              <div className="flex items-start justify-between mb-3">
+                <div className="min-w-0">
+                  <p className="text-sm font-mono font-semibold text-slate-800 truncate">{cheque.cheque_number}</p>
+                  <p className="text-xs text-slate-500">{cheque.customer?.name || "—"}</p>
+                </div>
+                <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-semibold capitalize ${STATUS_STYLES[cheque.status] || "bg-slate-50 text-slate-500 border-slate-200"}`}>
+                  {cheque.status}
+                </span>
+              </div>
+
+              <div className="flex items-center justify-between text-xs text-slate-500 mb-3">
+                <span>{cheque.bank_name}</span>
+                <span>{formatDate(cheque.cheque_date)}</span>
+                <span className="font-semibold text-slate-700">{formatCurrency(cheque.amount)}</span>
+              </div>
+
+              <div className="flex items-center justify-end gap-1 pt-2 border-t border-slate-100">
+                <button onClick={() => router.push(`/cheques/${cheque.id}`)} className="rounded-lg p-1.5 text-slate-400 hover:bg-blue-50 hover:text-blue-600 transition-colors">
+                  <Eye className="h-4 w-4" />
+                </button>
+                {cheque.status !== "cleared" && canDelete && (
+                  <button onClick={() => setShowDeleteConfirm(cheque)} className="rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-500 transition-colors">
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
       {/* Delete Confirmation */}
       {showDeleteConfirm && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center">
@@ -267,7 +314,7 @@ export default function ChequesPage() {
           <div className="relative z-10 w-full max-w-sm mx-4 animate-in zoom-in-95 fade-in duration-200">
             <div className="rounded-2xl bg-white shadow-2xl border border-slate-100 overflow-hidden">
               <div className="h-1.5 bg-gradient-to-r from-red-500 via-red-400 to-red-500" />
-              <div className="p-6 text-center">
+              <div className="p-4 sm:p-6 text-center">
                 <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-red-50 border border-red-100">
                   <Trash2 className="h-7 w-7 text-red-500" />
                 </div>
@@ -276,7 +323,7 @@ export default function ChequesPage() {
                   This will permanently remove cheque <span className="font-semibold text-slate-700">{showDeleteConfirm.cheque_number}</span>. This action cannot be undone.
                 </p>
               </div>
-              <div className="flex gap-3 px-6 pb-6">
+              <div className="flex gap-3 px-4 sm:px-6 pb-4 sm:pb-6">
                 <button
                   onClick={() => setShowDeleteConfirm(null)}
                   className="flex-1 h-11 rounded-xl border border-slate-200 text-sm font-semibold text-slate-700 hover:bg-slate-50"

@@ -11,6 +11,7 @@ import {
   Activity,
   Calendar,
   ChevronDown,
+  User,
 } from "lucide-react";
 import { Pagination } from "@/components/shared/pagination";
 import { Button } from "@/components/ui/button";
@@ -149,7 +150,7 @@ export default function ActivityLogsPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-start justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold text-slate-900">Activity Logs</h1>
           <p className="mt-0.5 text-sm text-slate-500">Track all system actions and changes.</p>
@@ -163,8 +164,8 @@ export default function ActivityLogsPage() {
 
       {/* Search & Filters */}
       <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-        <div className="flex items-center gap-3">
-          <div className="relative flex-1">
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="relative min-w-0 flex-1 sm:flex-1">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
             <Input
               placeholder="Search logs..."
@@ -180,11 +181,11 @@ export default function ActivityLogsPage() {
           </div>
 
           {/* Module Searchable Select */}
-          <div className="relative" ref={moduleDropdownRef}>
+          <div className="relative w-full sm:w-auto" ref={moduleDropdownRef}>
             <button
               type="button"
               onClick={() => setModuleDropdownOpen(!moduleDropdownOpen)}
-              className="flex h-10 min-w-[160px] items-center justify-between gap-2 rounded-lg border border-slate-200 bg-white px-3 text-sm transition-all hover:border-slate-300 focus:border-emerald-500"
+              className="flex h-10 w-full sm:min-w-[180px] items-center justify-between gap-2 rounded-lg border border-slate-200 bg-white px-3 text-sm transition-all hover:border-slate-300 focus:border-emerald-500"
             >
               <span className={moduleFilter ? "text-slate-700 font-medium" : "text-slate-400"}>
                 {moduleFilter || "Module"}
@@ -226,11 +227,11 @@ export default function ActivityLogsPage() {
           </div>
 
           {/* Action Searchable Select */}
-          <div className="relative" ref={actionDropdownRef}>
+          <div className="relative w-full sm:w-auto" ref={actionDropdownRef}>
             <button
               type="button"
               onClick={() => setActionDropdownOpen(!actionDropdownOpen)}
-              className="flex h-10 min-w-[160px] items-center justify-between gap-2 rounded-lg border border-slate-200 bg-white px-3 text-sm transition-all hover:border-slate-300 focus:border-emerald-500"
+              className="flex h-10 w-full sm:min-w-[180px] items-center justify-between gap-2 rounded-lg border border-slate-200 bg-white px-3 text-sm transition-all hover:border-slate-300 focus:border-emerald-500"
             >
               <span className={actionFilter ? "text-slate-700 font-medium" : "text-slate-400"}>
                 {actionFilter || "Action"}
@@ -272,11 +273,11 @@ export default function ActivityLogsPage() {
           </div>
 
           {/* Level Searchable Select */}
-          <div className="relative" ref={levelDropdownRef}>
+          <div className="relative w-full sm:w-auto" ref={levelDropdownRef}>
             <button
               type="button"
               onClick={() => setLevelDropdownOpen(!levelDropdownOpen)}
-              className="flex h-10 min-w-[140px] items-center justify-between gap-2 rounded-lg border border-slate-200 bg-white px-3 text-sm transition-all hover:border-slate-300 focus:border-emerald-500"
+              className="flex h-10 w-full sm:min-w-[160px] items-center justify-between gap-2 rounded-lg border border-slate-200 bg-white px-3 text-sm transition-all hover:border-slate-300 focus:border-emerald-500"
             >
               <span className={levelFilter ? "text-slate-700 font-medium" : "text-slate-400"}>
                 {levelFilter ? levelFilter.charAt(0).toUpperCase() + levelFilter.slice(1) : "Level"}
@@ -325,8 +326,8 @@ export default function ActivityLogsPage() {
         </div>
       </div>
 
-      {/* Data Table */}
-      <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+      {/* Data Table - Desktop */}
+      <div className="hidden md:block rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
         <div className="overflow-x-auto scrollbar-thin">
           <table className="w-full">
             <thead>
@@ -420,6 +421,58 @@ export default function ActivityLogsPage() {
           />
         )}
       </div>
+
+      {/* Mobile Cards */}
+      {loading ? (
+        <div className="md:hidden rounded-2xl border border-slate-200 bg-white shadow-sm p-8 text-center">
+          <Loader2 className="mx-auto h-8 w-8 text-emerald-500 animate-spin mb-3" />
+          <p className="text-sm text-slate-500">Loading activity logs...</p>
+        </div>
+      ) : logs.length === 0 ? (
+        <div className="md:hidden rounded-2xl border border-slate-200 bg-white shadow-sm p-8 text-center">
+          <Activity className="mx-auto h-10 w-10 text-slate-300 mb-3" />
+          <p className="text-sm font-semibold text-slate-600">No activity logs found</p>
+          <p className="text-xs text-slate-400 mt-1">Try adjusting your filters</p>
+        </div>
+      ) : (
+        <div className="md:hidden space-y-3">
+          {logs.map((log) => (
+            <button
+              key={log.id}
+              onClick={() => router.push(`/activity-logs/${log.id}`)}
+              className="w-full rounded-2xl border border-slate-200 bg-white p-4 shadow-sm text-left"
+            >
+              <div className="flex items-start justify-between mb-2">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100 shrink-0">
+                    <User className="h-4 w-4 text-slate-500" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium text-slate-700 truncate">{log.user?.name || "System"}</p>
+                    <p className="text-[11px] text-slate-400">{log.user?.username || "—"}</p>
+                  </div>
+                </div>
+                <Badge variant="outline" className={`${getActionColor(log.action)} text-[10px] font-bold shrink-0`}>
+                  {log.action}
+                </Badge>
+              </div>
+
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-xs font-medium text-slate-600 bg-slate-100 rounded-full px-2 py-0.5">{log.module}</span>
+                {log.description && (
+                  <p className="text-xs text-slate-500 truncate min-w-0">{log.description}</p>
+                )}
+              </div>
+
+              <div className="flex items-center gap-1.5 text-[11px] text-slate-400">
+                <Calendar className="h-3 w-3" />
+                {new Date(log.created_at).toLocaleDateString()}
+                {new Date(log.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+              </div>
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

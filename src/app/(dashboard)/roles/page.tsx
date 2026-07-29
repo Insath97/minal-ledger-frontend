@@ -102,8 +102,8 @@ export default function RolesPage() {
 
       {/* Search */}
       <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-        <div className="flex items-center gap-3">
-          <div className="relative flex-1">
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="relative min-w-0 flex-1 sm:flex-1">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
             <Input
               placeholder="Search roles by name..."
@@ -120,8 +120,8 @@ export default function RolesPage() {
         </div>
       </div>
 
-      {/* Data Table */}
-      <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+      {/* Data Table - Desktop */}
+      <div className="hidden md:block rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
         <div className="overflow-x-auto scrollbar-thin">
           <table className="w-full">
             <thead>
@@ -235,6 +235,64 @@ export default function RolesPage() {
         )}
       </div>
 
+      {/* Mobile Cards */}
+      {loading ? (
+        <div className="md:hidden rounded-2xl border border-slate-200 bg-white shadow-sm p-8 text-center">
+          <Loader2 className="mx-auto h-8 w-8 text-emerald-500 animate-spin mb-3" />
+          <p className="text-sm text-slate-500">Loading roles...</p>
+        </div>
+      ) : roles.length === 0 ? (
+        <div className="md:hidden rounded-2xl border border-slate-200 bg-white shadow-sm p-8 text-center">
+          <Shield className="mx-auto h-10 w-10 text-slate-300 mb-3" />
+          <p className="text-sm font-semibold text-slate-600">No roles found</p>
+          <p className="text-xs text-slate-400 mt-1">Try adjusting your search</p>
+        </div>
+      ) : (
+        <div className="md:hidden space-y-3">
+          {roles.map((role) => (
+            <div key={role.id} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+              <div className="flex items-start justify-between mb-3">
+                <div className="min-w-0">
+                  <p className="text-sm font-semibold text-slate-800 truncate">{role.name}</p>
+                  <code className="rounded-md bg-slate-100 px-2 py-0.5 text-[10px] font-medium text-slate-600">{role.guard_name}</code>
+                </div>
+                <Badge variant="outline" className="border-emerald-200 bg-emerald-50 text-emerald-700 font-medium text-xs shrink-0">
+                  {role.permissions?.length ?? 0} perms
+                </Badge>
+              </div>
+              <div className="flex items-center justify-end gap-1 pt-2 border-t border-slate-100">
+                <button
+                  onClick={() => router.push(`/roles/${role.id}`)}
+                  className="rounded-lg p-1.5 text-slate-400 hover:bg-blue-50 hover:text-blue-600 transition-colors"
+                >
+                  <Eye className="h-4 w-4" />
+                </button>
+                {!role.is_protected && (
+                  <>
+                    {canEdit && (
+                      <button
+                        onClick={() => router.push(`/roles/${role.id}/edit`)}
+                        className="rounded-lg p-1.5 text-slate-400 hover:bg-emerald-50 hover:text-emerald-600 transition-colors"
+                      >
+                        <Edit className="h-4 w-4" />
+                      </button>
+                    )}
+                    {canDelete && (
+                      <button
+                        onClick={() => setShowDeleteConfirm(role)}
+                        className="rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-500 transition-colors"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    )}
+                  </>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
       {/* Delete Confirmation */}
       {showDeleteConfirm && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center">
@@ -242,7 +300,7 @@ export default function RolesPage() {
           <div className="relative z-10 w-full max-w-sm mx-4 animate-in zoom-in-95 fade-in duration-200">
             <div className="rounded-2xl bg-white shadow-2xl border border-slate-100 overflow-hidden">
               <div className="h-1.5 bg-gradient-to-r from-red-500 via-red-400 to-red-500" />
-              <div className="p-6 text-center">
+              <div className="p-4 sm:p-6 text-center">
                 <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-red-50 border border-red-100">
                   <Trash2 className="h-7 w-7 text-red-500" />
                 </div>
@@ -251,17 +309,17 @@ export default function RolesPage() {
                   This will permanently remove <span className="font-semibold text-slate-700">{showDeleteConfirm.name}</span>. This action cannot be undone.
                 </p>
               </div>
-              <div className="flex gap-3 px-6 pb-6">
+              <div className="flex gap-3 px-4 sm:px-6 pb-4 sm:pb-6">
                 <button
                   onClick={() => setShowDeleteConfirm(null)}
-                  className="flex-1 h-10 rounded-xl border border-slate-200 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+                  className="flex-1 h-11 rounded-xl border border-slate-200 text-sm font-semibold text-slate-700 hover:bg-slate-50"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={() => handleDelete(showDeleteConfirm)}
                   disabled={isDeleting}
-                  className="flex-1 h-10 rounded-xl bg-red-500 text-white text-sm font-semibold hover:bg-red-600 shadow-lg shadow-red-500/25 disabled:opacity-70"
+                  className="flex-1 h-11 rounded-xl bg-red-500 text-white text-sm font-semibold hover:bg-red-600 shadow-lg shadow-red-500/25 disabled:opacity-70"
                 >
                   {isDeleting ? <Loader2 className="mx-auto h-4 w-4 animate-spin" /> : "Delete"}
                 </button>

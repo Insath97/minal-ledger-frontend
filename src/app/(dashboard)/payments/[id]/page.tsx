@@ -87,12 +87,12 @@ export default function PaymentDetailPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-start justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold text-slate-900">Payment Details</h1>
           <p className="mt-0.5 text-sm text-slate-500">Payment to <span className="font-semibold text-slate-700">{payment.customer?.name || "—"}</span></p>
         </div>
-        <nav className="flex items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-1.5 text-xs">
+        <nav className="flex items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-1.5 text-xs shrink-0">
           <button onClick={() => router.push("/payments")} className="font-medium text-slate-500 hover:text-emerald-600 transition-colors">Payments</button>
           <BreadcrumbSep className="h-3 w-3 text-slate-400" />
           <span className="font-semibold text-emerald-600">Detail</span>
@@ -100,27 +100,27 @@ export default function PaymentDetailPage() {
       </div>
 
       {/* Hero Card */}
-      <div className={`rounded-2xl border ${methodStyle.border} ${methodStyle.bg} p-6 shadow-sm`}>
-        <div className="flex items-start justify-between">
-          <div className="flex items-center gap-4">
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/80 border border-white/50 shadow-sm">
-              <ArrowDownRight className={`h-7 w-7 ${methodStyle.text}`} />
+      <div className={`rounded-2xl border ${methodStyle.border} ${methodStyle.bg} p-4 sm:p-6 shadow-sm`}>
+        <div className="flex flex-col sm:flex-row sm:items-start gap-4">
+          <div className="flex items-center gap-4 min-w-0 flex-1">
+            <div className="flex h-12 w-12 sm:h-14 sm:w-14 shrink-0 items-center justify-center rounded-2xl bg-white/80 border border-white/50 shadow-sm">
+              <ArrowDownRight className={`h-6 w-6 sm:h-7 sm:w-7 ${methodStyle.text}`} />
             </div>
-            <div>
+            <div className="min-w-0">
               <p className="text-xs text-slate-500">Total Amount</p>
-              <p className="text-2xl font-bold text-slate-900">{formatCurrency(payment.total_amount)}</p>
+              <p className="text-xl sm:text-2xl font-bold text-slate-900">{formatCurrency(payment.total_amount)}</p>
             </div>
           </div>
           {canDelete && (
           <button
             onClick={() => setShowDeleteConfirm(true)}
-            className="h-9 rounded-lg border border-red-200 bg-white px-3 text-xs font-semibold text-red-600 hover:bg-red-50 shadow-sm flex items-center gap-1.5"
+            className="h-9 rounded-lg border border-red-200 bg-white px-3 text-xs font-semibold text-red-600 hover:bg-red-50 shadow-sm flex items-center gap-1.5 shrink-0"
           >
             <Trash2 className="h-3.5 w-3.5" /> Delete
           </button>
           )}
         </div>
-        <div className="mt-4 grid gap-4 sm:grid-cols-4">
+        <div className="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
           <div className="rounded-xl bg-white/80 border border-white/50 p-3">
             <p className="text-xs text-slate-500">Method</p>
             <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold capitalize ${methodStyle.border} ${methodStyle.bg} ${methodStyle.text} mt-1`}>
@@ -145,7 +145,7 @@ export default function PaymentDetailPage() {
       {/* Details Grid */}
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Customer Info */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-sm">
           <h3 className="mb-4 text-sm font-semibold text-slate-700">Customer Information</h3>
           {payment.customer ? (
             <div className="space-y-3">
@@ -162,7 +162,7 @@ export default function PaymentDetailPage() {
         </div>
 
         {/* Linked Cheque */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-sm">
           <h3 className="mb-4 text-sm font-semibold text-slate-700">Linked Cheque</h3>
           {payment.cheque ? (
             <div className="space-y-3">
@@ -176,7 +176,7 @@ export default function PaymentDetailPage() {
 
         {/* Proof Image */}
         {payment.proof_image_path && (
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-sm">
             <h3 className="mb-4 text-sm font-semibold text-slate-700">Proof Image</h3>
             <img src={getImageUrl(payment.proof_image_path) || ""} alt="Proof" className="h-40 w-full max-w-md rounded-xl object-cover border border-slate-200" />
           </div>
@@ -184,7 +184,7 @@ export default function PaymentDetailPage() {
 
         {/* Notes */}
         {payment.notes && (
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-sm">
             <h3 className="mb-4 text-sm font-semibold text-slate-700">Notes</h3>
             <p className="text-sm text-slate-600 whitespace-pre-wrap">{payment.notes}</p>
           </div>
@@ -194,7 +194,7 @@ export default function PaymentDetailPage() {
       {/* Sale Allocations */}
       {allocations.length > 0 && (
         <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
-          <div className="px-6 py-4 border-b border-slate-100">
+          <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-slate-100">
             <h3 className="text-sm font-semibold text-slate-700">FIFO Sale Allocations</h3>
           </div>
           <div className="overflow-x-auto scrollbar-thin">
@@ -252,8 +252,8 @@ export default function PaymentDetailPage() {
       )}
 
       {/* Timestamps */}
-      <div className="rounded-2xl border border-slate-200 bg-white px-6 py-4 shadow-sm">
-        <div className="flex flex-wrap gap-6 text-xs text-slate-500">
+      <div className="rounded-2xl border border-slate-200 bg-white px-4 sm:px-6 py-3 sm:py-4 shadow-sm">
+        <div className="flex flex-col sm:flex-row sm:flex-wrap gap-2 sm:gap-6 text-xs text-slate-500">
           <div>Recorded by <span className="font-semibold text-slate-700">{payment.creator?.name || "—"}</span> on {formatDate(payment.created_at)}</div>
         </div>
       </div>
@@ -262,17 +262,17 @@ export default function PaymentDetailPage() {
       {showDeleteConfirm && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center">
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowDeleteConfirm(false)} />
-          <div className="relative z-10 w-full max-w-sm mx-4">
+          <div className="relative z-10 w-full max-w-sm mx-4 animate-in zoom-in-95 fade-in duration-200">
             <div className="rounded-2xl bg-white shadow-2xl border border-slate-100 overflow-hidden">
               <div className="h-1.5 bg-gradient-to-r from-red-500 via-red-400 to-red-500" />
-              <div className="p-6 text-center">
+              <div className="p-4 sm:p-6 text-center">
                 <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-red-50 border border-red-100">
                   <Trash2 className="h-7 w-7 text-red-500" />
                 </div>
                 <h3 className="text-lg font-bold text-slate-900 mb-1">Delete Payment?</h3>
-                <p className="text-sm text-slate-500">This will delete payment of <span className="font-semibold text-slate-700">{formatCurrency(payment.total_amount)}</span> and reverse all sale allocations.</p>
+                <p className="text-sm text-slate-500 leading-relaxed">This will permanently remove payment of <span className="font-semibold text-slate-700">{formatCurrency(payment.total_amount)}</span> and reverse all sale allocations. This action cannot be undone.</p>
               </div>
-              <div className="flex gap-3 px-6 pb-6">
+              <div className="flex gap-3 px-4 sm:px-6 pb-4 sm:pb-6">
                 <button onClick={() => setShowDeleteConfirm(false)} className="flex-1 h-11 rounded-xl border border-slate-200 text-sm font-semibold text-slate-700 hover:bg-slate-50">Cancel</button>
                 <button onClick={handleDelete} disabled={isDeleting} className="flex-1 h-11 rounded-xl bg-red-500 text-white text-sm font-semibold hover:bg-red-600 shadow-lg shadow-red-500/25 disabled:opacity-70">
                   {isDeleting ? <Loader2 className="mx-auto h-4 w-4 animate-spin" /> : "Delete & Reverse"}

@@ -83,12 +83,12 @@ export default function ViewActivityLogPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-start justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold text-slate-900">Activity Log Details</h1>
           <p className="mt-0.5 text-sm text-slate-500">View activity log information.</p>
         </div>
-        <nav className="flex items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-1.5 text-xs">
+        <nav className="flex items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-1.5 text-xs shrink-0">
           <button onClick={() => router.push("/activity-logs")} className="font-medium text-slate-500 hover:text-emerald-600 transition-colors">Activity Logs</button>
           <BreadcrumbSep className="h-3 w-3 text-slate-400" />
           <span className="font-semibold text-emerald-600">#{log.id}</span>
@@ -96,15 +96,15 @@ export default function ViewActivityLogPage() {
       </div>
 
       {/* Hero Card */}
-      <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-6">
-        <div className="flex items-center justify-between">
+      <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4 sm:p-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="flex items-center gap-4">
-            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-600 shadow-lg shadow-emerald-600/20">
-              <Activity className="h-8 w-8 text-white" />
+            <div className="flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-emerald-600 shadow-lg shadow-emerald-600/20 shrink-0">
+              <Activity className="h-7 w-7 sm:h-8 sm:w-8 text-white" />
             </div>
             <div>
-              <h2 className="text-2xl font-bold text-slate-900">Log #{log.id}</h2>
-              <div className="mt-1 flex items-center gap-3">
+              <h2 className="text-xl sm:text-2xl font-bold text-slate-900">Log #{log.id}</h2>
+              <div className="mt-1 flex flex-wrap items-center gap-2">
                 <Badge variant="outline" className={`${getActionColor(log.action)} text-xs font-semibold`}>
                   {log.action}
                 </Badge>
@@ -117,7 +117,7 @@ export default function ViewActivityLogPage() {
           <Button
             onClick={() => router.push("/activity-logs")}
             variant="outline"
-            className="border-slate-200 text-slate-600 font-semibold"
+            className="border-slate-200 text-slate-600 font-semibold sm:shrink-0"
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back
@@ -127,60 +127,60 @@ export default function ViewActivityLogPage() {
 
       {/* Details */}
       <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
-        <div className="border-b border-slate-100 px-6 py-4">
+        <div className="border-b border-slate-100 px-4 sm:px-6 py-4">
           <h2 className="text-lg font-semibold text-slate-900">Log Information</h2>
         </div>
         <div className="divide-y divide-slate-100">
-          <div className="flex items-center gap-4 px-6 py-4">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100">
+          <div className="flex items-center gap-3 sm:gap-4 px-4 sm:px-6 py-3 sm:py-4">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100 shrink-0">
               <User className="h-4 w-4 text-slate-500" />
             </div>
-            <div>
+            <div className="min-w-0">
               <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">User</p>
-              <p className="text-sm text-slate-700">{log.user?.name || "System"}</p>
+              <p className="text-sm text-slate-700 truncate">{log.user?.name || "System"}</p>
             </div>
           </div>
-          <div className="flex items-center gap-4 px-6 py-4">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100">
+          <div className="flex items-center gap-3 sm:gap-4 px-4 sm:px-6 py-3 sm:py-4">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100 shrink-0">
               <Code className="h-4 w-4 text-slate-500" />
             </div>
-            <div>
+            <div className="min-w-0">
               <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Description</p>
-              <p className="text-sm text-slate-700">{log.description || "—"}</p>
+              <p className="text-sm text-slate-700 break-words">{log.description || "—"}</p>
             </div>
           </div>
-          <div className="flex items-center gap-4 px-6 py-4">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100">
+          <div className="flex items-center gap-3 sm:gap-4 px-4 sm:px-6 py-3 sm:py-4">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100 shrink-0">
               <Calendar className="h-4 w-4 text-slate-500" />
             </div>
-            <div>
+            <div className="min-w-0">
               <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Date & Time</p>
               <p className="text-sm text-slate-700">
                 {new Date(log.created_at).toLocaleDateString()} {new Date(log.created_at).toLocaleTimeString()}
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-4 px-6 py-4">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100">
+          <div className="flex items-center gap-3 sm:gap-4 px-4 sm:px-6 py-3 sm:py-4">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100 shrink-0">
               <Globe className="h-4 w-4 text-slate-500" />
             </div>
-            <div>
+            <div className="min-w-0">
               <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">IP Address</p>
               <p className="text-sm text-slate-700">{log.ip_address || "—"}</p>
             </div>
           </div>
-          <div className="flex items-center gap-4 px-6 py-4">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100">
+          <div className="flex items-center gap-3 sm:gap-4 px-4 sm:px-6 py-3 sm:py-4">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100 shrink-0">
               <Monitor className="h-4 w-4 text-slate-500" />
             </div>
-            <div>
+            <div className="min-w-0">
               <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Method & URL</p>
-              <p className="text-sm text-slate-700">
-                <Badge variant="outline" className="border-slate-200 bg-slate-50 text-slate-600 text-[10px] font-bold mr-2">
+              <div className="flex items-center gap-2 flex-wrap">
+                <Badge variant="outline" className="border-slate-200 bg-slate-50 text-slate-600 text-[10px] font-bold shrink-0">
                   {log.method}
                 </Badge>
-                {log.url || "—"}
-              </p>
+                <p className="text-sm text-slate-700 break-all">{log.url || "—"}</p>
+              </div>
             </div>
           </div>
         </div>
@@ -189,10 +189,10 @@ export default function ViewActivityLogPage() {
       {/* Payload */}
       {log.payload && Object.keys(log.payload).length > 0 && (
         <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
-          <div className="border-b border-slate-100 px-6 py-4">
+          <div className="border-b border-slate-100 px-4 sm:px-6 py-4">
             <h2 className="text-lg font-semibold text-slate-900">Payload Data</h2>
           </div>
-          <div className="px-6 py-4">
+          <div className="px-4 sm:px-6 py-4">
             <pre className="overflow-x-auto rounded-xl bg-slate-50 border border-slate-200 p-4 text-xs text-slate-700 scrollbar-thin">
               {JSON.stringify(log.payload, null, 2)}
             </pre>
@@ -203,10 +203,10 @@ export default function ViewActivityLogPage() {
       {/* User Agent */}
       {log.user_agent && (
         <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
-          <div className="border-b border-slate-100 px-6 py-4">
+          <div className="border-b border-slate-100 px-4 sm:px-6 py-4">
             <h2 className="text-lg font-semibold text-slate-900">User Agent</h2>
           </div>
-          <div className="px-6 py-4">
+          <div className="px-4 sm:px-6 py-4">
             <p className="text-xs text-slate-500 break-all">{log.user_agent}</p>
           </div>
         </div>

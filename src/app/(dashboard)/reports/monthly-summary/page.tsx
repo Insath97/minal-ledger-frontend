@@ -44,39 +44,39 @@ export default function MonthlySummaryPage() {
         <div className="flex items-center justify-center py-20"><Loader2 className="h-8 w-8 text-emerald-500 animate-spin" /></div>
       ) : data ? (
         <>
-          <div className="grid gap-4 sm:grid-cols-3">
-            <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-5 shadow-sm">
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white border border-emerald-200"><TrendingUp className="h-5 w-5 text-emerald-600" /></div>
+          <div className="grid gap-3 sm:gap-4 grid-cols-2 sm:grid-cols-3">
+            <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-3 sm:p-5 shadow-sm">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-xl bg-white border border-emerald-200"><TrendingUp className="h-4 w-4 sm:h-5 sm:w-5 text-emerald-600" /></div>
                 <div>
-                  <p className="text-xs text-emerald-600">Total Income</p>
-                  <p className="text-lg font-bold text-emerald-700">{formatCurrency(data.total_income)}</p>
+                  <p className="text-[11px] sm:text-xs text-emerald-600">Total Income</p>
+                  <p className="text-sm sm:text-lg font-bold text-emerald-700">{formatCurrency(data.total_income)}</p>
                 </div>
               </div>
             </div>
-            <div className="rounded-2xl border border-red-200 bg-red-50 p-5 shadow-sm">
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white border border-red-200"><TrendingDown className="h-5 w-5 text-red-600" /></div>
+            <div className="rounded-2xl border border-red-200 bg-red-50 p-3 sm:p-5 shadow-sm">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-xl bg-white border border-red-200"><TrendingDown className="h-4 w-4 sm:h-5 sm:w-5 text-red-600" /></div>
                 <div>
-                  <p className="text-xs text-red-600">Total Expenses</p>
-                  <p className="text-lg font-bold text-red-700">{formatCurrency(data.total_expense)}</p>
+                  <p className="text-[11px] sm:text-xs text-red-600">Total Expenses</p>
+                  <p className="text-sm sm:text-lg font-bold text-red-700">{formatCurrency(data.total_expense)}</p>
                 </div>
               </div>
             </div>
-            <div className={`rounded-2xl border ${data.total_profit >= 0 ? "border-emerald-200 bg-emerald-50" : "border-red-200 bg-red-50"} p-5 shadow-sm`}>
-              <div className="flex items-center gap-3">
-                <div className={`flex h-10 w-10 items-center justify-center rounded-xl bg-white border ${data.total_profit >= 0 ? "border-emerald-200" : "border-red-200"}`}>
-                  {data.total_profit >= 0 ? <TrendingUp className="h-5 w-5 text-emerald-600" /> : <TrendingDown className="h-5 w-5 text-red-600" />}
+            <div className={`rounded-2xl border ${data.total_profit >= 0 ? "border-emerald-200 bg-emerald-50" : "border-red-200 bg-red-50"} p-3 sm:p-5 shadow-sm col-span-2 sm:col-span-1`}>
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className={`flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-xl bg-white border ${data.total_profit >= 0 ? "border-emerald-200" : "border-red-200"}`}>
+                  {data.total_profit >= 0 ? <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5 text-emerald-600" /> : <TrendingDown className="h-4 w-4 sm:h-5 sm:w-5 text-red-600" />}
                 </div>
                 <div>
-                  <p className={`text-xs ${data.total_profit >= 0 ? "text-emerald-600" : "text-red-600"}`}>Net Profit</p>
-                  <p className={`text-lg font-bold ${data.total_profit >= 0 ? "text-emerald-700" : "text-red-700"}`}>{formatCurrency(data.total_profit)}</p>
+                  <p className={`text-[11px] sm:text-xs ${data.total_profit >= 0 ? "text-emerald-600" : "text-red-600"}`}>Net Profit</p>
+                  <p className={`text-sm sm:text-lg font-bold ${data.total_profit >= 0 ? "text-emerald-700" : "text-red-700"}`}>{formatCurrency(data.total_profit)}</p>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-sm">
             <h3 className="text-sm font-semibold text-slate-700 mb-4">Monthly Trend</h3>
             <div className="h-[350px]">
               <ResponsiveContainer width="100%" height="100%">
@@ -95,10 +95,10 @@ export default function MonthlySummaryPage() {
           </div>
 
           <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
-            <div className="px-6 py-4 border-b border-slate-100">
+            <div className="px-4 sm:px-6 py-4 border-b border-slate-100">
               <h3 className="text-sm font-semibold text-slate-700">Monthly Breakdown</h3>
             </div>
-            <div className="overflow-x-auto scrollbar-thin">
+            <div className="hidden md:block overflow-x-auto scrollbar-thin">
               <table className="w-full">
                 <thead>
                   <tr className="border-b border-slate-100 bg-slate-50/80">
@@ -119,6 +119,19 @@ export default function MonthlySummaryPage() {
                   ))}
                 </tbody>
               </table>
+            </div>
+
+            <div className="md:hidden divide-y divide-slate-50">
+              {data.monthly.map((m) => (
+                <div key={m.month} className="px-4 py-3 space-y-1">
+                  <p className="text-sm font-medium text-slate-700">{m.month}</p>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-emerald-600">{formatCurrency(m.income)}</span>
+                    <span className="text-red-600">{formatCurrency(m.expense)}</span>
+                  </div>
+                  <p className={`text-sm font-semibold ${m.profit >= 0 ? "text-emerald-600" : "text-red-600"}`}>Profit: {formatCurrency(m.profit)}</p>
+                </div>
+              ))}
             </div>
           </div>
         </>

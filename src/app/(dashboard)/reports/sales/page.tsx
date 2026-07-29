@@ -235,7 +235,7 @@ ${paymentStatus ? `<td style="padding:0;font-size:10px;color:#475569">Status: <b
         )}
       </div>
 
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-sm">
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-12">
           <div className="lg:col-span-2">
             <label className="mb-1.5 block text-[13px] font-semibold text-slate-700">Date From</label>
@@ -284,34 +284,34 @@ ${paymentStatus ? `<td style="padding:0;font-size:10px;color:#475569">Status: <b
         <div className="flex items-center justify-center py-20"><Loader2 className="h-8 w-8 text-emerald-500 animate-spin" /></div>
       ) : data ? (
         <>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-              <p className="text-xs text-slate-500">Total Sales</p>
-              <p className="text-lg font-bold text-slate-900">{formatCurrency(data.summary.total_sales)}</p>
-              <p className="text-xs text-slate-400">{data.summary.count} sales</p>
+          <div className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-4">
+            <div className="rounded-2xl border border-slate-200 bg-white p-3 sm:p-5 shadow-sm">
+              <p className="text-[11px] sm:text-xs text-slate-500">Total Sales</p>
+              <p className="text-base sm:text-lg font-bold text-slate-900">{formatCurrency(data.summary.total_sales)}</p>
+              <p className="text-[11px] sm:text-xs text-slate-400">{data.summary.count} sales</p>
             </div>
-            <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-5 shadow-sm">
-              <p className="text-xs text-emerald-600">Total Paid</p>
-              <p className="text-lg font-bold text-emerald-700">{formatCurrency(data.summary.total_paid)}</p>
-              <p className="text-xs text-emerald-500">{data.summary.paid_count} sales</p>
+            <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-3 sm:p-5 shadow-sm">
+              <p className="text-[11px] sm:text-xs text-emerald-600">Total Paid</p>
+              <p className="text-base sm:text-lg font-bold text-emerald-700">{formatCurrency(data.summary.total_paid)}</p>
+              <p className="text-[11px] sm:text-xs text-emerald-500">{data.summary.paid_count} sales</p>
             </div>
-            <div className="rounded-2xl border border-amber-200 bg-amber-50 p-5 shadow-sm">
-              <p className="text-xs text-amber-600">Partial</p>
-              <p className="text-lg font-bold text-amber-700">{data.summary.count - data.summary.paid_count - data.summary.unpaid_count}</p>
-              <p className="text-xs text-amber-500">sales</p>
+            <div className="rounded-2xl border border-amber-200 bg-amber-50 p-3 sm:p-5 shadow-sm">
+              <p className="text-[11px] sm:text-xs text-amber-600">Partial</p>
+              <p className="text-base sm:text-lg font-bold text-amber-700">{data.summary.count - data.summary.paid_count - data.summary.unpaid_count}</p>
+              <p className="text-[11px] sm:text-xs text-amber-500">sales</p>
             </div>
-            <div className="rounded-2xl border border-red-200 bg-red-50 p-5 shadow-sm">
-              <p className="text-xs text-red-600">Total Due</p>
-              <p className="text-lg font-bold text-red-700">{formatCurrency(data.summary.total_due)}</p>
-              <p className="text-xs text-red-500">{data.summary.unpaid_count} unpaid</p>
+            <div className="rounded-2xl border border-red-200 bg-red-50 p-3 sm:p-5 shadow-sm">
+              <p className="text-[11px] sm:text-xs text-red-600">Total Due</p>
+              <p className="text-base sm:text-lg font-bold text-red-700">{formatCurrency(data.summary.total_due)}</p>
+              <p className="text-[11px] sm:text-xs text-red-500">{data.summary.unpaid_count} unpaid</p>
             </div>
           </div>
 
           <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
-            <div className="px-6 py-4 border-b border-slate-100">
+            <div className="px-4 sm:px-6 py-4 border-b border-slate-100">
               <h3 className="text-sm font-semibold text-slate-700">Sales Details</h3>
             </div>
-            <div className="overflow-x-auto scrollbar-thin">
+            <div className="hidden md:block overflow-x-auto scrollbar-thin">
               <table className="w-full">
                 <thead>
                   <tr className="border-b border-slate-100 bg-slate-50/80">
@@ -347,6 +347,32 @@ ${paymentStatus ? `<td style="padding:0;font-size:10px;color:#475569">Status: <b
                 </tbody>
               </table>
             </div>
+
+            <div className="md:hidden divide-y divide-slate-50">
+              {data.sales.length === 0 ? (
+                <div className="px-4 py-16 text-center"><ShoppingCart className="mx-auto h-10 w-10 text-slate-300 mb-3" /><p className="text-sm font-semibold text-slate-600">No sales found</p></div>
+              ) : (
+                data.sales.map((s) => (
+                  <div key={s.id} className="px-4 py-3 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <button onClick={() => router.push(`/sales/${s.id}`)} className="text-sm font-mono font-semibold text-emerald-600 hover:text-emerald-700 hover:underline">{s.reference_number}</button>
+                      <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${STATUS_BADGES[s.payment_status] || ""}`}>{s.payment_status}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-medium text-slate-700">{s.customer?.name || "—"}</p>
+                        <p className="text-xs text-slate-400 capitalize">{s.business_type}</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm font-bold text-slate-900">{formatCurrency(s.total_amount)}</p>
+                        <p className="text-xs text-red-600">Due: {formatCurrency(s.due_amount)}</p>
+                      </div>
+                    </div>
+                    <p className="text-xs text-slate-400">{new Date(s.sale_date).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })}</p>
+                  </div>
+                ))
+              )}
+            </div>
           </div>
         </>
       ) : null}
@@ -354,15 +380,15 @@ ${paymentStatus ? `<td style="padding:0;font-size:10px;color:#475569">Status: <b
       {printConfirmOpen && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center">
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setPrintConfirmOpen(false)} />
-          <div className="relative z-10 w-full max-w-sm rounded-2xl bg-white p-6 shadow-2xl">
-            <div className="mb-5 text-center">
-              <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100">
-                <Printer className="h-6 w-6 text-emerald-600" />
+          <div className="relative z-10 w-full max-w-sm rounded-2xl bg-white p-4 sm:p-6 shadow-2xl">
+            <div className="mb-3 sm:mb-5 text-center">
+              <div className="mx-auto mb-2 sm:mb-3 flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-emerald-100">
+                <Printer className="h-5 w-5 sm:h-6 sm:w-6 text-emerald-600" />
               </div>
-              <h3 className="text-base font-bold text-slate-900">Print Sales Report</h3>
-              <p className="mt-1 text-sm text-slate-500">Do you want to print this report?</p>
+              <h3 className="text-sm sm:text-base font-bold text-slate-900">Print Sales Report</h3>
+              <p className="mt-1 text-xs sm:text-sm text-slate-500">Do you want to print this report?</p>
             </div>
-            <div className="flex gap-3">
+            <div className="flex flex-col-reverse sm:flex-row gap-2 sm:gap-3">
               <button onClick={() => setPrintConfirmOpen(false)} className="flex-1 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition-all hover:bg-slate-50">No</button>
               <button onClick={handlePrint} className="flex-1 rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-emerald-700">Yes</button>
             </div>

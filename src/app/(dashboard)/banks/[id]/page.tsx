@@ -95,12 +95,12 @@ export default function ViewBankPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-start justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold text-slate-900">Bank Details</h1>
           <p className="mt-0.5 text-sm text-slate-500">View bank information.</p>
         </div>
-        <nav className="flex items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-1.5 text-xs">
+        <nav className="flex items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-1.5 text-xs shrink-0">
           <button onClick={() => router.push("/banks")} className="font-medium text-slate-500 hover:text-emerald-600 transition-colors">Banks</button>
           <BreadcrumbSep className="h-3 w-3 text-slate-400" />
           <span className="font-semibold text-emerald-600">{bank.name}</span>
@@ -108,15 +108,15 @@ export default function ViewBankPage() {
       </div>
 
       {/* Hero Card */}
-      <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-6">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-600 shadow-lg shadow-emerald-600/20">
-              <Building2 className="h-8 w-8 text-white" />
+      <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4 sm:p-6">
+        <div className="flex flex-col sm:flex-row sm:items-start gap-4">
+          <div className="flex items-center gap-4 min-w-0">
+            <div className="flex h-12 w-12 sm:h-16 sm:w-16 shrink-0 items-center justify-center rounded-2xl bg-emerald-600 shadow-lg shadow-emerald-600/20">
+              <Building2 className="h-6 w-6 sm:h-8 sm:w-8 text-white" />
             </div>
-            <div>
-              <h2 className="text-2xl font-bold text-slate-900">{bank.name}</h2>
-              <div className="mt-1 flex items-center gap-3">
+            <div className="min-w-0">
+              <h2 className="text-xl sm:text-2xl font-bold text-slate-900 truncate">{bank.name}</h2>
+              <div className="mt-1 flex flex-wrap items-center gap-2 sm:gap-3">
                 <Badge variant="outline" className="border-emerald-200 bg-emerald-100 text-emerald-700 text-xs font-semibold">
                   <Hash className="mr-1 h-3 w-3" />
                   {bank.code}
@@ -135,7 +135,7 @@ export default function ViewBankPage() {
               </div>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 shrink-0">
             {canEdit && (
             <Button
               onClick={() => router.push(`/banks/${bank.id}/edit`)}
@@ -160,7 +160,7 @@ export default function ViewBankPage() {
       </div>
 
       {/* Stats */}
-      <div className="grid gap-4 sm:grid-cols-3">
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
         <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
           <div className="flex items-center gap-3">
             <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-100">
@@ -199,10 +199,10 @@ export default function ViewBankPage() {
       {/* Description */}
       {bank.description && (
         <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
-          <div className="border-b border-slate-100 px-6 py-4">
-            <h2 className="text-lg font-semibold text-slate-900">Description</h2>
+          <div className="border-b border-slate-100 px-4 sm:px-6 py-3 sm:py-4">
+            <h2 className="text-base sm:text-lg font-semibold text-slate-900">Description</h2>
           </div>
-          <div className="px-6 py-4">
+          <div className="px-4 sm:px-6 py-3 sm:py-4">
             <p className="text-sm text-slate-600 leading-relaxed">{bank.description}</p>
           </div>
         </div>
@@ -215,7 +215,7 @@ export default function ViewBankPage() {
           <div className="relative z-10 w-full max-w-sm mx-4 animate-in zoom-in-95 fade-in duration-200">
             <div className="rounded-2xl bg-white shadow-2xl border border-slate-100 overflow-hidden">
               <div className="h-1.5 bg-gradient-to-r from-red-500 via-red-400 to-red-500" />
-              <div className="p-6 text-center">
+              <div className="p-4 sm:p-6 text-center">
                 <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-red-50 border border-red-100">
                   <Trash2 className="h-7 w-7 text-red-500" />
                 </div>
@@ -224,7 +224,7 @@ export default function ViewBankPage() {
                   This will permanently remove <span className="font-semibold text-slate-700">{bank.name}</span>. This action cannot be undone.
                 </p>
               </div>
-              <div className="flex gap-3 px-6 pb-6">
+              <div className="flex gap-3 px-4 sm:px-6 pb-4 sm:pb-6">
                 <button
                   onClick={() => setShowDeleteConfirm(false)}
                   className="flex-1 h-11 rounded-xl border border-slate-200 text-sm font-semibold text-slate-700 hover:bg-slate-50"
