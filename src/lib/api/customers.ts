@@ -37,23 +37,6 @@ export interface CreateCustomerPayload {
   notes?: string;
 }
 
-export interface UpdateCustomerPayload {
-  name?: string;
-  email?: string;
-  id_type?: string;
-  id_number?: string;
-  phone?: string;
-  phone_secondary?: string;
-  address_line1?: string;
-  address_line2?: string;
-  city?: string;
-  profile_image?: File | string | null;
-  nic_image?: File | string | null;
-  outstanding_balance?: number;
-  is_active?: boolean;
-  notes?: string;
-}
-
 export interface CustomerListItem {
   id: number;
   name: string;
@@ -94,21 +77,9 @@ export async function createCustomer(payload: CreateCustomerPayload): Promise<Ap
   return data;
 }
 
-export async function updateCustomer(id: number, payload: UpdateCustomerPayload): Promise<ApiResponse<Customer>> {
-  const formData = new FormData();
-  formData.append("_method", "PUT");
-  Object.entries(payload).forEach(([key, value]) => {
-    if (value !== undefined && value !== null) {
-      if (value instanceof File) {
-        formData.append(key, value);
-      } else if (typeof value === "string" && key.endsWith("_image")) {
-        // Skip string values for image fields (keep existing)
-      } else {
-        formData.append(key, String(value));
-      }
-    }
-  });
-  const { data } = await api.post<ApiResponse<Customer>>(`/customers/${id}`, formData, {
+export async function updateCustomer(id: number, payload: FormData): Promise<ApiResponse<Customer>> {
+  payload.append("_method", "PUT");
+  const { data } = await api.post<ApiResponse<Customer>>(`/customers/${id}`, payload, {
     headers: { "Content-Type": "multipart/form-data" },
   });
   return data;
@@ -116,6 +87,9 @@ export async function updateCustomer(id: number, payload: UpdateCustomerPayload)
 
 export async function deleteCustomer(id: number): Promise<ApiResponse<null>> {
   const { data } = await api.delete<ApiResponse<null>>(`/customers/${id}`);
+  if (data.status !== "success") {
+    throw new Error(data.message || "Failed to delete customer");
+  }
   return data;
 }
 

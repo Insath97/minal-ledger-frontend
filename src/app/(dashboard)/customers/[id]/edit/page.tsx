@@ -124,24 +124,36 @@ export default function EditCustomerPage() {
   const onSubmit = async (data: CustomerEditInput) => {
     setIsSaving(true);
     try {
-      const payload: Record<string, unknown> = {
-        name: data.name,
-        phone: data.phone,
-        is_active: data.is_active ? "1" : "0",
-        outstanding_balance: data.outstanding_balance,
-      };
-      if (data.email) payload.email = data.email;
-      if (data.phone_secondary) payload.phone_secondary = data.phone_secondary;
-      if (data.id_type) payload.id_type = data.id_type;
-      if (data.id_number) payload.id_number = data.id_number;
-      if (data.address_line1) payload.address_line1 = data.address_line1;
-      if (data.address_line2) payload.address_line2 = data.address_line2;
-      if (data.city) payload.city = data.city;
-      if (data.notes) payload.notes = data.notes;
-      if (profileImage) payload.profile_image = profileImage;
-      if (nicImage) payload.nic_image = nicImage;
+      const formData = new FormData();
+      formData.append("name", data.name);
+      formData.append("phone", data.phone);
+      formData.append("is_active", data.is_active ? "1" : "0");
+      formData.append("outstanding_balance", String(data.outstanding_balance));
+      formData.append("email", data.email || "");
+      formData.append("phone_secondary", data.phone_secondary || "");
+      formData.append("id_type", data.id_type || "");
+      formData.append("id_number", data.id_number || "");
+      formData.append("address_line1", data.address_line1 || "");
+      formData.append("address_line2", data.address_line2 || "");
+      formData.append("city", data.city || "");
+      formData.append("notes", data.notes || "");
+      // Track if profile_image was explicitly removed or changed
+      if (profileImage) {
+        formData.append("profile_image", profileImage);
+      } else if (profileImagePreview === null) {
+        // If preview is null, it means the user clicked remove
+        formData.append("profile_image", "");
+      }
 
-      await updateCustomer(customerId, payload as any);
+      // Track if nic_image was explicitly removed or changed
+      if (nicImage) {
+        formData.append("nic_image", nicImage);
+      } else if (nicImagePreview === null) {
+        // If preview is null, it means the user clicked remove
+        formData.append("nic_image", "");
+      }
+
+      await updateCustomer(customerId, formData);
       toast("Customer updated successfully", "success");
       router.push(`/customers/${customerId}`);
     } catch (err: unknown) {
