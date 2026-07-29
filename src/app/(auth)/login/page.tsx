@@ -11,6 +11,9 @@ import { Input } from "@/components/ui/input";
 import { z } from "zod";
 import { useAuthStore } from "@/stores/auth-store";
 import { useToast } from "@/components/ui/toast";
+import { AuthBadge } from "@/components/auth/auth-badge";
+import { AuthDivider } from "@/components/auth/auth-divider";
+import { SecurityCard } from "@/components/auth/security-card";
 
 const loginSchema = z.object({
   login: z.string().min(1, "Email or username is required"),
@@ -54,15 +57,9 @@ export default function LoginPage() {
 
   return (
     <div>
-      {/* Header */}
+      <AuthBadge label="ADMIN PORTAL" />
+
       <div className="mb-10">
-        <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-emerald-50 px-4 py-1.5 border border-emerald-100/80">
-          <span className="relative flex h-2 w-2">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
-          </span>
-          <span className="text-xs font-semibold text-emerald-700 tracking-wide">ADMIN PORTAL</span>
-        </div>
         <h1 className="text-[32px] font-bold text-slate-900 tracking-tight leading-[1.15]">
           Welcome back
         </h1>
@@ -71,7 +68,6 @@ export default function LoginPage() {
         </p>
       </div>
 
-      {/* Form */}
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
         <div>
           <label htmlFor="login" className="mb-2 block text-[13px] font-semibold text-slate-700 uppercase tracking-wide">
@@ -118,6 +114,11 @@ export default function LoginPage() {
               {errors.password.message}
             </p>
           )}
+          <div className="mt-2 text-right">
+            <Link href="/forgot-password" className="text-[13px] font-semibold text-emerald-600 hover:text-emerald-700 transition-colors">
+              Forgot Password?
+            </Link>
+          </div>
         </div>
 
         <Button
@@ -142,27 +143,13 @@ export default function LoginPage() {
         </Button>
       </form>
 
-      {/* Divider */}
-      <div className="my-8 flex items-center gap-4">
-        <div className="h-px flex-1 bg-gradient-to-r from-transparent via-slate-200 to-transparent" />
-        <span className="text-[11px] font-semibold uppercase tracking-widest text-slate-400">Secured</span>
-        <div className="h-px flex-1 bg-gradient-to-r from-transparent via-slate-200 to-transparent" />
-      </div>
+      <AuthDivider text="SECURED" />
 
-      {/* Security Card */}
-      <div className="rounded-2xl bg-gradient-to-br from-emerald-50/80 to-white border border-emerald-100/60 p-4">
-        <div className="flex items-start gap-3">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-emerald-100 border border-emerald-200/50">
-            <ShieldCheck className="h-[18px] w-[18px] text-emerald-600" />
-          </div>
-          <div>
-            <p className="text-[13px] font-bold text-slate-800">Protected Area</p>
-            <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">
-              End-to-end encrypted. All sessions are monitored for security.
-            </p>
-          </div>
-        </div>
-      </div>
+      <SecurityCard
+        title="Protected Area"
+        description="End-to-end encrypted. All sessions are monitored for security."
+        icon={ShieldCheck}
+      />
 
       <p className="mt-8 text-center text-[13px] text-slate-500">
         Need access?{" "}

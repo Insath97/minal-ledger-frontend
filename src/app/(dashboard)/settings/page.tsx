@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { PageHeader } from "@/components/shared/page-header";
-import { User, ChevronRight, Activity, KeyRound } from "lucide-react";
+import { User, ChevronRight, Activity, KeyRound, Database } from "lucide-react";
 import { useAuthStore } from "@/stores/auth-store";
 
 const allSettingsSections = [
@@ -13,6 +13,14 @@ const allSettingsSections = [
     href: "/settings/profile",
     color: "bg-blue-50 text-blue-600",
     permission: [] as string[],
+  },
+  {
+    title: "Database Backup",
+    description: "Export and download database backups securely",
+    icon: Database,
+    href: "/settings/backup",
+    color: "bg-violet-50 text-violet-600",
+    permission: ["Database Export"],
   },
   {
     title: "Permissions",

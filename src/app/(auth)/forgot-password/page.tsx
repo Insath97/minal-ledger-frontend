@@ -1,17 +1,26 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowLeft, Loader2, Send, CheckCircle2, Mail, Inbox } from "lucide-react";
+import { ArrowLeft, Loader2, Send, Mail, Inbox } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useToast } from "@/components/ui/toast";
 import { forgotPasswordSchema, type ForgotPasswordInput } from "@/lib/validations";
+import { forgotPassword } from "@/lib/api/auth";
+import { AuthBadge } from "@/components/auth/auth-badge";
+import { AuthDivider } from "@/components/auth/auth-divider";
+import { SecurityCard } from "@/components/auth/security-card";
+import { SuccessState } from "@/components/auth/success-state";
 
 export default function ForgotPasswordPage() {
+  const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [isSent, setIsSent] = useState(false);
+  const [sentEmail, setSentEmail] = useState("");
+  const [countdown, setCountdown] = useState(0);
 
   const {
     register,
@@ -21,37 +30,54 @@ export default function ForgotPasswordPage() {
     resolver: zodResolver(forgotPasswordSchema),
   });
 
+  const startCountdown = useCallback(() => {
+    setCountdown(30);
+  }, []);
+
+  useEffect(() => {
+    if (countdown <= 0) return;
+    const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+    return () => clearTimeout(timer);
+  }, [countdown]);
+
   const onSubmit = async (data: ForgotPasswordInput) => {
     setIsLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    setIsLoading(false);
-    setIsSent(true);
+    try {
+      await forgotPassword(data.email);
+      setSentEmail(data.email);
+      setIsSent(true);
+      startCountdown();
+      toast("Reset link sent to your email.", "success");
+    } catch (err: unknown) {
+      const error = err as Error;
+      toast(error.message || "Failed to send reset link. Please try again.", "error");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleResend = async () => {
+    if (!sentEmail) return;
+    setIsLoading(true);
+    try {
+      await forgotPassword(sentEmail);
+      startCountdown();
+      toast("Reset link sent again.", "success");
+    } catch (err: unknown) {
+      const error = err as Error;
+      toast(error.message || "Failed to resend reset link.", "error");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   if (isSent) {
     return (
-      <div className="text-center">
-        {/* Success Icon */}
-        <div className="mx-auto mb-8 relative w-fit">
-          <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-emerald-100 border border-emerald-200/60">
-            <CheckCircle2 className="h-10 w-10 text-emerald-600" />
-          </div>
-          <div className="absolute -right-1 -top-1 flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500 border-[3px] border-white">
-            <svg className="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-            </svg>
-          </div>
-        </div>
-
-        <h1 className="text-[28px] font-bold text-slate-900 tracking-tight">
-          Check Your Email
-        </h1>
-        <p className="mt-3 text-[15px] text-slate-500 leading-relaxed max-w-sm mx-auto">
-          We&apos;ve sent a password reset link. It may take a minute to arrive.
-        </p>
-
-        {/* Email Preview */}
-        <div className="mt-8 rounded-2xl border border-slate-200 bg-white p-5 text-left shadow-sm">
+      <SuccessState
+        title="Email Sent!"
+        subtitle="We've sent a password reset link to your email address. It may take a minute to arrive."
+      >
+        <div className="rounded-2xl border border-slate-200 bg-white p-5 text-left shadow-sm">
           <div className="flex items-center gap-3 mb-4">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-100">
               <Inbox className="h-5 w-5 text-emerald-600" />
@@ -75,29 +101,36 @@ export default function ForgotPasswordPage() {
           </div>
         </div>
 
-        <div className="mt-8 space-y-3">
-          <Button
-            onClick={() => setIsSent(false)}
-            className="group h-12 w-full rounded-xl bg-emerald-600 text-white hover:bg-emerald-700 text-sm font-semibold shadow-lg shadow-emerald-600/25 transition-all"
-          >
-            <Send className="mr-2 h-4 w-4" />
-            Resend Email
-          </Button>
-          <Link
-            href="/login"
-            className="flex h-12 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white text-sm font-semibold text-slate-600 transition-all hover:border-slate-300 hover:bg-slate-50"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Back to Sign In
-          </Link>
-        </div>
-      </div>
+        <Button
+          onClick={handleResend}
+          disabled={countdown > 0}
+          className="group h-12 w-full rounded-xl bg-emerald-600 text-white hover:bg-emerald-700 text-sm font-semibold shadow-lg shadow-emerald-600/25 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {countdown > 0 ? (
+            `Resend in ${countdown}s`
+          ) : (
+            <>
+              <Send className="mr-2 h-4 w-4" />
+              Resend Email
+            </>
+          )}
+        </Button>
+
+        <Link
+          href="/login"
+          className="flex h-12 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white text-sm font-semibold text-slate-600 transition-all hover:border-slate-300 hover:bg-slate-50"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back to Sign In
+        </Link>
+      </SuccessState>
     );
   }
 
   return (
     <div>
-      {/* Header */}
+      <AuthBadge label="SECURITY" />
+
       <div className="mb-10">
         <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-100 border border-emerald-200/60">
           <Mail className="h-7 w-7 text-emerald-600" />
@@ -106,11 +139,10 @@ export default function ForgotPasswordPage() {
           Forgot Password?
         </h1>
         <p className="mt-2.5 text-[15px] text-slate-500 leading-relaxed">
-          Enter your email and we&apos;ll send you a reset link.
+          No worries, we&apos;ll send you reset instructions.
         </p>
       </div>
 
-      {/* Form */}
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
         <div>
           <label htmlFor="email" className="mb-2 block text-[13px] font-semibold text-slate-700 uppercase tracking-wide">
@@ -153,22 +185,13 @@ export default function ForgotPasswordPage() {
         </Button>
       </form>
 
-      {/* Help */}
-      <div className="mt-8 rounded-2xl bg-slate-50 border border-slate-100 p-4">
-        <div className="flex items-start gap-3">
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-200">
-            <svg className="h-4 w-4 text-slate-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z" />
-            </svg>
-          </div>
-          <div>
-            <p className="text-[13px] font-bold text-slate-700">Didn&apos;t receive the email?</p>
-            <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">
-              Check your spam folder or contact your administrator for assistance.
-            </p>
-          </div>
-        </div>
-      </div>
+      <AuthDivider text="NEED HELP?" />
+
+      <SecurityCard
+        title="Didn't receive the email?"
+        description="Check your spam folder or contact your administrator for assistance."
+        icon={Inbox}
+      />
 
       <div className="mt-8 text-center">
         <Link

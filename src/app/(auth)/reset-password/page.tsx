@@ -1,15 +1,29 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { useState, Suspense } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowLeft, ArrowRight, CheckCircle2, Eye, EyeOff, Loader2, ShieldCheck } from "lucide-react";
+import { ArrowLeft, ArrowRight, Eye, EyeOff, Loader2, ShieldCheck, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useToast } from "@/components/ui/toast";
 import { resetPasswordSchema, type ResetPasswordInput } from "@/lib/validations";
+import { resetPassword } from "@/lib/api/auth";
+import { AuthBadge } from "@/components/auth/auth-badge";
+import { AuthDivider } from "@/components/auth/auth-divider";
+import { SecurityCard } from "@/components/auth/security-card";
+import { SuccessState } from "@/components/auth/success-state";
+import { PasswordStrength } from "@/components/auth/password-strength";
+import { PasswordRules } from "@/components/auth/password-rules";
 
-export default function ResetPasswordPage() {
+function ResetPasswordForm() {
+  const searchParams = useSearchParams();
+  const token = searchParams.get("token");
+  const emailFromUrl = searchParams.get("email");
+  const { toast } = useToast();
+
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -22,65 +36,76 @@ export default function ResetPasswordPage() {
     formState: { errors },
   } = useForm<ResetPasswordInput>({
     resolver: zodResolver(resetPasswordSchema),
+    defaultValues: {
+      email: emailFromUrl || "",
+    },
   });
 
   const password = watch("password", "");
 
-  const getPasswordStrength = (pw: string) => {
-    if (pw.length === 0) return { score: 0, label: "", color: "", textColor: "" };
-    let score = 0;
-    if (pw.length >= 6) score++;
-    if (pw.length >= 10) score++;
-    if (/[A-Z]/.test(pw)) score++;
-    if (/[0-9]/.test(pw)) score++;
-    if (/[^A-Za-z0-9]/.test(pw)) score++;
-
-    if (score <= 2) return { score, label: "Weak", color: "bg-red-500", textColor: "text-red-500" };
-    if (score <= 3) return { score, label: "Fair", color: "bg-amber-500", textColor: "text-amber-500" };
-    if (score <= 4) return { score, label: "Strong", color: "bg-emerald-500", textColor: "text-emerald-600" };
-    return { score, label: "Very Strong", color: "bg-emerald-600", textColor: "text-emerald-600" };
-  };
-
-  const strength = getPasswordStrength(password);
-
-  const rules = [
-    { check: password.length >= 6, label: "At least 6 characters" },
-    { check: /[A-Z]/.test(password), label: "One uppercase letter" },
-    { check: /[0-9]/.test(password), label: "One number" },
-    { check: /[^A-Za-z0-9]/.test(password), label: "One special character" },
-  ];
-
   const onSubmit = async (data: ResetPasswordInput) => {
+    if (!token) {
+      toast("Invalid reset link. Please request a new one.", "error");
+      return;
+    }
+
     setIsLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    setIsLoading(false);
-    setIsReset(true);
+    try {
+      await resetPassword(token, emailFromUrl || data.email, data.password, data.confirmPassword);
+      setIsReset(true);
+      toast("Password has been reset successfully.", "success");
+    } catch (err: unknown) {
+      const error = err as Error;
+      toast(error.message || "Failed to reset password. The link may have expired.", "error");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  if (isReset) {
+  if (!token) {
     return (
       <div className="text-center">
-        {/* Success Icon */}
         <div className="mx-auto mb-8 relative w-fit">
-          <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-emerald-100 border border-emerald-200/60">
-            <CheckCircle2 className="h-10 w-10 text-emerald-600" />
-          </div>
-          <div className="absolute -right-1 -top-1 flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500 border-[3px] border-white">
-            <svg className="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-            </svg>
+          <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-amber-100 border border-amber-200/60">
+            <AlertTriangle className="h-10 w-10 text-amber-600" />
           </div>
         </div>
 
         <h1 className="text-[28px] font-bold text-slate-900 tracking-tight">
-          Password Reset!
+          Invalid Reset Link
         </h1>
         <p className="mt-3 text-[15px] text-slate-500 leading-relaxed max-w-sm mx-auto">
-          Your password has been updated. You can now sign in with your new credentials.
+          This password reset link is invalid or missing. Please request a new one.
         </p>
 
-        {/* Security Note */}
-        <div className="mt-8 rounded-2xl bg-gradient-to-br from-emerald-50/80 to-white border border-emerald-100/60 p-5 text-left">
+        <Link
+          href="/forgot-password"
+          className="group mt-8 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 text-sm font-semibold text-white hover:bg-emerald-700 shadow-lg shadow-emerald-600/25 transition-all"
+        >
+          Request New Reset Link
+          <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+        </Link>
+
+        <div className="mt-6 text-center">
+          <Link
+            href="/login"
+            className="inline-flex items-center gap-2 text-[13px] font-semibold text-slate-600 hover:text-emerald-600 transition-colors"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back to Sign In
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  if (isReset) {
+    return (
+      <SuccessState
+        title="Password Reset!"
+        subtitle="Your password has been updated successfully. You can now sign in with your new credentials."
+      >
+        <div className="rounded-2xl bg-gradient-to-br from-emerald-50/80 to-white border border-emerald-100/60 p-5 text-left">
           <div className="flex items-start gap-3">
             <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-emerald-100 border border-emerald-200/50">
               <ShieldCheck className="h-[18px] w-[18px] text-emerald-600" />
@@ -96,18 +121,19 @@ export default function ResetPasswordPage() {
 
         <Link
           href="/login"
-          className="group mt-8 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 text-sm font-semibold text-white hover:bg-emerald-700 shadow-lg shadow-emerald-600/25 transition-all"
+          className="group flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 text-sm font-semibold text-white hover:bg-emerald-700 shadow-lg shadow-emerald-600/25 transition-all"
         >
           Continue to Sign In
           <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
         </Link>
-      </div>
+      </SuccessState>
     );
   }
 
   return (
     <div>
-      {/* Header */}
+      <AuthBadge label="SECURITY" />
+
       <div className="mb-10">
         <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-100 border border-emerald-200/60">
           <ShieldCheck className="h-7 w-7 text-emerald-600" />
@@ -116,12 +142,24 @@ export default function ResetPasswordPage() {
           Create New Password
         </h1>
         <p className="mt-2.5 text-[15px] text-slate-500 leading-relaxed">
-          Choose a strong password to secure your account.
+          Your new password must be different from previously used passwords.
         </p>
       </div>
 
-      {/* Form */}
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+        <div>
+          <label htmlFor="email" className="mb-2 block text-[13px] font-semibold text-slate-700 uppercase tracking-wide">
+            Email Address
+          </label>
+          <Input
+            id="email"
+            type="email"
+            readOnly
+            value={emailFromUrl || ""}
+            className="h-12 rounded-xl border-slate-200 bg-slate-50 px-4 text-sm text-slate-500 cursor-not-allowed placeholder:text-slate-400"
+          />
+        </div>
+
         <div>
           <label htmlFor="password" className="mb-2 block text-[13px] font-semibold text-slate-700 uppercase tracking-wide">
             New Password
@@ -178,43 +216,14 @@ export default function ResetPasswordPage() {
           )}
         </div>
 
-        {/* Password Strength */}
         {password.length > 0 && (
-          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-[13px] font-bold text-slate-700">Password Strength</span>
-              <span className={`text-[13px] font-bold ${strength.textColor}`}>{strength.label}</span>
-            </div>
-            <div className="flex gap-1.5 mb-5">
-              {[1, 2, 3, 4, 5].map((i) => (
-                <div
-                  key={i}
-                  className={`h-1.5 flex-1 rounded-full transition-all duration-500 ${
-                    i <= strength.score ? strength.color : "bg-slate-100"
-                  }`}
-                />
-              ))}
-            </div>
+          <>
+            <PasswordStrength password={password} />
 
-            <div className="space-y-2.5">
-              {rules.map((rule) => (
-                <div key={rule.label} className="flex items-center gap-3">
-                  <div className={`flex h-5 w-5 items-center justify-center rounded-full transition-all duration-300 ${
-                    rule.check ? "bg-emerald-500 scale-110" : "bg-slate-200"
-                  }`}>
-                    {rule.check && (
-                      <svg className="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                      </svg>
-                    )}
-                  </div>
-                  <span className={`text-[13px] transition-colors duration-300 ${rule.check ? "text-emerald-600 font-semibold" : "text-slate-500"}`}>
-                    {rule.label}
-                  </span>
-                </div>
-              ))}
+            <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+              <PasswordRules password={password} />
             </div>
-          </div>
+          </>
         )}
 
         <Button
@@ -239,6 +248,14 @@ export default function ResetPasswordPage() {
         </Button>
       </form>
 
+      <AuthDivider text="SECURITY TIPS" />
+
+      <SecurityCard
+        title="Stay Protected"
+        description="Use a unique password with a mix of letters, numbers, and symbols. Never share your password with anyone."
+        icon={ShieldCheck}
+      />
+
       <div className="mt-8 text-center">
         <Link
           href="/login"
@@ -249,5 +266,17 @@ export default function ResetPasswordPage() {
         </Link>
       </div>
     </div>
+  );
+}
+
+export default function ResetPasswordPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex items-center justify-center py-20">
+        <Loader2 className="h-6 w-6 animate-spin text-emerald-600" />
+      </div>
+    }>
+      <ResetPasswordForm />
+    </Suspense>
   );
 }

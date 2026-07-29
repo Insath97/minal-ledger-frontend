@@ -117,3 +117,29 @@ export async function updateProfile(payload: {
   });
   return data;
 }
+
+/**
+ * Forgot Password - POST /api/v1/forgot-password
+ */
+export async function forgotPassword(email: string): Promise<ApiResponse<null>> {
+  const { data } = await api.post<ApiResponse<null>>("/forgot-password", { email });
+  return data;
+}
+
+/**
+ * Reset Password - POST /api/v1/reset-password
+ */
+export async function resetPassword(
+  token: string,
+  email: string,
+  password: string,
+  confirmPassword: string
+): Promise<ApiResponse<null>> {
+  const { data } = await api.post<ApiResponse<null>>("/reset-password", {
+    token,
+    email,
+    password,
+    confirm_password: confirmPassword,
+  });
+  return data;
+}

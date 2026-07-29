@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import {
   Search,
   Eye,
-  ChevronLeft,
   ChevronRight,
   X,
   Loader2,
@@ -13,6 +12,7 @@ import {
   Calendar,
   ChevronDown,
 } from "lucide-react";
+import { Pagination } from "@/components/shared/pagination";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -406,56 +406,18 @@ export default function ActivityLogsPage() {
 
         {/* Pagination */}
         {pagination && totalItems > 0 && (
-          <div className="flex flex-col gap-3 border-t border-slate-100 bg-slate-50/50 px-5 py-3 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex items-center gap-3">
-              <p className="text-xs text-slate-500">Rows per page:</p>
-              <select
-                value={perPage}
-                onChange={(e) => handlePerPageChange(Number(e.target.value))}
-                className="h-8 rounded-lg border border-slate-200 bg-white px-2 text-xs font-medium text-slate-600 outline-none focus:border-emerald-500"
-              >
-                {PER_PAGE_OPTIONS.map((opt) => (
-                  <option key={opt} value={opt}>{opt}</option>
-                ))}
-              </select>
-              <p className="text-xs text-slate-500">
-                Showing <span className="font-semibold text-slate-700">{pagination.from}</span>
-                {" "}to{" "}
-                <span className="font-semibold text-slate-700">{pagination.to}</span>
-                {" "}of{" "}
-                <span className="font-semibold text-slate-700">{totalItems}</span> logs
-              </p>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <button
-                onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-                disabled={currentPage === 1}
-                className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-500 transition-colors hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed"
-              >
-                <ChevronLeft className="h-4 w-4" />
-              </button>
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                <button
-                  key={page}
-                  onClick={() => setCurrentPage(page)}
-                  className={`flex h-8 w-8 items-center justify-center rounded-lg text-xs font-semibold transition-colors ${
-                    currentPage === page
-                      ? "bg-emerald-600 text-white shadow-sm"
-                      : "border border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
-                  }`}
-                >
-                  {page}
-                </button>
-              ))}
-              <button
-                onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
-                disabled={currentPage === totalPages}
-                className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-500 transition-colors hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed"
-              >
-                <ChevronRight className="h-4 w-4" />
-              </button>
-            </div>
-          </div>
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            totalItems={totalItems}
+            from={pagination.from}
+            to={pagination.to}
+            perPage={perPage}
+            perPageOptions={PER_PAGE_OPTIONS}
+            onPageChange={setCurrentPage}
+            onPerPageChange={handlePerPageChange}
+            itemLabel="logs"
+          />
         )}
       </div>
     </div>
