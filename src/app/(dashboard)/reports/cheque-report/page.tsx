@@ -7,6 +7,7 @@ import { useToast } from "@/components/ui/toast";
 import { useAuthStore } from "@/stores/auth-store";
 import { getChequeList, type Cheque } from "@/lib/api/cheques";
 import { getChequeReport, type ChequeReportData } from "@/lib/api/reports";
+import { BankSelect } from "@/components/shared/bank-select";
 
 const STATUS_OPTIONS = [
   { value: "", label: "All Statuses" },
@@ -267,7 +268,12 @@ ${chequeSearch ? `<td style="padding:0;font-size:10px;color:#475569">Cheque: <b>
           </div>
           <div className="sm:col-span-1">
             <label className="mb-1.5 block text-[13px] font-semibold text-slate-700">Bank Name</label>
-            <Input type="text" value={bankName} onChange={(e) => setBankName(e.target.value)} placeholder="Filter by bank..." className="h-11" />
+            <BankSelect
+              value={bankName}
+              onChange={setBankName}
+              placeholder="All Banks"
+              className="h-11"
+            />
           </div>
         </div>
       </div>

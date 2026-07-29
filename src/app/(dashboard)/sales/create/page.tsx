@@ -14,6 +14,7 @@ import { createSale, type CreateSalePayload } from "@/lib/api/sales";
 import { handleServerErrors } from "@/lib/api/handle-server-errors";
 import { getCustomerList, type CustomerListItem } from "@/lib/api/customers";
 import { useAuthStore } from "@/stores/auth-store";
+import { BankSelect } from "@/components/shared/bank-select";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL?.replace("/api/v1", "") || "http://localhost:8000";
 
@@ -395,7 +396,10 @@ export default function CreateSalePage() {
                   </div>
                   <div className="space-y-2">
                     <Label className="mb-1.5 block text-[13px] font-semibold text-slate-700">Bank Name</Label>
-                    <Input {...register("bank_name")} placeholder="Bank name" className="h-11" />
+                    <BankSelect
+                      value={watch("bank_name") || ""}
+                      onChange={(val) => setValue("bank_name", val, { shouldValidate: true })}
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label className="mb-1.5 block text-[13px] font-semibold text-slate-700">Cheque Date</Label>

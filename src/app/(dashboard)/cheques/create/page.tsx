@@ -15,6 +15,7 @@ import { handleServerErrors } from "@/lib/api/handle-server-errors";
 import { getCustomerList, type CustomerListItem } from "@/lib/api/customers";
 import { getUnpaidSales, type Sale } from "@/lib/api/sales";
 import { useAuthStore } from "@/stores/auth-store";
+import { BankSelect } from "@/components/shared/bank-select";
 
 const chequeSchema = z.object({
   customer_id: z.number().min(1, "Customer is required"),
@@ -279,8 +280,11 @@ export default function CreateChequePage() {
             </div>
             <div className="space-y-2">
               <Label className="mb-1.5 block text-[13px] font-semibold text-slate-700">Bank Name <span className="text-red-500">*</span></Label>
-              <Input {...register("bank_name")} placeholder="e.g. Bank of Ceylon" className="h-11" />
-              {errors.bank_name && <p className="text-xs text-red-500">{errors.bank_name.message}</p>}
+              <BankSelect
+                value={watch("bank_name")}
+                onChange={(val) => setValue("bank_name", val, { shouldValidate: true })}
+                error={errors.bank_name?.message}
+              />
             </div>
             <div className="space-y-2">
               <Label className="mb-1.5 block text-[13px] font-semibold text-slate-700">Cheque Date <span className="text-red-500">*</span></Label>
