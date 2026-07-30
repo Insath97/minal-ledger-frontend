@@ -1,5 +1,6 @@
 "use client";
 
+import * as XLSX from 'xlsx';
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Loader2, CreditCard, ChevronDown, Printer, Download } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -8,7 +9,6 @@ import { useAuthStore } from "@/stores/auth-store";
 import { getChequeList, type Cheque } from "@/lib/api/cheques";
 import { getChequeReport, type ChequeReportData } from "@/lib/api/reports";
 import { BankSelect } from "@/components/shared/bank-select";
-import * as XLSX from "xlsx";
 
 const STATUS_OPTIONS = [
   { value: "", label: "All Statuses" },
