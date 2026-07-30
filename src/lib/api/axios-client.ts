@@ -37,7 +37,7 @@ api.interceptors.response.use(
     if (error.response?.status === 401) {
       // Token expired or invalid - clear auth state
       accessToken = null;
-      if (typeof window !== "undefined") {
+      if (typeof window !== "undefined" && window.location.pathname !== "/login") {
         window.location.href = "/login";
       }
     }

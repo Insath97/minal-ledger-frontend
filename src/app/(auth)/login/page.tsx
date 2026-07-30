@@ -32,6 +32,7 @@ export default function LoginPage() {
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors },
   } = useForm<LoginInput>({
     resolver: zodResolver(loginSchema),
@@ -48,8 +49,35 @@ export default function LoginPage() {
       toast("Login successful! Redirecting...", "success");
       router.push("/dashboard");
     } catch (err: unknown) {
-      const error = err as Error;
-      toast(error.message || "Login failed. Please try again.", "error");
+      const error = err as any;
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+
+      if (status === 422 && responseData?.errors) {
+        // Handle server-side validation errors (422)
+        Object.entries(responseData.errors).forEach(([field, messages]) => {
+          const message = Array.isArray(messages) ? messages[0] : messages;
+          setError(field as keyof LoginInput, {
+            type: "server",
+            message: String(message),
+          });
+        });
+      } else if (status === 401 || status === 403) {
+        // Handle invalid credentials or account deactivation (401/403)
+        const message = responseData?.message || "Invalid email/username or password";
+        setError("login", {
+          type: "server",
+          message,
+        });
+        setError("password", {
+          type: "server",
+          message,
+        });
+      } else {
+        // Fallback for network or general server errors
+        const message = responseData?.message || error.message || "Login failed. Please try again.";
+        toast(message, "error");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -78,6 +106,7 @@ export default function LoginPage() {
             type="text"
             placeholder="Enter email or username"
             className="h-12 rounded-xl border-slate-200 bg-white px-4 text-sm placeholder:text-slate-400 focus:border-emerald-500 focus:ring-emerald-500/20"
+            aria-invalid={!!errors.login}
             {...register("login")}
           />
           {errors.login && (
@@ -98,6 +127,7 @@ export default function LoginPage() {
               type={showPassword ? "text" : "password"}
               placeholder="Enter your password"
               className="h-12 rounded-xl border-slate-200 bg-white px-4 pr-12 text-sm placeholder:text-slate-400 focus:border-emerald-500 focus:ring-emerald-500/20"
+              aria-invalid={!!errors.password}
               {...register("password")}
             />
             <button

@@ -38,8 +38,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       }
     } catch (error: unknown) {
       set({ isLoading: false });
-      const err = error as { response?: { data?: { message?: string } } };
-      throw new Error(err.response?.data?.message || "Login failed. Please try again.");
+      throw error;
     }
   },
 
