@@ -53,14 +53,14 @@ export function OverviewChart() {
   const totalExpense = data.reduce((s, d) => s + d.expense, 0);
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+    <div className="rounded-2xl border border-border bg-card p-5 shadow-sm">
       <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <h2 className="text-lg font-semibold text-slate-900">Analytics Overview</h2>
+        <h2 className="text-lg font-semibold text-foreground">Analytics Overview</h2>
         <div className="flex items-center gap-2">
           <select
             value={year}
             onChange={(e) => setYear(Number(e.target.value))}
-            className="h-9 rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-600 outline-none focus:border-emerald-500"
+            className="h-9 rounded-lg border border-border bg-background px-3 text-sm text-foreground outline-none focus:border-emerald-500"
           >
             {years.map((y) => (
               <option key={y} value={y}>{y}</option>
@@ -69,7 +69,7 @@ export function OverviewChart() {
           <select
             value={month}
             onChange={(e) => setMonth(Number(e.target.value))}
-            className="h-9 rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-600 outline-none focus:border-emerald-500"
+            className="h-9 rounded-lg border border-border bg-background px-3 text-sm text-foreground outline-none focus:border-emerald-500"
           >
             {MONTHS.map((m) => (
               <option key={m.value} value={m.value}>{m.label}</option>
@@ -80,13 +80,13 @@ export function OverviewChart() {
 
       {/* Summary */}
       <div className="mb-4 grid grid-cols-2 gap-3">
-        <div className="rounded-lg bg-emerald-50 p-3">
-          <p className="text-xs text-emerald-700">Total Income</p>
-          <p className="text-lg font-bold text-emerald-800">{formatFull(totalIncome)}</p>
+        <div className="rounded-lg bg-emerald-500/10 p-3">
+          <p className="text-xs text-emerald-600 dark:text-emerald-400">Total Income</p>
+          <p className="text-lg font-bold text-emerald-700 dark:text-emerald-300">{formatFull(totalIncome)}</p>
         </div>
-        <div className="rounded-lg bg-red-50 p-3">
-          <p className="text-xs text-red-700">Total Expense</p>
-          <p className="text-lg font-bold text-red-800">{formatFull(totalExpense)}</p>
+        <div className="rounded-lg bg-red-500/10 p-3">
+          <p className="text-xs text-red-600 dark:text-red-400">Total Expense</p>
+          <p className="text-lg font-bold text-red-700 dark:text-red-300">{formatFull(totalExpense)}</p>
         </div>
       </div>
 
@@ -99,26 +99,29 @@ export function OverviewChart() {
         <div className="h-[280px]">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={data} barCategoryGap="25%">
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border)" />
               <XAxis
                 dataKey="label"
                 axisLine={false}
                 tickLine={false}
-                tick={{ fill: "#94a3b8", fontSize: 12 }}
+                tick={{ fill: "var(--muted-foreground)", fontSize: 12 }}
               />
               <YAxis
                 axisLine={false}
                 tickLine={false}
-                tick={{ fill: "#94a3b8", fontSize: 12 }}
+                tick={{ fill: "var(--muted-foreground)", fontSize: 12 }}
                 tickFormatter={(v) => formatShort(v)}
               />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: "#fff",
-                  border: "1px solid #e2e8f0",
+                  backgroundColor: "var(--card)",
+                  border: "1px solid var(--border)",
                   borderRadius: "8px",
                   boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1)",
+                  color: "var(--foreground)",
                 }}
+                itemStyle={{ color: "var(--foreground)" }}
+                cursor={{ fill: "var(--accent)", opacity: 0.5 }}
                 formatter={(value, name) => [
                   `Rs. ${Number(value).toLocaleString("en-US")}`,
                   name === "income" ? "Income" : "Expense",

@@ -16,10 +16,10 @@ export function ImageUpload({ label, preview, icon, uploadText, onRemove, onChan
   const isRect = variant === "rectangular";
   return (
     <div className="space-y-2">
-      <label className="mb-1.5 block text-[13px] font-semibold text-slate-700">{label}</label>
+      <label className="mb-1.5 block text-[13px] font-semibold text-foreground">{label}</label>
       {preview ? (
         <div className={`relative ${isRect ? "w-full h-28" : "w-28 h-28"}`}>
-          <img src={preview} alt={label} className="w-full h-full object-cover rounded-xl border-2 border-slate-200" />
+          <img src={preview} alt={label} className="w-full h-full object-cover rounded-xl border-2 border-border" />
           <button
             type="button"
             onClick={onRemove}
@@ -29,9 +29,9 @@ export function ImageUpload({ label, preview, icon, uploadText, onRemove, onChan
           </button>
         </div>
       ) : (
-        <label className={`flex flex-col items-center justify-center border-2 border-dashed border-slate-300 rounded-xl cursor-pointer hover:border-emerald-400 hover:bg-emerald-50 transition-colors ${isRect ? "w-full h-28" : "w-28 h-28"}`}>
+        <label className={`flex flex-col items-center justify-center border-2 border-dashed border-border rounded-xl cursor-pointer hover:border-emerald-400 hover:bg-emerald-500/10 transition-colors ${isRect ? "w-full h-28" : "w-28 h-28"}`}>
           {icon}
-          <span className="text-xs text-slate-500">{uploadText}</span>
+          <span className="text-xs text-muted-foreground">{uploadText}</span>
           <input type="file" accept="image/*" onChange={onChange} className="hidden" />
         </label>
       )}
@@ -41,8 +41,8 @@ export function ImageUpload({ label, preview, icon, uploadText, onRemove, onChan
 
 export function FormSection({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-sm">
-      <h2 className="mb-4 text-lg font-semibold text-slate-900">{title}</h2>
+    <div className="rounded-2xl border border-border bg-card p-4 sm:p-6 shadow-sm">
+      <h2 className="mb-4 text-lg font-semibold text-foreground">{title}</h2>
       {children}
     </div>
   );
@@ -61,7 +61,7 @@ export function FormField({
 }) {
   return (
     <div>
-      <label className="mb-1.5 block text-[13px] font-semibold text-slate-700">
+      <label className="mb-1.5 block text-[13px] font-semibold text-foreground">
         {label} {required && "*"}
       </label>
       {children}

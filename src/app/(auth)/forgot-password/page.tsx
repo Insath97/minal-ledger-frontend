@@ -77,19 +77,19 @@ export default function ForgotPasswordPage() {
         title="Email Sent!"
         subtitle="We've sent a password reset link to your email address. It may take a minute to arrive."
       >
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 text-left shadow-sm">
+        <div className="rounded-2xl border border-border bg-card p-5 text-left shadow-sm">
           <div className="flex items-center gap-3 mb-4">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-100">
-              <Inbox className="h-5 w-5 text-emerald-600" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/10">
+              <Inbox className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
             </div>
             <div>
-              <p className="text-sm font-bold text-slate-800">Minal Ledger</p>
-              <p className="text-xs text-slate-400">no-reply@minaledger.com</p>
+              <p className="text-sm font-bold text-foreground">Minal Ledger</p>
+              <p className="text-xs text-muted-foreground">no-reply@minaledger.com</p>
             </div>
           </div>
-          <div className="rounded-xl bg-slate-50 p-4 border border-slate-100">
-            <p className="text-sm font-semibold text-slate-800 mb-1">Password Reset Request</p>
-            <p className="text-xs text-slate-500 leading-relaxed">
+          <div className="rounded-xl bg-muted p-4 border border-border">
+            <p className="text-sm font-semibold text-foreground mb-1">Password Reset Request</p>
+            <p className="text-xs text-muted-foreground leading-relaxed">
               Click the button below to reset your password. This link expires in 30 minutes.
             </p>
             <div className="mt-3 inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white">
@@ -118,7 +118,7 @@ export default function ForgotPasswordPage() {
 
         <Link
           href="/login"
-          className="flex h-12 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white text-sm font-semibold text-slate-600 transition-all hover:border-slate-300 hover:bg-slate-50"
+          className="flex h-12 items-center justify-center gap-2 rounded-xl border border-border bg-background text-sm font-semibold text-muted-foreground transition-all hover:border-border hover:bg-accent"
         >
           <ArrowLeft className="h-4 w-4" />
           Back to Sign In
@@ -132,27 +132,27 @@ export default function ForgotPasswordPage() {
       <AuthBadge label="SECURITY" />
 
       <div className="mb-10">
-        <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-100 border border-emerald-200/60">
-          <Mail className="h-7 w-7 text-emerald-600" />
+        <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-500/10 border border-emerald-500/20">
+          <Mail className="h-7 w-7 text-emerald-600 dark:text-emerald-400" />
         </div>
-        <h1 className="text-[28px] font-bold text-slate-900 tracking-tight leading-[1.15]">
+        <h1 className="text-[28px] font-bold text-foreground tracking-tight leading-[1.15]">
           Forgot Password?
         </h1>
-        <p className="mt-2.5 text-[15px] text-slate-500 leading-relaxed">
+        <p className="mt-2.5 text-[15px] text-muted-foreground leading-relaxed">
           No worries, we&apos;ll send you reset instructions.
         </p>
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
         <div>
-          <label htmlFor="email" className="mb-2 block text-[13px] font-semibold text-slate-700 uppercase tracking-wide">
+          <label htmlFor="email" className="mb-2 block text-[13px] font-semibold text-foreground uppercase tracking-wide">
             Email Address
           </label>
           <Input
             id="email"
             type="email"
             placeholder="admin@minaledger.com"
-            className="h-12 rounded-xl border-slate-200 bg-white px-4 text-sm placeholder:text-slate-400 focus:border-emerald-500 focus:ring-emerald-500/20"
+            className="h-12 rounded-xl bg-background px-4 text-sm placeholder:text-muted-foreground focus:border-emerald-500 focus:ring-emerald-500/20"
             {...register("email")}
           />
           {errors.email && (
@@ -196,7 +196,7 @@ export default function ForgotPasswordPage() {
       <div className="mt-8 text-center">
         <Link
           href="/login"
-          className="inline-flex items-center gap-2 text-[13px] font-semibold text-slate-600 hover:text-emerald-600 transition-colors"
+          className="inline-flex items-center gap-2 text-[13px] font-semibold text-muted-foreground hover:text-emerald-600 transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />
           Back to Sign In

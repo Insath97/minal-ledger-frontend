@@ -16,17 +16,17 @@ export function PrintModal({ open, onClose, onPrint, title = "Report", downloadi
   return (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center">
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative z-10 w-full max-w-sm rounded-2xl bg-white p-6 shadow-2xl">
-        <button onClick={onClose} className="absolute right-3 top-3 rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600">
+      <div className="relative z-10 w-full max-w-sm rounded-2xl bg-card p-6 shadow-2xl border border-border">
+        <button onClick={onClose} className="absolute right-3 top-3 rounded-lg p-1 text-muted-foreground hover:bg-accent hover:text-foreground">
           <X className="h-4 w-4" />
         </button>
 
         <div className="mb-5 text-center">
-          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100">
+          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500/10">
             <FileText className="h-6 w-6 text-emerald-600" />
           </div>
-          <h3 className="text-base font-bold text-slate-900">Print {title}</h3>
-          <p className="mt-1 text-sm text-slate-500">Download this report as a PDF file</p>
+          <h3 className="text-base font-bold text-foreground">Print {title}</h3>
+          <p className="mt-1 text-sm text-muted-foreground">Download this report as a PDF file</p>
         </div>
 
         <button

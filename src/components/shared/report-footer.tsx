@@ -6,10 +6,10 @@ interface ReportFooterProps {
 
 export function ReportFooter({ generatedBy = "System" }: ReportFooterProps) {
   return (
-    <div className="mt-6 pt-4 border-t border-slate-200">
-      <div className="flex items-center justify-between text-[10px] text-slate-400">
+    <div className="mt-6 pt-4 border-t border-border">
+      <div className="flex items-center justify-between text-[10px] text-muted-foreground">
         <div>
-          <p className="font-semibold text-slate-500">{APP_NAME}</p>
+          <p className="font-semibold text-foreground">{APP_NAME}</p>
           <p>Financial Management System</p>
         </div>
         <div className="text-right">

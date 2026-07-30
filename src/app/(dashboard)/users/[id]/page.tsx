@@ -27,12 +27,12 @@ import type { User as UserType } from "@/lib/api/users";
 import { useAuthStore } from "@/stores/auth-store";
 
 const ROLE_COLORS = [
-  "bg-emerald-100 text-emerald-700 border-emerald-200",
-  "bg-blue-100 text-blue-700 border-blue-200",
-  "bg-violet-100 text-violet-700 border-violet-200",
-  "bg-amber-100 text-amber-700 border-amber-200",
+  "bg-emerald-500/10 text-emerald-600 border-emerald-500/20",
+  "bg-blue-500/10 text-blue-600 border-blue-500/20",
+  "bg-violet-500/10 text-violet-600 border-violet-500/20",
+  "bg-amber-500/10 text-amber-600 border-amber-500/20",
   "bg-pink-100 text-pink-700 border-pink-200",
-  "bg-cyan-100 text-cyan-700 border-cyan-200",
+  "bg-cyan-500/10 text-cyan-600 border-cyan-200",
   "bg-indigo-100 text-indigo-700 border-indigo-200",
 ];
 
@@ -85,13 +85,13 @@ export default function ViewUserPage() {
     return (
       <div className="space-y-6">
         <div className="flex items-center gap-4">
-          <div className="h-10 w-10 rounded-xl bg-slate-100 animate-pulse" />
-          <div className="h-7 w-40 rounded bg-slate-100 animate-pulse" />
+          <div className="h-10 w-10 rounded-xl bg-muted animate-pulse" />
+          <div className="h-7 w-40 rounded bg-muted animate-pulse" />
         </div>
-        <div className="rounded-2xl bg-slate-100 h-36 animate-pulse" />
+        <div className="rounded-2xl bg-muted h-36 animate-pulse" />
       <div className="grid grid-cols-2 gap-3 sm:gap-4 sm:grid-cols-4">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="h-24 rounded-2xl bg-slate-100 animate-pulse" />
+            <div key={i} className="h-24 rounded-2xl bg-muted animate-pulse" />
           ))}
         </div>
       </div>
@@ -101,8 +101,8 @@ export default function ViewUserPage() {
   if (!user) {
     return (
       <div className="flex flex-col items-center justify-center py-20">
-        <User className="h-12 w-12 text-slate-300 mb-3" />
-        <p className="text-sm font-semibold text-slate-600">User not found</p>
+        <User className="h-12 w-12 text-muted-foreground/50 mb-3" />
+        <p className="text-sm font-semibold text-foreground">User not found</p>
         <Button onClick={() => router.push("/users")} className="mt-4" variant="outline">
           Back to Users
         </Button>
@@ -117,20 +117,20 @@ export default function ViewUserPage() {
       {/* Header with Breadcrumb */}
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">User Details</h1>
-          <p className="mt-0.5 text-sm text-slate-500">View user information and settings.</p>
+          <h1 className="text-2xl font-bold text-foreground">User Details</h1>
+          <p className="mt-0.5 text-sm text-muted-foreground">View user information and settings.</p>
         </div>
-        <nav className="flex items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-1.5 text-xs shrink-0">
-          <button onClick={() => router.push("/users")} className="font-medium text-slate-500 hover:text-emerald-600 transition-colors">
+        <nav className="flex items-center gap-1.5 rounded-lg bg-muted px-3 py-1.5 text-xs shrink-0">
+          <button onClick={() => router.push("/users")} className="font-medium text-muted-foreground hover:text-emerald-600 transition-colors">
             Users
           </button>
-          <BreadcrumbSep className="h-3 w-3 text-slate-400" />
+          <BreadcrumbSep className="h-3 w-3 text-muted-foreground" />
           <span className="font-semibold text-emerald-600">{user.name}</span>
         </nav>
       </div>
 
       {/* Hero Card */}
-      <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4 sm:p-6">
+      <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/10 p-4 sm:p-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="flex items-center gap-4">
             {user.profile_image ? (
@@ -145,29 +145,29 @@ export default function ViewUserPage() {
               </div>
             )}
             <div>
-              <h2 className="text-xl sm:text-2xl font-bold text-slate-900">{user.name}</h2>
+              <h2 className="text-xl sm:text-2xl font-bold text-foreground">{user.name}</h2>
               <div className="mt-1 flex flex-wrap items-center gap-2">
-                <Badge variant="outline" className="border-emerald-200 bg-emerald-100 text-emerald-700 text-xs font-semibold">
+                <Badge variant="outline" className="border-emerald-500/20 bg-emerald-500/10 text-emerald-600 text-xs font-semibold">
                   @{user.username}
                 </Badge>
                 {user.is_active ? (
-                  <Badge className="bg-emerald-100 text-emerald-700 border-emerald-200 text-xs font-semibold">
+                  <Badge className="bg-emerald-500/10 text-emerald-600 border-emerald-500/20 text-xs font-semibold">
                     <CheckCircle2 className="mr-1 h-3 w-3" />
                     Active
                   </Badge>
                 ) : (
-                  <Badge className="bg-red-100 text-red-700 border-red-200 text-xs font-semibold">
+                  <Badge className="bg-red-500/10 text-red-600 border-red-500/20 text-xs font-semibold">
                     <XCircle className="mr-1 h-3 w-3" />
                     Inactive
                   </Badge>
                 )}
                 {user.can_login ? (
-                  <Badge className="bg-blue-100 text-blue-700 border-blue-200 text-xs font-semibold">
+                  <Badge className="bg-blue-500/10 text-blue-600 border-blue-500/20 text-xs font-semibold">
                     <Unlock className="mr-1 h-3 w-3" />
                     Can Login
                   </Badge>
                 ) : (
-                  <Badge className="bg-slate-100 text-slate-600 border-slate-200 text-xs font-semibold">
+                  <Badge className="bg-muted text-foreground border-border text-xs font-semibold">
                     <Lock className="mr-1 h-3 w-3" />
                     No Login
                   </Badge>
@@ -189,7 +189,7 @@ export default function ViewUserPage() {
             <Button
               onClick={() => setShowDeleteConfirm(true)}
               variant="outline"
-              className="border-red-200 text-red-600 hover:bg-red-50 font-semibold"
+              className="border-red-500/20 text-red-600 hover:bg-red-500/10 font-semibold"
             >
               <Trash2 className="mr-2 h-4 w-4" />
               Delete
@@ -201,90 +201,90 @@ export default function ViewUserPage() {
 
       {/* Stats */}
       <div className="grid gap-4 sm:grid-cols-4">
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+        <div className="rounded-2xl border border-border bg-card p-5 shadow-sm">
           <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-100">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-500/10">
               <Shield className="h-5 w-5 text-emerald-600" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-slate-900">{user.roles?.length ?? 0}</p>
-              <p className="text-xs text-slate-500">Assigned Roles</p>
+              <p className="text-2xl font-bold text-foreground">{user.roles?.length ?? 0}</p>
+              <p className="text-xs text-muted-foreground">Assigned Roles</p>
             </div>
           </div>
         </div>
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+        <div className="rounded-2xl border border-border bg-card p-5 shadow-sm">
           <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-100">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-500/10">
               <Clock className="h-5 w-5 text-blue-600" />
             </div>
             <div>
-              <p className="text-sm font-bold text-slate-900">
+              <p className="text-sm font-bold text-foreground">
                 {user.last_login_at ? new Date(user.last_login_at).toLocaleDateString() : "Never"}
               </p>
-              <p className="text-xs text-slate-500">Last Login</p>
+              <p className="text-xs text-muted-foreground">Last Login</p>
             </div>
           </div>
         </div>
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+        <div className="rounded-2xl border border-border bg-card p-5 shadow-sm">
           <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-violet-100">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-violet-500/10">
               <Calendar className="h-5 w-5 text-violet-600" />
             </div>
             <div>
-              <p className="text-sm font-bold text-slate-900">
+              <p className="text-sm font-bold text-foreground">
                 {new Date(user.created_at).toLocaleDateString()}
               </p>
-              <p className="text-xs text-slate-500">Created</p>
+              <p className="text-xs text-muted-foreground">Created</p>
             </div>
           </div>
         </div>
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+        <div className="rounded-2xl border border-border bg-card p-5 shadow-sm">
           <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-amber-100">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-amber-500/10">
               <User className="h-5 w-5 text-amber-600" />
             </div>
             <div>
-              <p className="text-sm font-bold text-slate-900">{user.user_type}</p>
-              <p className="text-xs text-slate-500">User Type</p>
+              <p className="text-sm font-bold text-foreground">{user.user_type}</p>
+              <p className="text-xs text-muted-foreground">User Type</p>
             </div>
           </div>
         </div>
       </div>
 
       {/* Details */}
-      <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
-        <div className="border-b border-slate-100 px-4 sm:px-6 py-4">
-          <h2 className="text-lg font-semibold text-slate-900">Contact Information</h2>
+      <div className="rounded-2xl border border-border bg-card shadow-sm overflow-hidden">
+        <div className="border-b border-border px-4 sm:px-6 py-4">
+          <h2 className="text-lg font-semibold text-foreground">Contact Information</h2>
         </div>
-        <div className="divide-y divide-slate-100">
+        <div className="divide-y divide-border">
           <div className="flex items-center gap-3 sm:gap-4 px-4 sm:px-6 py-3 sm:py-4">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100 shrink-0">
-              <Mail className="h-4 w-4 text-slate-500" />
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-muted shrink-0">
+              <Mail className="h-4 w-4 text-muted-foreground" />
             </div>
             <div className="min-w-0">
-              <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Email</p>
-              <p className="text-sm text-slate-700 truncate">{user.email || "Not provided"}</p>
+              <p className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Email</p>
+              <p className="text-sm text-foreground truncate">{user.email || "Not provided"}</p>
             </div>
           </div>
           <div className="flex items-center gap-3 sm:gap-4 px-4 sm:px-6 py-3 sm:py-4">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100 shrink-0">
-              <Phone className="h-4 w-4 text-slate-500" />
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-muted shrink-0">
+              <Phone className="h-4 w-4 text-muted-foreground" />
             </div>
             <div className="min-w-0">
-              <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Phone</p>
-              <p className="text-sm text-slate-700">{user.phone || "Not provided"}</p>
+              <p className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Phone</p>
+              <p className="text-sm text-foreground">{user.phone || "Not provided"}</p>
             </div>
           </div>
           <div className="flex items-center gap-3 sm:gap-4 px-4 sm:px-6 py-3 sm:py-4">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100 shrink-0">
-              <ImageIcon className="h-4 w-4 text-slate-500" />
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-muted shrink-0">
+              <ImageIcon className="h-4 w-4 text-muted-foreground" />
             </div>
             <div className="min-w-0">
-              <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Profile Image</p>
+              <p className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Profile Image</p>
               {user.profile_image ? (
                 <img src={user.profile_image} alt={user.name} className="h-10 w-10 rounded-lg object-cover mt-1" />
               ) : (
-                <p className="text-sm text-slate-700">No image uploaded</p>
+                <p className="text-sm text-foreground">No image uploaded</p>
               )}
             </div>
           </div>
@@ -292,10 +292,10 @@ export default function ViewUserPage() {
       </div>
 
       {/* Assigned Roles */}
-      <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
-        <div className="border-b border-slate-100 px-4 sm:px-6 py-4">
-          <h2 className="text-lg font-semibold text-slate-900">Assigned Roles</h2>
-          <p className="text-xs text-slate-500 mt-1">
+      <div className="rounded-2xl border border-border bg-card shadow-sm overflow-hidden">
+        <div className="border-b border-border px-4 sm:px-6 py-4">
+          <h2 className="text-lg font-semibold text-foreground">Assigned Roles</h2>
+          <p className="text-xs text-muted-foreground mt-1">
             {user.roles?.length ?? 0} roles assigned to this user
           </p>
         </div>
@@ -315,8 +315,8 @@ export default function ViewUserPage() {
             </div>
           ) : (
             <div className="py-8 text-center">
-              <Shield className="mx-auto h-10 w-10 text-slate-300 mb-3" />
-              <p className="text-sm text-slate-400">No roles assigned to this user</p>
+              <Shield className="mx-auto h-10 w-10 text-muted-foreground/50 mb-3" />
+              <p className="text-sm text-muted-foreground">No roles assigned to this user</p>
             </div>
           )}
         </div>
@@ -327,21 +327,21 @@ export default function ViewUserPage() {
         <div className="fixed inset-0 z-[100] flex items-center justify-center">
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowDeleteConfirm(false)} />
           <div className="relative z-10 w-full max-w-sm mx-4 animate-in zoom-in-95 fade-in duration-200">
-            <div className="rounded-2xl bg-white shadow-2xl border border-slate-100 overflow-hidden">
+            <div className="rounded-2xl bg-card shadow-2xl border border-border overflow-hidden">
               <div className="h-1.5 bg-gradient-to-r from-red-500 via-red-400 to-red-500" />
               <div className="p-4 sm:p-6 text-center">
-                <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-red-50 border border-red-100">
+                <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-red-500/10 border border-red-500/20">
                   <Trash2 className="h-7 w-7 text-red-500" />
                 </div>
-                <h3 className="text-lg font-bold text-slate-900 mb-1">Delete User?</h3>
-                <p className="text-sm text-slate-500 leading-relaxed">
-                  This will permanently remove <span className="font-semibold text-slate-700">{user.name}</span>. This action cannot be undone.
+                <h3 className="text-lg font-bold text-foreground mb-1">Delete User?</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  This will permanently remove <span className="font-semibold text-foreground">{user.name}</span>. This action cannot be undone.
                 </p>
               </div>
               <div className="flex gap-3 px-4 sm:px-6 pb-4 sm:pb-6">
                 <button
                   onClick={() => setShowDeleteConfirm(false)}
-                  className="flex-1 h-11 rounded-xl border border-slate-200 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+                  className="flex-1 h-11 rounded-xl border border-border text-sm font-semibold text-foreground hover:bg-muted"
                 >
                   Cancel
                 </button>

@@ -89,7 +89,7 @@ export function SidebarItem({ item, isCollapsed }: SidebarItemProps) {
           onClick={() => setShowLogout(true)}
           className={cn(
             "flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all",
-            "bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700",
+            "bg-red-500/10 text-red-600 dark:text-red-400 hover:bg-red-500/20 hover:text-red-700 dark:hover:text-red-300",
             isCollapsed && !isMobileOpen && "justify-center px-2"
           )}
           title={isCollapsed && !isMobileOpen ? item.label : undefined}
@@ -111,8 +111,8 @@ export function SidebarItem({ item, isCollapsed }: SidebarItemProps) {
             "flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all",
             isCollapsed && !isMobileOpen && "justify-center px-2",
             isChildActive
-              ? "bg-emerald-50 text-emerald-700"
-              : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+              ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400"
+              : "text-muted-foreground hover:bg-accent hover:text-foreground"
           )}
           title={isCollapsed && !isMobileOpen ? item.label : undefined}
         >
@@ -120,7 +120,7 @@ export function SidebarItem({ item, isCollapsed }: SidebarItemProps) {
             <Icon
               className={cn(
                 "h-5 w-5 shrink-0",
-                isChildActive ? "text-emerald-600" : "text-slate-400"
+                isChildActive ? "text-emerald-600 dark:text-emerald-400" : "text-muted-foreground"
               )}
             />
           )}
@@ -130,7 +130,7 @@ export function SidebarItem({ item, isCollapsed }: SidebarItemProps) {
               <ChevronDown
                 className={cn(
                   "h-4 w-4 shrink-0 transition-transform",
-                  isChildActive ? "text-emerald-600" : "text-slate-400",
+                  isChildActive ? "text-emerald-600 dark:text-emerald-400" : "text-muted-foreground",
                   isOpen && "rotate-180"
                 )}
               />
@@ -150,15 +150,15 @@ export function SidebarItem({ item, isCollapsed }: SidebarItemProps) {
                   className={cn(
                     "flex items-center gap-2.5 rounded-lg px-3 py-2 text-[13px] font-medium transition-all",
                     isChildItemActive
-                      ? "text-emerald-700"
-                      : "text-slate-500 hover:text-slate-700"
+                      ? "text-emerald-700 dark:text-emerald-400"
+                      : "text-muted-foreground hover:text-foreground"
                   )}
                 >
                   {ChildIcon && (
                     <ChildIcon
                       className={cn(
                         "h-4 w-4 shrink-0",
-                        isChildItemActive ? "text-emerald-600" : "text-slate-400"
+                        isChildItemActive ? "text-emerald-600 dark:text-emerald-400" : "text-muted-foreground"
                       )}
                     />
                   )}
@@ -180,8 +180,8 @@ export function SidebarItem({ item, isCollapsed }: SidebarItemProps) {
         "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all",
         isCollapsed && !isMobileOpen && "justify-center px-2",
         isActive
-          ? "bg-emerald-50 text-emerald-700"
-          : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+          ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400"
+          : "text-muted-foreground hover:bg-accent hover:text-foreground"
       )}
       title={isCollapsed && !isMobileOpen ? item.label : undefined}
     >
@@ -189,7 +189,7 @@ export function SidebarItem({ item, isCollapsed }: SidebarItemProps) {
         <Icon
           className={cn(
             "h-5 w-5 shrink-0",
-            isActive ? "text-emerald-600" : "text-slate-400"
+            isActive ? "text-emerald-600 dark:text-emerald-400" : "text-muted-foreground"
           )}
         />
       )}
@@ -201,8 +201,8 @@ export function SidebarItem({ item, isCollapsed }: SidebarItemProps) {
           className={cn(
             "rounded-full px-2 py-0.5 text-xs font-medium",
             isActive
-              ? "bg-emerald-100 text-emerald-700"
-              : "bg-slate-100 text-slate-500"
+              ? "bg-emerald-500/20 text-emerald-700 dark:text-emerald-400"
+              : "bg-accent text-muted-foreground"
           )}
         >
           {item.badge}

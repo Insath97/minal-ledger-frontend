@@ -30,11 +30,11 @@ export default function MonthlySummaryPage() {
     <div className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Monthly Summary</h1>
-          <p className="mt-1 text-sm text-slate-500">Year overview with income vs expense vs profit.</p>
+          <h1 className="text-2xl font-bold text-foreground">Monthly Summary</h1>
+          <p className="mt-1 text-sm text-muted-foreground">Year overview with income vs expense vs profit.</p>
         </div>
         <div className="flex items-center gap-3">
-          <select value={year} onChange={(e) => setYear(Number(e.target.value))} className="h-11 rounded-lg border border-slate-200 bg-white px-3 text-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500">
+          <select value={year} onChange={(e) => setYear(Number(e.target.value))} className="h-11 rounded-lg border border-border bg-card px-3 text-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500">
             {Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - i).map((y) => <option key={y} value={y}>{y}</option>)}
           </select>
         </div>
@@ -45,39 +45,39 @@ export default function MonthlySummaryPage() {
       ) : data ? (
         <>
           <div className="grid gap-3 sm:gap-4 grid-cols-2 sm:grid-cols-3">
-            <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-3 sm:p-5 shadow-sm">
+            <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/10 p-3 sm:p-5 shadow-sm">
               <div className="flex items-center gap-2 sm:gap-3">
-                <div className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-xl bg-white border border-emerald-200"><TrendingUp className="h-4 w-4 sm:h-5 sm:w-5 text-emerald-600" /></div>
+                <div className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-xl bg-card border border-emerald-500/20"><TrendingUp className="h-4 w-4 sm:h-5 sm:w-5 text-emerald-600" /></div>
                 <div>
                   <p className="text-[11px] sm:text-xs text-emerald-600">Total Income</p>
-                  <p className="text-sm sm:text-lg font-bold text-emerald-700">{formatCurrency(data.total_income)}</p>
+                  <p className="text-sm sm:text-lg font-bold text-emerald-600">{formatCurrency(data.total_income)}</p>
                 </div>
               </div>
             </div>
-            <div className="rounded-2xl border border-red-200 bg-red-50 p-3 sm:p-5 shadow-sm">
+            <div className="rounded-2xl border border-red-500/20 bg-red-500/10 p-3 sm:p-5 shadow-sm">
               <div className="flex items-center gap-2 sm:gap-3">
-                <div className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-xl bg-white border border-red-200"><TrendingDown className="h-4 w-4 sm:h-5 sm:w-5 text-red-600" /></div>
+                <div className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-xl bg-card border border-red-500/20"><TrendingDown className="h-4 w-4 sm:h-5 sm:w-5 text-red-600" /></div>
                 <div>
                   <p className="text-[11px] sm:text-xs text-red-600">Total Expenses</p>
-                  <p className="text-sm sm:text-lg font-bold text-red-700">{formatCurrency(data.total_expense)}</p>
+                  <p className="text-sm sm:text-lg font-bold text-red-600">{formatCurrency(data.total_expense)}</p>
                 </div>
               </div>
             </div>
-            <div className={`rounded-2xl border ${data.total_profit >= 0 ? "border-emerald-200 bg-emerald-50" : "border-red-200 bg-red-50"} p-3 sm:p-5 shadow-sm col-span-2 sm:col-span-1`}>
+            <div className={`rounded-2xl border ${data.total_profit >= 0 ? "border-emerald-500/20 bg-emerald-500/10" : "border-red-500/20 bg-red-500/10"} p-3 sm:p-5 shadow-sm col-span-2 sm:col-span-1`}>
               <div className="flex items-center gap-2 sm:gap-3">
-                <div className={`flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-xl bg-white border ${data.total_profit >= 0 ? "border-emerald-200" : "border-red-200"}`}>
+                <div className={`flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-xl bg-card border ${data.total_profit >= 0 ? "border-emerald-500/20" : "border-red-500/20"}`}>
                   {data.total_profit >= 0 ? <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5 text-emerald-600" /> : <TrendingDown className="h-4 w-4 sm:h-5 sm:w-5 text-red-600" />}
                 </div>
                 <div>
                   <p className={`text-[11px] sm:text-xs ${data.total_profit >= 0 ? "text-emerald-600" : "text-red-600"}`}>Net Profit</p>
-                  <p className={`text-sm sm:text-lg font-bold ${data.total_profit >= 0 ? "text-emerald-700" : "text-red-700"}`}>{formatCurrency(data.total_profit)}</p>
+                  <p className={`text-sm sm:text-lg font-bold ${data.total_profit >= 0 ? "text-emerald-600" : "text-red-600"}`}>{formatCurrency(data.total_profit)}</p>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-sm">
-            <h3 className="text-sm font-semibold text-slate-700 mb-4">Monthly Trend</h3>
+          <div className="rounded-2xl border border-border bg-card p-4 sm:p-6 shadow-sm">
+            <h3 className="text-sm font-semibold text-foreground mb-4">Monthly Trend</h3>
             <div className="h-[350px]">
               <ResponsiveContainer width="100%" height="100%">
                 <ComposedChart data={data.monthly}>
@@ -94,24 +94,24 @@ export default function MonthlySummaryPage() {
             </div>
           </div>
 
-          <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
-            <div className="px-4 sm:px-6 py-4 border-b border-slate-100">
-              <h3 className="text-sm font-semibold text-slate-700">Monthly Breakdown</h3>
+          <div className="rounded-2xl border border-border bg-card shadow-sm overflow-hidden">
+            <div className="px-4 sm:px-6 py-4 border-b border-border">
+              <h3 className="text-sm font-semibold text-foreground">Monthly Breakdown</h3>
             </div>
             <div className="hidden md:block overflow-x-auto scrollbar-thin">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b border-slate-100 bg-slate-50/80">
-                    <th className="px-5 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">Month</th>
-                    <th className="px-5 py-3 text-right text-[11px] font-bold uppercase tracking-wider text-slate-500">Income</th>
-                    <th className="px-5 py-3 text-right text-[11px] font-bold uppercase tracking-wider text-slate-500">Expense</th>
-                    <th className="px-5 py-3 text-right text-[11px] font-bold uppercase tracking-wider text-slate-500">Profit</th>
+                  <tr className="border-b border-border bg-muted/50">
+                    <th className="px-5 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Month</th>
+                    <th className="px-5 py-3 text-right text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Income</th>
+                    <th className="px-5 py-3 text-right text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Expense</th>
+                    <th className="px-5 py-3 text-right text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Profit</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-50">
+                <tbody className="divide-y divide-border">
                   {data.monthly.map((m) => (
-                    <tr key={m.month} className="hover:bg-slate-50/50 transition-colors">
-                      <td className="px-5 py-3 text-sm font-medium text-slate-700">{m.month}</td>
+                    <tr key={m.month} className="hover:bg-accent/50 transition-colors">
+                      <td className="px-5 py-3 text-sm font-medium text-foreground">{m.month}</td>
                       <td className="px-5 py-3 text-right text-sm text-emerald-600">{formatCurrency(m.income)}</td>
                       <td className="px-5 py-3 text-right text-sm text-red-600">{formatCurrency(m.expense)}</td>
                       <td className={`px-5 py-3 text-right text-sm font-semibold ${m.profit >= 0 ? "text-emerald-600" : "text-red-600"}`}>{formatCurrency(m.profit)}</td>
@@ -121,10 +121,10 @@ export default function MonthlySummaryPage() {
               </table>
             </div>
 
-            <div className="md:hidden divide-y divide-slate-50">
+            <div className="md:hidden divide-y divide-border">
               {data.monthly.map((m) => (
                 <div key={m.month} className="px-4 py-3 space-y-1">
-                  <p className="text-sm font-medium text-slate-700">{m.month}</p>
+                  <p className="text-sm font-medium text-foreground">{m.month}</p>
                   <div className="flex justify-between text-sm">
                     <span className="text-emerald-600">{formatCurrency(m.income)}</span>
                     <span className="text-red-600">{formatCurrency(m.expense)}</span>

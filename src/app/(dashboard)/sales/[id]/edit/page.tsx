@@ -178,10 +178,10 @@ export default function EditSalePage() {
     return (
       <div className="space-y-6">
         <div className="flex items-center gap-4">
-          <div className="h-10 w-10 rounded-xl bg-slate-100 animate-pulse" />
-          <div className="h-7 w-40 rounded bg-slate-100 animate-pulse" />
+          <div className="h-10 w-10 rounded-xl bg-muted animate-pulse" />
+          <div className="h-7 w-40 rounded bg-muted animate-pulse" />
         </div>
-        <div className="rounded-2xl bg-slate-100 h-64 animate-pulse" />
+        <div className="rounded-2xl bg-muted h-64 animate-pulse" />
       </div>
     );
   }
@@ -189,13 +189,13 @@ export default function EditSalePage() {
   if (!hasPermission("Sale Update")) {
     return (
       <div className="flex h-[50vh] flex-col items-center justify-center gap-4">
-        <div className="rounded-full bg-red-100 p-4">
+        <div className="rounded-full bg-red-500/10 p-4">
           <svg className="h-8 w-8 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
           </svg>
         </div>
-        <h2 className="text-lg font-bold text-slate-900">Access Denied</h2>
-        <p className="text-sm text-slate-500">You don&apos;t have permission to edit sales.</p>
+        <h2 className="text-lg font-bold text-foreground">Access Denied</h2>
+        <p className="text-sm text-muted-foreground">You don&apos;t have permission to edit sales.</p>
         <button onClick={() => router.push("/sales")} className="mt-2 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700">
           Back to Sales
         </button>
@@ -212,33 +212,33 @@ export default function EditSalePage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Edit Sale</h1>
-          <p className="mt-0.5 text-sm text-slate-500">Update sale for <span className="font-semibold text-slate-700">{sale.reference_number}</span></p>
+          <h1 className="text-2xl font-bold text-foreground">Edit Sale</h1>
+          <p className="mt-0.5 text-sm text-muted-foreground">Update sale for <span className="font-semibold text-foreground">{sale.reference_number}</span></p>
         </div>
-        <nav className="flex items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-1.5 text-xs shrink-0">
-          <button onClick={() => router.push("/sales")} className="font-medium text-slate-500 hover:text-emerald-600 transition-colors">Sales</button>
-          <BreadcrumbSep className="h-3 w-3 text-slate-400" />
+        <nav className="flex items-center gap-1.5 rounded-lg bg-muted px-3 py-1.5 text-xs shrink-0">
+          <button onClick={() => router.push("/sales")} className="font-medium text-muted-foreground hover:text-emerald-600 transition-colors">Sales</button>
+          <BreadcrumbSep className="h-3 w-3 text-muted-foreground" />
           <span className="font-semibold text-emerald-600">Edit</span>
         </nav>
       </div>
 
       {/* Sale Summary */}
-      <div className="rounded-2xl border border-slate-200 bg-white px-4 sm:px-6 py-3 sm:py-4 shadow-sm">
+      <div className="rounded-2xl border border-border bg-card px-4 sm:px-6 py-3 sm:py-4 shadow-sm">
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
           <div>
-            <p className="text-xs text-slate-500">Reference</p>
-            <p className="text-sm font-semibold text-slate-700 font-mono">{sale.reference_number}</p>
+            <p className="text-xs text-muted-foreground">Reference</p>
+            <p className="text-sm font-semibold text-foreground font-mono">{sale.reference_number}</p>
           </div>
           <div>
-            <p className="text-xs text-slate-500">Total</p>
-            <p className="text-sm font-semibold text-slate-700">{formatCurrency(sale.total_amount)}</p>
+            <p className="text-xs text-muted-foreground">Total</p>
+            <p className="text-sm font-semibold text-foreground">{formatCurrency(sale.total_amount)}</p>
           </div>
           <div>
-            <p className="text-xs text-slate-500">Paid</p>
-            <p className="text-sm font-semibold text-slate-700">{formatCurrency(sale.paid_amount)}</p>
+            <p className="text-xs text-muted-foreground">Paid</p>
+            <p className="text-sm font-semibold text-foreground">{formatCurrency(sale.paid_amount)}</p>
           </div>
           <div>
-            <p className="text-xs text-slate-500">Status</p>
+            <p className="text-xs text-muted-foreground">Status</p>
             <p className={`text-sm font-semibold capitalize ${sale.payment_status === "paid" ? "text-emerald-600" : sale.payment_status === "partial" ? "text-amber-600" : "text-red-600"}`}>
               {sale.payment_status}
             </p>
@@ -248,8 +248,8 @@ export default function EditSalePage() {
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* Sale Type */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-sm">
-          <h3 className="mb-4 text-sm font-semibold text-slate-700">Sale Type</h3>
+        <div className="rounded-2xl border border-border bg-card p-4 sm:p-6 shadow-sm">
+          <h3 className="mb-4 text-sm font-semibold text-foreground">Sale Type</h3>
           <div className="flex gap-3">
             {(["retail", "wholesale"] as const).map((type) => (
               <button
@@ -258,8 +258,8 @@ export default function EditSalePage() {
                 onClick={() => setValue("business_type", type, { shouldValidate: true })}
                 className={`flex-1 h-11 rounded-xl border-2 text-sm font-semibold transition-all ${
                   businessType === type
-                    ? "border-emerald-500 bg-emerald-50 text-emerald-700"
-                    : "border-slate-200 bg-white text-slate-500 hover:border-slate-300"
+                    ? "border-emerald-500 bg-emerald-500/10 text-emerald-600"
+                    : "border-border bg-card text-muted-foreground hover:border-border"
                 }`}
               >
                 {type === "retail" ? "Retail" : "Wholesale"}
@@ -269,22 +269,22 @@ export default function EditSalePage() {
         </div>
 
         {/* Sale Details */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-sm">
-          <h3 className="mb-4 text-sm font-semibold text-slate-700">Sale Details</h3>
+        <div className="rounded-2xl border border-border bg-card p-4 sm:p-6 shadow-sm">
+          <h3 className="mb-4 text-sm font-semibold text-foreground">Sale Details</h3>
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
-              <Label className="mb-1.5 block text-[13px] font-semibold text-slate-700">Invoice Number</Label>
+              <Label className="mb-1.5 block text-[13px] font-semibold text-foreground">Invoice Number</Label>
               <Input {...register("invoice_number")} placeholder="e.g. INV-00001" className="h-11" />
             </div>
             <div className="space-y-2">
-              <Label className="mb-1.5 block text-[13px] font-semibold text-slate-700">
+              <Label className="mb-1.5 block text-[13px] font-semibold text-foreground">
                 Sale Date <span className="text-red-500">*</span>
               </Label>
               <Input type="date" {...register("sale_date")} className="h-11" />
               {errors.sale_date && <p className="text-xs text-red-500">{errors.sale_date.message}</p>}
             </div>
             <div className="space-y-2">
-              <Label className="mb-1.5 block text-[13px] font-semibold text-slate-700">
+              <Label className="mb-1.5 block text-[13px] font-semibold text-foreground">
                 Total Amount <span className="text-red-500">*</span>
               </Label>
               <Input
@@ -297,7 +297,7 @@ export default function EditSalePage() {
               {errors.total_amount && <p className="text-xs text-red-500">{errors.total_amount.message}</p>}
             </div>
             <div className="space-y-2">
-              <Label className="mb-1.5 block text-[13px] font-semibold text-slate-700">Paid Amount</Label>
+              <Label className="mb-1.5 block text-[13px] font-semibold text-foreground">Paid Amount</Label>
               <Input
                 type="number"
                 {...register("paid_amount", { valueAsNumber: true })}
@@ -308,8 +308,8 @@ export default function EditSalePage() {
             </div>
           </div>
           {totalAmount > 0 && paidAmount !== undefined && (
-            <div className="mt-3 rounded-lg bg-slate-50 px-4 py-2 text-sm">
-              <span className="text-slate-500">Due: </span>
+            <div className="mt-3 rounded-lg bg-muted px-4 py-2 text-sm">
+              <span className="text-muted-foreground">Due: </span>
               <span className={`font-semibold ${totalAmount - paidAmount > 0 ? "text-red-600" : "text-emerald-600"}`}>
                 {formatCurrency(totalAmount - paidAmount)}
               </span>
@@ -319,59 +319,59 @@ export default function EditSalePage() {
           {/* Customer Selection (inline) */}
           {(businessType === "wholesale" || (businessType === "retail" && totalAmount > 0 && (paidAmount ?? 0) < totalAmount)) && (
             <div className="mt-4 space-y-2">
-              <Label className="mb-1.5 block text-[13px] font-semibold text-slate-700">
+              <Label className="mb-1.5 block text-[13px] font-semibold text-foreground">
                 Select Customer <span className="text-red-500">*</span>
               </Label>
               <div className="relative" ref={customerDropdownRef}>
                 <button
                   type="button"
                   onClick={() => setCustomerDropdownOpen(!customerDropdownOpen)}
-                  className="flex h-11 w-full items-center justify-between gap-2 rounded-xl border border-slate-200 bg-white px-4 text-sm transition-all hover:border-slate-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
+                  className="flex h-11 w-full items-center justify-between gap-2 rounded-xl border border-border bg-card px-4 text-sm transition-all hover:border-border focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
                 >
-                  <span className={selectedCustomer ? "text-slate-700 font-medium" : "text-slate-400"}>
+                  <span className={selectedCustomer ? "text-foreground font-medium" : "text-muted-foreground"}>
                     {selectedCustomer ? `${selectedCustomer.name} (${selectedCustomer.code})` : "Search by name, code, phone..."}
                   </span>
-                  <ChevronDown className={`h-4 w-4 shrink-0 text-slate-500 transition-transform ${customerDropdownOpen ? "rotate-180" : ""}`} />
+                  <ChevronDown className={`h-4 w-4 shrink-0 text-muted-foreground transition-transform ${customerDropdownOpen ? "rotate-180" : ""}`} />
                 </button>
                 {customerDropdownOpen && (
-                  <div className="absolute z-50 mt-1 w-full overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xl">
+                  <div className="absolute z-50 mt-1 w-full overflow-hidden rounded-xl border border-border bg-card shadow-xl">
                     <div className="p-1.5">
                       <div className="relative">
-                        <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-400" />
+                        <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
                         <input
                           autoFocus
                           value={customerSearch}
                           onChange={(e) => setCustomerSearch(e.target.value)}
                           placeholder="Search customers..."
-                          className="h-9 w-full rounded-lg border border-slate-200 bg-slate-50 pl-8 pr-2.5 text-xs outline-none focus:border-emerald-500"
+                          className="h-9 w-full rounded-lg border border-border bg-muted pl-8 pr-2.5 text-xs outline-none focus:border-emerald-500"
                         />
                         {customerSearch && (
-                          <button onClick={() => setCustomerSearch("")} className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                          <button onClick={() => setCustomerSearch("")} className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
                             <X className="h-3.5 w-3.5" />
                           </button>
                         )}
                       </div>
                     </div>
-                    <div className="max-h-48 overflow-y-auto border-t border-slate-100 scrollbar-thin">
+                    <div className="max-h-48 overflow-y-auto border-t border-border scrollbar-thin">
                       <button
                         type="button"
                         onClick={() => { setValue("customer_id", null, { shouldValidate: true }); setCustomerDropdownOpen(false); setCustomerSearch(""); }}
-                        className="flex w-full items-center px-3 py-2 text-xs text-slate-500 hover:bg-slate-50"
+                        className="flex w-full items-center px-3 py-2 text-xs text-muted-foreground hover:bg-muted"
                       >
                         No customer (Walk-in)
                       </button>
                       {filteredCustomers.length === 0 ? (
-                        <div className="px-3 py-4 text-center text-xs text-slate-400">No customers found</div>
+                        <div className="px-3 py-4 text-center text-xs text-muted-foreground">No customers found</div>
                       ) : (
                         filteredCustomers.map((c) => (
                           <button
                             key={c.id}
                             type="button"
                             onClick={() => { setValue("customer_id", c.id, { shouldValidate: true }); setCustomerDropdownOpen(false); setCustomerSearch(""); }}
-                            className={`flex w-full items-center justify-between px-3 py-2 text-xs hover:bg-slate-50 ${watch("customer_id") === c.id ? "bg-emerald-50 text-emerald-700 font-medium" : "text-slate-600"}`}
+                            className={`flex w-full items-center justify-between px-3 py-2 text-xs hover:bg-muted ${watch("customer_id") === c.id ? "bg-emerald-500/10 text-emerald-600 font-medium" : "text-foreground"}`}
                           >
                             <span className="font-medium">{c.name}</span>
-                            <span className="text-slate-400 font-mono">{c.code}</span>
+                            <span className="text-muted-foreground font-mono">{c.code}</span>
                           </button>
                         ))
                       )}
@@ -384,10 +384,10 @@ export default function EditSalePage() {
           )}
 
           <div className="mt-4">
-            <Label className="mb-1.5 block text-[13px] font-semibold text-slate-700">Bill Image</Label>
+            <Label className="mb-1.5 block text-[13px] font-semibold text-foreground">Bill Image</Label>
             {billImagePreview ? (
               <div className="relative inline-block">
-                <img src={billImagePreview} alt="Bill" className="h-40 w-full max-w-md rounded-xl object-cover border border-slate-200" />
+                <img src={billImagePreview} alt="Bill" className="h-40 w-full max-w-md rounded-xl object-cover border border-border" />
                 <button
                   type="button"
                   onClick={removeImage}
@@ -397,10 +397,10 @@ export default function EditSalePage() {
                 </button>
               </div>
             ) : (
-              <label className="flex h-40 w-full cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-200 bg-slate-50 transition-colors hover:border-emerald-300 hover:bg-emerald-50">
-                <Upload className="mb-2 h-8 w-8 text-slate-400" />
-                <span className="text-sm font-medium text-slate-500">Upload Bill Image</span>
-                <span className="text-xs text-slate-400 mt-1">PNG, JPG, SVG, WEBP (max 2MB)</span>
+              <label className="flex h-40 w-full cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-border bg-muted transition-colors hover:border-emerald-300 hover:bg-emerald-500/10">
+                <Upload className="mb-2 h-8 w-8 text-muted-foreground" />
+                <span className="text-sm font-medium text-muted-foreground">Upload Bill Image</span>
+                <span className="text-xs text-muted-foreground mt-1">PNG, JPG, SVG, WEBP (max 2MB)</span>
                 <input type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
               </label>
             )}
@@ -408,19 +408,19 @@ export default function EditSalePage() {
         </div>
 
         {/* Notes */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-sm">
-          <h3 className="mb-4 text-sm font-semibold text-slate-700">Notes</h3>
+        <div className="rounded-2xl border border-border bg-card p-4 sm:p-6 shadow-sm">
+          <h3 className="mb-4 text-sm font-semibold text-foreground">Notes</h3>
           <textarea
             {...register("notes")}
             placeholder="Additional notes about this sale"
             rows={3}
-            className="flex w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition-all placeholder:text-slate-400 hover:border-slate-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
+            className="flex w-full rounded-xl border border-border bg-card px-4 py-3 text-sm outline-none transition-all placeholder:text-muted-foreground hover:border-border focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
           />
         </div>
 
         {/* Actions */}
         <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-3">
-          <Button type="button" variant="outline" onClick={() => router.push(`/sales/${saleId}`)} className="h-11 px-6 border-slate-200 text-slate-600 font-semibold">
+          <Button type="button" variant="outline" onClick={() => router.push(`/sales/${saleId}`)} className="h-11 px-6 border-border text-foreground font-semibold">
             Cancel
           </Button>
           <Button type="submit" disabled={isSaving} className="h-11 px-8 bg-emerald-600 text-white hover:bg-emerald-700 font-semibold shadow-lg shadow-emerald-600/20">

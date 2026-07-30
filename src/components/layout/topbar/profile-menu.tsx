@@ -43,30 +43,30 @@ export function ProfileMenu() {
             {profileImageUrl && (
               <AvatarImage src={profileImageUrl} alt={user?.name || "User"} />
             )}
-            <AvatarFallback className="bg-emerald-100 text-sm font-semibold text-emerald-700">
+            <AvatarFallback className="bg-emerald-500/10 text-sm font-semibold text-emerald-600 dark:text-emerald-400">
               {initials}
             </AvatarFallback>
           </Avatar>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-56 overflow-hidden p-0">
-          <div className="border-b border-slate-100 bg-slate-50/80 px-4 py-3">
-            <p className="text-sm font-semibold text-slate-900">{user?.name}</p>
-            <p className="text-xs text-slate-500 mt-0.5">{user?.email}</p>
+          <div className="border-b border-border bg-accent/50 px-4 py-3">
+            <p className="text-sm font-semibold text-foreground">{user?.name}</p>
+            <p className="text-xs text-muted-foreground mt-0.5">{user?.email}</p>
           </div>
           <div className="py-2 px-1.5">
             <DropdownMenuItem render={<Link href="/settings/profile" className="flex items-center gap-3 cursor-pointer rounded-lg px-3 py-2.5" />}>
-              <User className="h-4 w-4 text-slate-400" />
-              <span className="text-sm font-medium text-slate-700">My Profile</span>
+              <User className="h-4 w-4 text-muted-foreground" />
+              <span className="text-sm font-medium text-foreground">My Profile</span>
             </DropdownMenuItem>
             <DropdownMenuItem render={<Link href="/settings" className="flex items-center gap-3 cursor-pointer rounded-lg px-3 py-2.5" />}>
-              <Settings className="h-4 w-4 text-slate-400" />
-              <span className="text-sm font-medium text-slate-700">Settings</span>
+              <Settings className="h-4 w-4 text-muted-foreground" />
+              <span className="text-sm font-medium text-foreground">Settings</span>
             </DropdownMenuItem>
           </div>
-          <div className="border-t border-slate-100 py-2 px-1.5">
+          <div className="border-t border-border py-2 px-1.5">
             <DropdownMenuItem
               onClick={() => setShowLogoutDialog(true)}
-              className="flex items-center gap-3 cursor-pointer rounded-lg px-3 py-2.5 text-red-600 hover:bg-red-50 focus:text-red-600"
+              className="flex items-center gap-3 cursor-pointer rounded-lg px-3 py-2.5 text-red-600 dark:text-red-400 hover:bg-red-500/10 focus:text-red-600"
             >
               <LogOut className="h-4 w-4" />
               <span className="text-sm font-medium">Log out</span>

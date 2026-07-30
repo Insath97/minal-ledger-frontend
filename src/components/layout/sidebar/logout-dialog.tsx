@@ -38,28 +38,28 @@ export function LogoutDialog({ open, onOpenChange }: LogoutDialogProps) {
 
       {/* Dialog */}
       <div className="relative z-[10000] w-full max-w-sm mx-4">
-        <div className="rounded-3xl bg-white shadow-2xl shadow-black/10 border border-slate-100 overflow-hidden">
+        <div className="rounded-3xl bg-card shadow-2xl shadow-black/10 border border-border overflow-hidden">
           {/* Top Accent */}
           <div className="h-1.5 bg-gradient-to-r from-emerald-600 via-emerald-500 to-emerald-600" />
 
           <div className="p-6 text-center">
             {/* Icon */}
-            <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-50 border border-emerald-100">
+            <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-500/10 border border-emerald-500/20">
               <LogOut className="h-8 w-8 text-emerald-600" />
             </div>
 
             {/* Close button */}
             <button
               onClick={() => onOpenChange(false)}
-              className="absolute right-4 top-6 rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors"
+              className="absolute right-4 top-6 rounded-lg p-1.5 text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
             >
               <X className="h-4 w-4" />
             </button>
 
-            <h3 className="text-xl font-bold text-slate-900 mb-1.5">
+            <h3 className="text-xl font-bold text-foreground mb-1.5">
               Confirm Logout
             </h3>
-            <p className="text-sm text-slate-500 leading-relaxed">
+            <p className="text-sm text-muted-foreground leading-relaxed">
               Are you sure you want to log out? You&apos;ll need to sign in again to access the dashboard.
             </p>
           </div>
@@ -68,7 +68,7 @@ export function LogoutDialog({ open, onOpenChange }: LogoutDialogProps) {
           <div className="flex gap-3 px-6 pb-6">
             <button
               onClick={() => onOpenChange(false)}
-              className="flex-1 h-11 rounded-xl border border-slate-200 bg-white text-sm font-semibold text-slate-700 transition-all hover:bg-slate-50 hover:border-slate-300"
+              className="flex-1 h-11 rounded-xl border border-border bg-background text-sm font-semibold text-foreground transition-all hover:bg-accent hover:border-border"
             >
               Cancel
             </button>

@@ -19,10 +19,10 @@ const STATUS_OPTIONS = [
 ];
 
 const STATUS_BADGES: Record<string, string> = {
-  pending: "bg-amber-50 text-amber-700 border border-amber-200",
-  cleared: "bg-emerald-50 text-emerald-700 border border-emerald-200",
-  bounced: "bg-red-50 text-red-700 border border-red-200",
-  cancelled: "bg-slate-100 text-slate-600 border border-slate-200",
+  pending: "bg-amber-500/10 text-amber-600 border border-amber-500/20",
+  cleared: "bg-emerald-500/10 text-emerald-600 border border-emerald-500/20",
+  bounced: "bg-red-500/10 text-red-600 border border-red-500/20",
+  cancelled: "bg-muted text-foreground border border-border",
 };
 
 export default function ChequeReportPage() {
@@ -219,56 +219,56 @@ ${chequeSearch ? `<td style="padding:0;font-size:10px;color:#475569">Cheque: <b>
     <div className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Cheque Report</h1>
-          <p className="mt-1 text-sm text-slate-500">Cheque summary by status, bank, and date range.</p>
+          <h1 className="text-2xl font-bold text-foreground">Cheque Report</h1>
+          <p className="mt-1 text-sm text-muted-foreground">Cheque summary by status, bank, and date range.</p>
         </div>
         {data && (
           <div className="flex flex-wrap items-center gap-2">
-            {hasFilters && <button onClick={clearFilters} className="h-10 px-4 rounded-lg bg-red-50 text-xs font-medium text-red-500 hover:bg-red-100 transition-colors whitespace-nowrap">Clear Filters</button>}
-            <button onClick={handleDownloadExcel} className="flex h-10 items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 text-xs font-semibold text-slate-700 transition-all hover:bg-slate-50 whitespace-nowrap"><Download className="h-3.5 w-3.5" />Excel</button>
+            {hasFilters && <button onClick={clearFilters} className="h-10 px-4 rounded-lg bg-red-500/10 text-xs font-medium text-red-500 hover:bg-red-500/10 transition-colors whitespace-nowrap">Clear Filters</button>}
+            <button onClick={handleDownloadExcel} className="flex h-10 items-center gap-2 rounded-lg border border-border bg-card px-4 text-xs font-semibold text-foreground transition-all hover:bg-accent whitespace-nowrap"><Download className="h-3.5 w-3.5" />Excel</button>
             <button onClick={() => setPrintConfirmOpen(true)} className="flex h-10 items-center gap-2 rounded-lg bg-emerald-600 px-4 text-xs font-semibold text-white shadow-sm transition-all hover:bg-emerald-700 whitespace-nowrap"><Printer className="h-3.5 w-3.5" />Print</button>
           </div>
         )}
       </div>
 
-      <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-sm">
+      <div className="rounded-2xl border border-border bg-card p-4 sm:p-6 shadow-sm">
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
           <div className="sm:col-span-1">
-            <label className="mb-1.5 block text-[13px] font-semibold text-slate-700">Date From</label>
+            <label className="mb-1.5 block text-[13px] font-semibold text-foreground">Date From</label>
             <Input type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} className="h-11" />
           </div>
           <div className="sm:col-span-1">
-            <label className="mb-1.5 block text-[13px] font-semibold text-slate-700">Date To</label>
+            <label className="mb-1.5 block text-[13px] font-semibold text-foreground">Date To</label>
             <Input type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)} className="h-11" />
           </div>
           <div className="relative sm:col-span-1" ref={chequeDropdownRef}>
-            <label className="mb-1.5 block text-[13px] font-semibold text-slate-700">Cheque #</label>
-            <button type="button" onClick={() => setChequeDropdownOpen(!chequeDropdownOpen)} className="flex h-11 w-full items-center justify-between gap-2 rounded-lg border border-slate-200 bg-white px-3 text-sm transition-all hover:border-slate-300 focus:border-emerald-500">
-              <span className={`truncate ${selectedCheque ? "text-slate-700 font-medium" : "text-slate-400"}`}>{selectedCheque ? `${selectedCheque.cheque_number} (${selectedCheque.bank_name})` : "All Cheques"}</span>
-              <ChevronDown className={`h-4 w-4 shrink-0 text-slate-500 transition-transform ${chequeDropdownOpen ? "rotate-180" : ""}`} />
+            <label className="mb-1.5 block text-[13px] font-semibold text-foreground">Cheque #</label>
+            <button type="button" onClick={() => setChequeDropdownOpen(!chequeDropdownOpen)} className="flex h-11 w-full items-center justify-between gap-2 rounded-lg border border-border bg-card px-3 text-sm transition-all hover:border-border focus:border-emerald-500">
+              <span className={`truncate ${selectedCheque ? "text-foreground font-medium" : "text-muted-foreground"}`}>{selectedCheque ? `${selectedCheque.cheque_number} (${selectedCheque.bank_name})` : "All Cheques"}</span>
+              <ChevronDown className={`h-4 w-4 shrink-0 text-muted-foreground transition-transform ${chequeDropdownOpen ? "rotate-180" : ""}`} />
             </button>
             {chequeDropdownOpen && (
-              <div className="absolute z-50 mt-1 w-full overflow-hidden rounded-lg border border-slate-200 bg-white shadow-xl">
-                <div className="p-1.5"><input autoFocus value={chequeSearch} onChange={(e) => setChequeSearch(e.target.value)} placeholder="Search by cheque # or bank..." className="h-8 w-full rounded-md border border-slate-200 bg-slate-50 px-2.5 text-xs outline-none focus:border-emerald-500" /></div>
-                <div className="max-h-56 overflow-y-auto border-t border-slate-100 scrollbar-thin">
-                  {filteredChequeList.length === 0 ? (<div className="px-3 py-4 text-center"><p className="text-xs text-slate-500">No cheques found</p></div>)
-                  : (<>{selectedCheque && <button type="button" onClick={handleClearCheque} className="flex w-full items-center px-3 py-1.5 text-xs text-red-500 hover:bg-red-50">Clear selection</button>}
-                    {filteredChequeList.map((c) => (<button key={c.id} type="button" onClick={() => handleSelectCheque(c)} className={`flex w-full items-center gap-3 px-3 py-2 text-left hover:bg-slate-50 ${selectedCheque?.id === c.id ? "bg-emerald-50" : ""}`}>
-                      <div className="flex h-7 w-7 items-center justify-center rounded-full bg-amber-100 text-[10px] font-bold text-amber-700 shrink-0"><CreditCard className="h-3.5 w-3.5" /></div>
-                      <div className="flex-1 min-w-0"><p className="text-xs font-medium text-slate-700 font-mono">{c.cheque_number}</p><p className="text-[10px] text-slate-400">{c.bank_name} &middot; Rs. {Number(c.amount).toLocaleString("en-US")}</p></div>
+              <div className="absolute z-50 mt-1 w-full overflow-hidden rounded-lg border border-border bg-card shadow-xl">
+                <div className="p-1.5"><input autoFocus value={chequeSearch} onChange={(e) => setChequeSearch(e.target.value)} placeholder="Search by cheque # or bank..." className="h-8 w-full rounded-md border border-border bg-muted px-2.5 text-xs outline-none focus:border-emerald-500" /></div>
+                <div className="max-h-56 overflow-y-auto border-t border-border scrollbar-thin">
+                  {filteredChequeList.length === 0 ? (<div className="px-3 py-4 text-center"><p className="text-xs text-muted-foreground">No cheques found</p></div>)
+                  : (<>{selectedCheque && <button type="button" onClick={handleClearCheque} className="flex w-full items-center px-3 py-1.5 text-xs text-red-500 hover:bg-red-500/10">Clear selection</button>}
+                    {filteredChequeList.map((c) => (<button key={c.id} type="button" onClick={() => handleSelectCheque(c)} className={`flex w-full items-center gap-3 px-3 py-2 text-left hover:bg-accent ${selectedCheque?.id === c.id ? "bg-emerald-500/10" : ""}`}>
+                      <div className="flex h-7 w-7 items-center justify-center rounded-full bg-amber-500/10 text-[10px] font-bold text-amber-600 shrink-0"><CreditCard className="h-3.5 w-3.5" /></div>
+                      <div className="flex-1 min-w-0"><p className="text-xs font-medium text-foreground font-mono">{c.cheque_number}</p><p className="text-[10px] text-muted-foreground">{c.bank_name} &middot; Rs. {Number(c.amount).toLocaleString("en-US")}</p></div>
                     </button>))}</>)}
                 </div>
               </div>
             )}
           </div>
           <div className="sm:col-span-1">
-            <label className="mb-1.5 block text-[13px] font-semibold text-slate-700">Status</label>
-            <select value={status} onChange={(e) => setStatus(e.target.value)} className="h-11 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500">
+            <label className="mb-1.5 block text-[13px] font-semibold text-foreground">Status</label>
+            <select value={status} onChange={(e) => setStatus(e.target.value)} className="h-11 w-full rounded-lg border border-border bg-card px-3 text-sm focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500">
               {STATUS_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
             </select>
           </div>
           <div className="sm:col-span-1">
-            <label className="mb-1.5 block text-[13px] font-semibold text-slate-700">Bank Name</label>
+            <label className="mb-1.5 block text-[13px] font-semibold text-foreground">Bank Name</label>
             <BankSelect
               value={bankName}
               onChange={setBankName}
@@ -284,55 +284,55 @@ ${chequeSearch ? `<td style="padding:0;font-size:10px;color:#475569">Cheque: <b>
       ) : data ? (
         <>
           <div className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-4">
-            <div className="rounded-2xl border border-slate-200 bg-white p-3 sm:p-5 shadow-sm">
-              <p className="text-[11px] sm:text-xs text-slate-500">Total Cheques</p>
-              <p className="text-base sm:text-lg font-bold text-slate-900">{data.summary.total_count}</p>
-              <p className="text-[11px] sm:text-xs text-slate-400">{formatCurrency(data.summary.total_amount)}</p>
+            <div className="rounded-2xl border border-border bg-card p-3 sm:p-5 shadow-sm">
+              <p className="text-[11px] sm:text-xs text-muted-foreground">Total Cheques</p>
+              <p className="text-base sm:text-lg font-bold text-foreground">{data.summary.total_count}</p>
+              <p className="text-[11px] sm:text-xs text-muted-foreground">{formatCurrency(data.summary.total_amount)}</p>
             </div>
-            <div className="rounded-2xl border border-amber-200 bg-amber-50 p-3 sm:p-5 shadow-sm">
+            <div className="rounded-2xl border border-amber-500/20 bg-amber-500/10 p-3 sm:p-5 shadow-sm">
               <p className="text-[11px] sm:text-xs text-amber-600">Pending</p>
-              <p className="text-base sm:text-lg font-bold text-amber-700">{data.summary.pending_count}</p>
+              <p className="text-base sm:text-lg font-bold text-amber-600">{data.summary.pending_count}</p>
               <p className="text-[11px] sm:text-xs text-amber-500">{formatCurrency(data.summary.pending_amount)}</p>
             </div>
-            <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-3 sm:p-5 shadow-sm">
+            <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/10 p-3 sm:p-5 shadow-sm">
               <p className="text-[11px] sm:text-xs text-emerald-600">Cleared</p>
-              <p className="text-base sm:text-lg font-bold text-emerald-700">{data.summary.cleared_count}</p>
+              <p className="text-base sm:text-lg font-bold text-emerald-600">{data.summary.cleared_count}</p>
               <p className="text-[11px] sm:text-xs text-emerald-500">{formatCurrency(data.summary.cleared_amount)}</p>
             </div>
-            <div className="rounded-2xl border border-red-200 bg-red-50 p-3 sm:p-5 shadow-sm">
+            <div className="rounded-2xl border border-red-500/20 bg-red-500/10 p-3 sm:p-5 shadow-sm">
               <p className="text-[11px] sm:text-xs text-red-600">Bounced</p>
-              <p className="text-base sm:text-lg font-bold text-red-700">{data.summary.bounced_count}</p>
+              <p className="text-base sm:text-lg font-bold text-red-600">{data.summary.bounced_count}</p>
               <p className="text-[11px] sm:text-xs text-red-500">{formatCurrency(data.summary.bounced_amount)}</p>
             </div>
           </div>
 
-          <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
-            <div className="px-4 sm:px-6 py-4 border-b border-slate-100">
-              <h3 className="text-sm font-semibold text-slate-700">Cheque Details</h3>
+          <div className="rounded-2xl border border-border bg-card shadow-sm overflow-hidden">
+            <div className="px-4 sm:px-6 py-4 border-b border-border">
+              <h3 className="text-sm font-semibold text-foreground">Cheque Details</h3>
             </div>
             <div className="hidden md:block overflow-x-auto scrollbar-thin">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b border-slate-100 bg-slate-50/80">
-                    <th className="px-5 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">Cheque #</th>
-                    <th className="px-5 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">Customer</th>
-                    <th className="px-5 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">Bank</th>
-                    <th className="px-5 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">Date</th>
-                    <th className="px-5 py-3 text-right text-[11px] font-bold uppercase tracking-wider text-slate-500">Amount</th>
-                    <th className="px-5 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">Status</th>
+                  <tr className="border-b border-border bg-muted/50">
+                    <th className="px-5 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Cheque #</th>
+                    <th className="px-5 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Customer</th>
+                    <th className="px-5 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Bank</th>
+                    <th className="px-5 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Date</th>
+                    <th className="px-5 py-3 text-right text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Amount</th>
+                    <th className="px-5 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Status</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-50">
+                <tbody className="divide-y divide-border">
                   {data.cheques.length === 0 ? (
-                    <tr><td colSpan={6} className="px-5 py-16 text-center"><CreditCard className="mx-auto h-10 w-10 text-slate-300 mb-3" /><p className="text-sm font-semibold text-slate-600">No cheques found</p></td></tr>
+                    <tr><td colSpan={6} className="px-5 py-16 text-center"><CreditCard className="mx-auto h-10 w-10 text-muted-foreground/50 mb-3" /><p className="text-sm font-semibold text-foreground">No cheques found</p></td></tr>
                   ) : (
                     data.cheques.map((c) => (
-                      <tr key={c.id} className="hover:bg-slate-50/50 transition-colors">
-                        <td className="px-5 py-3 text-sm font-mono font-semibold text-slate-700">{c.cheque_number}</td>
-                        <td className="px-5 py-3 text-sm text-slate-700">{c.customer?.name || "—"}</td>
-                        <td className="px-5 py-3 text-sm text-slate-600">{c.bank_name}</td>
-                        <td className="px-5 py-3 text-sm text-slate-600">{new Date(c.cheque_date).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })}</td>
-                        <td className="px-5 py-3 text-right text-sm font-bold text-slate-900">{formatCurrency(c.amount)}</td>
+                      <tr key={c.id} className="hover:bg-accent/50 transition-colors">
+                        <td className="px-5 py-3 text-sm font-mono font-semibold text-foreground">{c.cheque_number}</td>
+                        <td className="px-5 py-3 text-sm text-foreground">{c.customer?.name || "—"}</td>
+                        <td className="px-5 py-3 text-sm text-foreground">{c.bank_name}</td>
+                        <td className="px-5 py-3 text-sm text-foreground">{new Date(c.cheque_date).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })}</td>
+                        <td className="px-5 py-3 text-right text-sm font-bold text-foreground">{formatCurrency(c.amount)}</td>
                         <td className="px-5 py-3"><span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${STATUS_BADGES[c.status] || ""}`}>{c.status}</span></td>
                       </tr>
                     ))
@@ -341,21 +341,21 @@ ${chequeSearch ? `<td style="padding:0;font-size:10px;color:#475569">Cheque: <b>
               </table>
             </div>
 
-            <div className="md:hidden divide-y divide-slate-50">
+            <div className="md:hidden divide-y divide-border">
               {data.cheques.length === 0 ? (
-                <div className="px-4 py-16 text-center"><CreditCard className="mx-auto h-10 w-10 text-slate-300 mb-3" /><p className="text-sm font-semibold text-slate-600">No cheques found</p></div>
+                <div className="px-4 py-16 text-center"><CreditCard className="mx-auto h-10 w-10 text-muted-foreground/50 mb-3" /><p className="text-sm font-semibold text-foreground">No cheques found</p></div>
               ) : (
                 data.cheques.map((c) => (
                   <div key={c.id} className="px-4 py-3 space-y-2">
                     <div className="flex items-center justify-between">
-                      <p className="text-sm font-mono font-semibold text-slate-700">{c.cheque_number}</p>
+                      <p className="text-sm font-mono font-semibold text-foreground">{c.cheque_number}</p>
                       <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${STATUS_BADGES[c.status] || ""}`}>{c.status}</span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <p className="text-sm text-slate-700">{c.customer?.name || "—"}</p>
-                      <p className="text-sm font-bold text-slate-900">{formatCurrency(c.amount)}</p>
+                      <p className="text-sm text-foreground">{c.customer?.name || "—"}</p>
+                      <p className="text-sm font-bold text-foreground">{formatCurrency(c.amount)}</p>
                     </div>
-                    <div className="flex items-center justify-between text-xs text-slate-400">
+                    <div className="flex items-center justify-between text-xs text-muted-foreground">
                       <span>{c.bank_name}</span>
                       <span>{new Date(c.cheque_date).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })}</span>
                     </div>
@@ -370,16 +370,16 @@ ${chequeSearch ? `<td style="padding:0;font-size:10px;color:#475569">Cheque: <b>
       {printConfirmOpen && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center">
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setPrintConfirmOpen(false)} />
-          <div className="relative z-10 w-full max-w-sm rounded-2xl bg-white p-4 sm:p-6 shadow-2xl">
+          <div className="relative z-10 w-full max-w-sm rounded-2xl bg-card p-4 sm:p-6 shadow-2xl">
             <div className="mb-3 sm:mb-5 text-center">
-              <div className="mx-auto mb-2 sm:mb-3 flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-emerald-100">
+              <div className="mx-auto mb-2 sm:mb-3 flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-emerald-500/10">
                 <Printer className="h-5 w-5 sm:h-6 sm:w-6 text-emerald-600" />
               </div>
-              <h3 className="text-sm sm:text-base font-bold text-slate-900">Print Cheque Report</h3>
-              <p className="mt-1 text-xs sm:text-sm text-slate-500">Do you want to print this report?</p>
+              <h3 className="text-sm sm:text-base font-bold text-foreground">Print Cheque Report</h3>
+              <p className="mt-1 text-xs sm:text-sm text-muted-foreground">Do you want to print this report?</p>
             </div>
             <div className="flex flex-col-reverse sm:flex-row gap-2 sm:gap-3">
-              <button onClick={() => setPrintConfirmOpen(false)} className="flex-1 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition-all hover:bg-slate-50">No</button>
+              <button onClick={() => setPrintConfirmOpen(false)} className="flex-1 rounded-xl border border-border bg-card px-4 py-2.5 text-sm font-semibold text-foreground transition-all hover:bg-accent">No</button>
               <button onClick={handlePrint} className="flex-1 rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-emerald-700">Yes</button>
             </div>
           </div>

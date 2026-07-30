@@ -158,16 +158,16 @@ export default function EditRolePage() {
     return (
       <div className="space-y-6">
         <div className="flex items-center gap-4">
-          <div className="h-10 w-10 rounded-xl bg-slate-100 animate-pulse" />
+          <div className="h-10 w-10 rounded-xl bg-muted animate-pulse" />
           <div>
-            <div className="h-7 w-32 rounded bg-slate-100 animate-pulse mb-2" />
-            <div className="h-4 w-48 rounded bg-slate-100 animate-pulse" />
+            <div className="h-7 w-32 rounded bg-muted animate-pulse mb-2" />
+            <div className="h-4 w-48 rounded bg-muted animate-pulse" />
           </div>
         </div>
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
           <div className="space-y-4">
             {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="h-12 rounded-xl bg-slate-50 animate-pulse" />
+              <div key={i} className="h-12 rounded-xl bg-muted animate-pulse" />
             ))}
           </div>
         </div>
@@ -178,13 +178,13 @@ export default function EditRolePage() {
   if (!hasPermission("Role Update")) {
     return (
       <div className="flex h-[50vh] flex-col items-center justify-center gap-4">
-        <div className="rounded-full bg-red-100 p-4">
+        <div className="rounded-full bg-red-500/10 p-4">
           <svg className="h-8 w-8 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
           </svg>
         </div>
-        <h2 className="text-lg font-bold text-slate-900">Access Denied</h2>
-        <p className="text-sm text-slate-500">You don&apos;t have permission to edit roles.</p>
+        <h2 className="text-lg font-bold text-foreground">Access Denied</h2>
+        <p className="text-sm text-muted-foreground">You don&apos;t have permission to edit roles.</p>
         <button onClick={() => router.push("/roles")} className="mt-2 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700">
           Back to Roles
         </button>
@@ -197,28 +197,28 @@ export default function EditRolePage() {
       {/* Header with Breadcrumb */}
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Edit Role</h1>
-          <p className="mt-0.5 text-sm text-slate-500">Update role details and permissions.</p>
+          <h1 className="text-2xl font-bold text-foreground">Edit Role</h1>
+          <p className="mt-0.5 text-sm text-muted-foreground">Update role details and permissions.</p>
         </div>
-        <nav className="flex flex-wrap items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-1.5 text-xs shrink-0">
-          <button onClick={() => router.push("/roles")} className="font-medium text-slate-500 hover:text-emerald-600 transition-colors">
+        <nav className="flex flex-wrap items-center gap-1.5 rounded-lg bg-muted px-3 py-1.5 text-xs shrink-0">
+          <button onClick={() => router.push("/roles")} className="font-medium text-muted-foreground hover:text-emerald-600 transition-colors">
             Roles
           </button>
-          <BreadcrumbSep className="h-3 w-3 text-slate-400" />
-          <button onClick={() => router.push(`/roles/${roleId}`)} className="font-medium text-slate-500 hover:text-emerald-600 transition-colors">
+          <BreadcrumbSep className="h-3 w-3 text-muted-foreground" />
+          <button onClick={() => router.push(`/roles/${roleId}`)} className="font-medium text-muted-foreground hover:text-emerald-600 transition-colors">
             {watch("name") || "Details"}
           </button>
-          <BreadcrumbSep className="h-3 w-3 text-slate-400" />
+          <BreadcrumbSep className="h-3 w-3 text-muted-foreground" />
           <span className="font-semibold text-emerald-600">Edit</span>
         </nav>
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* Role Name */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-sm">
-          <h2 className="mb-4 text-lg font-semibold text-slate-900">Role Details</h2>
+        <div className="rounded-2xl border border-border bg-card p-4 sm:p-6 shadow-sm">
+          <h2 className="mb-4 text-lg font-semibold text-foreground">Role Details</h2>
           <div>
-            <label className="mb-1.5 block text-[13px] font-semibold text-slate-700">Name *</label>
+            <label className="mb-1.5 block text-[13px] font-semibold text-foreground">Name *</label>
             <Input
               {...register("name")}
               placeholder="e.g. Admin"
@@ -231,24 +231,24 @@ export default function EditRolePage() {
         </div>
 
         {/* Permissions */}
-        <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+        <div className="rounded-2xl border border-border bg-card shadow-sm overflow-hidden">
           <div className="p-4 sm:p-6 pb-4">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <h2 className="text-lg font-semibold text-slate-900">Permissions *</h2>
-                <p className="text-xs text-slate-500 mt-1">{selectedPermissionIds.length} of {permissions.length} selected</p>
+                <h2 className="text-lg font-semibold text-foreground">Permissions *</h2>
+                <p className="text-xs text-muted-foreground mt-1">{selectedPermissionIds.length} of {permissions.length} selected</p>
               </div>
               <div className="flex items-center gap-2">
                 <div className="relative flex-1 sm:flex-none">
-                  <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-400" />
+                  <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
                   <input
                     value={permSearch}
                     onChange={(e) => setPermSearch(e.target.value)}
                     placeholder="Search permissions..."
-                    className="h-9 w-full sm:w-56 rounded-lg border border-slate-200 bg-white pl-8 pr-8 text-xs text-slate-600 outline-none focus:border-emerald-500"
+                    className="h-9 w-full sm:w-56 rounded-lg border border-border bg-card pl-8 pr-8 text-xs text-foreground outline-none focus:border-emerald-500"
                   />
                   {permSearch && (
-                    <button onClick={() => setPermSearch("")} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                    <button onClick={() => setPermSearch("")} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
                       <X className="h-3 w-3" />
                     </button>
                   )}
@@ -258,14 +258,14 @@ export default function EditRolePage() {
                   onClick={toggleGlobalSelectAll}
                   className={`flex items-center gap-2 rounded-lg border px-3 py-1.5 text-xs font-semibold transition-colors ${
                     allSelected
-                      ? "border-emerald-300 bg-emerald-50 text-emerald-700"
+                      ? "border-emerald-300 bg-emerald-500/10 text-emerald-600"
                       : someSelected
-                        ? "border-emerald-300 bg-emerald-50 text-emerald-600"
-                        : "border-slate-200 text-slate-600 hover:bg-slate-50"
+                        ? "border-emerald-300 bg-emerald-500/10 text-emerald-600"
+                        : "border-border text-foreground hover:bg-muted"
                   }`}
                 >
                   <div className={`flex h-4 w-4 items-center justify-center rounded border-2 transition-colors ${
-                    allSelected ? "border-emerald-500 bg-emerald-500" : someSelected ? "border-emerald-500 bg-emerald-100" : "border-slate-300 bg-white"
+                    allSelected ? "border-emerald-500 bg-emerald-500" : someSelected ? "border-emerald-500 bg-emerald-500/10" : "border-border bg-card"
                   }`}>
                     {(allSelected || someSelected) && (
                       <svg className="h-2.5 w-2.5 text-white" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor">
@@ -282,9 +282,9 @@ export default function EditRolePage() {
             )}
           </div>
 
-          <div className="max-h-[480px] overflow-y-auto scrollbar-thin border-t border-slate-100">
+          <div className="max-h-[480px] overflow-y-auto scrollbar-thin border-t border-border">
             {Object.entries(filteredGroupedPermissions).length === 0 && permSearch && (
-              <p className="py-8 text-center text-sm text-slate-400">No permissions match &quot;{permSearch}&quot;</p>
+              <p className="py-8 text-center text-sm text-muted-foreground">No permissions match &quot;{permSearch}&quot;</p>
             )}
             {Object.entries(filteredGroupedPermissions).map(([group, perms]) => {
               const groupIds = perms.map((p) => p.id);
@@ -293,29 +293,29 @@ export default function EditRolePage() {
               const isExpanded = expandedGroups[group] ?? true;
 
               return (
-                  <div key={group} className="border-b border-slate-100 last:border-b-0">
-                    <div className="flex items-center gap-3 bg-slate-50/80 px-4 sm:px-6 py-3">
+                  <div key={group} className="border-b border-border last:border-b-0">
+                    <div className="flex items-center gap-3 bg-muted/80 px-4 sm:px-6 py-3">
                       <button
                         type="button"
                         onClick={() => toggleGroup(group)}
                         className="flex flex-1 items-center gap-2 text-left"
                       >
-                        <span className="text-sm font-semibold text-slate-700">{group}</span>
-                        <span className="rounded-md bg-slate-200 px-1.5 py-0.5 text-[10px] font-bold text-slate-600">{perms.length}</span>
+                        <span className="text-sm font-semibold text-foreground">{group}</span>
+                        <span className="rounded-md bg-muted px-1.5 py-0.5 text-[10px] font-bold text-foreground">{perms.length}</span>
                       </button>
                       <button
                         type="button"
                         onClick={() => toggleGroupSelectAll(group)}
                         className={`flex items-center gap-1.5 rounded-md border px-2 py-1 text-[11px] font-semibold transition-colors ${
                           allGroupSelected
-                            ? "border-emerald-300 bg-emerald-50 text-emerald-700"
+                            ? "border-emerald-300 bg-emerald-500/10 text-emerald-600"
                             : someGroupSelected
-                              ? "border-emerald-300 bg-emerald-50 text-emerald-600"
-                              : "border-slate-200 text-slate-500 hover:bg-slate-100"
+                              ? "border-emerald-300 bg-emerald-500/10 text-emerald-600"
+                              : "border-border text-muted-foreground hover:bg-muted"
                         }`}
                       >
                         <div className={`flex h-3.5 w-3.5 items-center justify-center rounded border-[1.5px] transition-colors ${
-                          allGroupSelected ? "border-emerald-500 bg-emerald-500" : someGroupSelected ? "border-emerald-500 bg-emerald-100" : "border-slate-300 bg-white"
+                          allGroupSelected ? "border-emerald-500 bg-emerald-500" : someGroupSelected ? "border-emerald-500 bg-emerald-500/10" : "border-border bg-card"
                         }`}>
                           {(allGroupSelected || someGroupSelected) && (
                             <svg className="h-2 w-2 text-white" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor">
@@ -326,11 +326,11 @@ export default function EditRolePage() {
                         Select
                       </button>
                       <button type="button" onClick={() => toggleGroup(group)}>
-                        {isExpanded ? <ChevronDown className="h-4 w-4 text-slate-400" /> : <ChevronRight className="h-4 w-4 text-slate-400" />}
+                        {isExpanded ? <ChevronDown className="h-4 w-4 text-muted-foreground" /> : <ChevronRight className="h-4 w-4 text-muted-foreground" />}
                       </button>
                     </div>
                   {isExpanded && (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-slate-100">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-muted">
                       {perms.map((perm) => {
                         const isSelected = selectedPermissionIds.includes(perm.id);
                         return (
@@ -338,10 +338,10 @@ export default function EditRolePage() {
                             key={perm.id}
                             type="button"
                             onClick={() => togglePermission(perm.id)}
-                            className={`flex items-center gap-2.5 bg-white px-4 sm:px-6 py-2.5 text-left transition-colors hover:bg-emerald-50/50 ${isSelected ? "bg-emerald-50/70" : ""}`}
+                            className={`flex items-center gap-2.5 bg-card px-4 sm:px-6 py-2.5 text-left transition-colors hover:bg-emerald-500/10/50 ${isSelected ? "bg-emerald-500/10/70" : ""}`}
                           >
                             <div className={`flex h-4 w-4 shrink-0 items-center justify-center rounded border-2 transition-colors ${
-                              isSelected ? "border-emerald-500 bg-emerald-500" : "border-slate-300 bg-white"
+                              isSelected ? "border-emerald-500 bg-emerald-500" : "border-border bg-card"
                             }`}>
                               {isSelected && (
                                 <svg className="h-2.5 w-2.5 text-white" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor">
@@ -349,7 +349,7 @@ export default function EditRolePage() {
                                 </svg>
                               )}
                             </div>
-                            <span className={`text-[13px] ${isSelected ? "text-emerald-700 font-medium" : "text-slate-600"}`}>
+                            <span className={`text-[13px] ${isSelected ? "text-emerald-600 font-medium" : "text-foreground"}`}>
                               {perm.name}
                             </span>
                           </button>
@@ -369,7 +369,7 @@ export default function EditRolePage() {
             type="button"
             variant="outline"
             onClick={() => router.push("/roles")}
-            className="h-11 px-6 border-slate-200 text-slate-600 font-semibold"
+            className="h-11 px-6 border-border text-foreground font-semibold"
           >
             Cancel
           </Button>

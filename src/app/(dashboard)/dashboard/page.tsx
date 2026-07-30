@@ -168,7 +168,7 @@ export default function DashboardPage() {
         value: stats.total_sales,
         change: stats.sales_change,
         icon: ShoppingCart,
-        iconBg: "bg-emerald-50",
+        iconBg: "bg-emerald-500/10",
         iconColor: "text-emerald-600",
       },
       {
@@ -176,7 +176,7 @@ export default function DashboardPage() {
         value: stats.total_expenses,
         change: stats.expenses_change,
         icon: TrendingDown,
-        iconBg: "bg-red-50",
+        iconBg: "bg-red-500/10",
         iconColor: "text-red-600",
       },
       {
@@ -184,7 +184,7 @@ export default function DashboardPage() {
         value: stats.total_received,
         change: stats.received_change,
         icon: ArrowDownRight,
-        iconBg: "bg-blue-50",
+        iconBg: "bg-blue-500/10",
         iconColor: "text-blue-600",
       },
       {
@@ -192,7 +192,7 @@ export default function DashboardPage() {
         value: stats.total_outstanding,
         change: stats.outstanding_change,
         icon: AlertTriangle,
-        iconBg: "bg-amber-50",
+        iconBg: "bg-amber-500/10",
         iconColor: "text-amber-600",
       },
     ]
@@ -206,34 +206,34 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
         {loading ? (
           Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+            <div key={i} className="rounded-2xl border border-border bg-card p-5 shadow-sm">
               <div className="mb-3 flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <div className="h-9 w-9 animate-pulse rounded-lg bg-slate-100" />
-                  <div className="h-4 w-24 animate-pulse rounded bg-slate-100" />
+                  <div className="h-9 w-9 animate-pulse rounded-lg bg-muted" />
+                  <div className="h-4 w-24 animate-pulse rounded bg-muted" />
                 </div>
               </div>
-              <div className="h-8 w-32 animate-pulse rounded bg-slate-100" />
-              <div className="mt-3 h-4 w-20 animate-pulse rounded bg-slate-100" />
+              <div className="h-8 w-32 animate-pulse rounded bg-muted" />
+              <div className="mt-3 h-4 w-20 animate-pulse rounded bg-muted" />
             </div>
           ))
         ) : (
           cards.map((card) => (
-            <div key={card.title} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+            <div key={card.title} className="rounded-2xl border border-border bg-card p-5 shadow-sm">
               <div className="mb-3 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <div className={`flex h-9 w-9 items-center justify-center rounded-lg ${card.iconBg}`}>
                     <card.icon className={`h-5 w-5 ${card.iconColor}`} />
                   </div>
-                  <h3 className="text-sm font-medium text-slate-600">{card.title}</h3>
+                  <h3 className="text-sm font-medium text-muted-foreground">{card.title}</h3>
                 </div>
               </div>
-              <p className="text-2xl font-bold text-slate-900">
+              <p className="text-2xl font-bold text-foreground">
                 {formatCurrency(card.value)}
               </p>
               <div className="mt-2">
                 <ChangeBadge value={card.change} />
-                <span className="ml-1.5 text-xs text-slate-400">from last month</span>
+                <span className="ml-1.5 text-xs text-muted-foreground">from last month</span>
               </div>
             </div>
           ))

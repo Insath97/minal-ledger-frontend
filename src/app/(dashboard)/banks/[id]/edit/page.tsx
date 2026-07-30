@@ -85,10 +85,10 @@ export default function EditBankPage() {
     return (
       <div className="space-y-6">
         <div className="flex items-center gap-4">
-          <div className="h-10 w-10 rounded-xl bg-slate-100 animate-pulse" />
-          <div className="h-7 w-40 rounded bg-slate-100 animate-pulse" />
+          <div className="h-10 w-10 rounded-xl bg-muted animate-pulse" />
+          <div className="h-7 w-40 rounded bg-muted animate-pulse" />
         </div>
-        <div className="rounded-2xl bg-slate-100 h-64 animate-pulse" />
+        <div className="rounded-2xl bg-muted h-64 animate-pulse" />
       </div>
     );
   }
@@ -98,32 +98,32 @@ export default function EditBankPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Edit Bank</h1>
-          <p className="mt-0.5 text-sm text-slate-500">Update bank information.</p>
+          <h1 className="text-2xl font-bold text-foreground">Edit Bank</h1>
+          <p className="mt-0.5 text-sm text-muted-foreground">Update bank information.</p>
         </div>
-        <nav className="flex items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-1.5 text-xs shrink-0">
-          <button onClick={() => router.push("/banks")} className="font-medium text-slate-500 hover:text-emerald-600 transition-colors">Banks</button>
-          <BreadcrumbSep className="h-3 w-3 text-slate-400" />
+        <nav className="flex items-center gap-1.5 rounded-lg bg-muted px-3 py-1.5 text-xs shrink-0">
+          <button onClick={() => router.push("/banks")} className="font-medium text-muted-foreground hover:text-emerald-600 transition-colors">Banks</button>
+          <BreadcrumbSep className="h-3 w-3 text-muted-foreground" />
           <span className="font-semibold text-emerald-600">Edit</span>
         </nav>
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-sm">
-          <h2 className="mb-4 text-lg font-semibold text-slate-900">Bank Information</h2>
+        <div className="rounded-2xl border border-border bg-card p-4 sm:p-6 shadow-sm">
+          <h2 className="mb-4 text-lg font-semibold text-foreground">Bank Information</h2>
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
-              <label className="mb-1.5 block text-[13px] font-semibold text-slate-700">Name *</label>
+              <label className="mb-1.5 block text-[13px] font-semibold text-foreground">Name *</label>
               <Input {...register("name")} placeholder="e.g. Brac Bank" className="h-11" />
               {errors.name && <p className="mt-1 text-xs text-red-500">{errors.name.message}</p>}
             </div>
             <div>
-              <label className="mb-1.5 block text-[13px] font-semibold text-slate-700">Code *</label>
+              <label className="mb-1.5 block text-[13px] font-semibold text-foreground">Code *</label>
               <Input {...register("code")} placeholder="e.g. BRAC" className="h-11 uppercase" />
               {errors.code && <p className="mt-1 text-xs text-red-500">{errors.code.message}</p>}
             </div>
             <div className="sm:col-span-2">
-              <label className="mb-1.5 block text-[13px] font-semibold text-slate-700">Description</label>
+              <label className="mb-1.5 block text-[13px] font-semibold text-foreground">Description</label>
               <Input {...register("description")} placeholder="Optional description" className="h-11" />
             </div>
           </div>
@@ -131,7 +131,7 @@ export default function EditBankPage() {
 
         {/* Actions */}
         <div className="flex items-center justify-end gap-3">
-          <Button type="button" variant="outline" onClick={() => router.push("/banks")} className="h-11 px-6 border-slate-200 text-slate-600 font-semibold">
+          <Button type="button" variant="outline" onClick={() => router.push("/banks")} className="h-11 px-6 border-border text-foreground font-semibold">
             Cancel
           </Button>
           <Button type="submit" disabled={isSaving} className="h-11 px-8 bg-emerald-600 text-white hover:bg-emerald-700 font-semibold shadow-lg shadow-emerald-600/20">

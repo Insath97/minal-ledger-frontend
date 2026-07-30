@@ -16,7 +16,7 @@ export function SidebarSection({ title, items, isCollapsed }: SidebarSectionProp
   return (
     <div className="mb-6">
       {(!isCollapsed || isMobileOpen) && (
-        <p className="mb-2 px-3 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+        <p className="mb-2 px-3 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
           {title}
         </p>
       )}

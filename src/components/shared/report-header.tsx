@@ -18,23 +18,23 @@ export function ReportHeader({ title, subtitle, dateRange, extraInfo }: ReportHe
             <span className="text-white font-bold text-lg">M</span>
           </div>
           <div>
-            <h2 className="text-lg font-bold text-slate-900">{APP_NAME}</h2>
-            <p className="text-[10px] text-slate-500">Financial Management System</p>
+            <h2 className="text-lg font-bold text-foreground">{APP_NAME}</h2>
+            <p className="text-[10px] text-muted-foreground">Financial Management System</p>
           </div>
         </div>
         <div className="text-right">
-          <p className="text-[10px] text-slate-400">Generated on</p>
-          <p className="text-xs font-semibold text-slate-700">{today}</p>
+          <p className="text-[10px] text-muted-foreground">Generated on</p>
+          <p className="text-xs font-semibold text-foreground">{today}</p>
         </div>
       </div>
 
       <div className="border-t-2 border-emerald-600 pt-3">
-        <h1 className="text-base font-bold text-slate-900">{title}</h1>
-        {subtitle && <p className="text-xs text-slate-500 mt-0.5">{subtitle}</p>}
+        <h1 className="text-base font-bold text-foreground">{title}</h1>
+        {subtitle && <p className="text-xs text-muted-foreground mt-0.5">{subtitle}</p>}
       </div>
 
       {(dateRange || extraInfo) && (
-        <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-slate-600">
+        <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-foreground">
           {dateRange && (
             <span>Period: <span className="font-semibold">{dateRange.from} to {dateRange.to}</span></span>
           )}

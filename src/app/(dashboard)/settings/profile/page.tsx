@@ -84,7 +84,7 @@ function PasswordInputField({
 }) {
   return (
     <div>
-      <label className="mb-1.5 block text-[13px] font-semibold text-slate-700">
+      <label className="mb-1.5 block text-[13px] font-semibold text-foreground">
         {name === "current_password" ? "Current Password" : name === "password" ? "New Password" : "Confirm New Password"}
       </label>
       <div className="relative">
@@ -97,7 +97,7 @@ function PasswordInputField({
         <button
           type="button"
           onClick={onToggle}
-          className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
         >
           {show ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
         </button>
@@ -209,22 +209,22 @@ export default function ProfilePage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">My Profile</h1>
-          <p className="mt-0.5 text-sm text-slate-500">Manage your personal information and settings.</p>
+          <h1 className="text-2xl font-bold text-foreground">My Profile</h1>
+          <p className="mt-0.5 text-sm text-muted-foreground">Manage your personal information and settings.</p>
         </div>
-        <nav className="flex items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-1.5 text-xs shrink-0">
-          <button onClick={() => router.push("/settings")} className="font-medium text-slate-500 hover:text-emerald-600 transition-colors">Settings</button>
-          <ChevronRight className="h-3 w-3 text-slate-400" />
+        <nav className="flex items-center gap-1.5 rounded-lg bg-muted px-3 py-1.5 text-xs shrink-0">
+          <button onClick={() => router.push("/settings")} className="font-medium text-muted-foreground hover:text-emerald-600 transition-colors">Settings</button>
+          <ChevronRight className="h-3 w-3 text-muted-foreground" />
           <span className="font-semibold text-emerald-600">My Profile</span>
         </nav>
       </div>
 
       {/* Profile Card */}
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+        <div className="rounded-2xl border border-border bg-card shadow-sm overflow-hidden">
           <div className="flex flex-col lg:flex-row">
             {/* Left - Photo & Info */}
-            <div className="lg:w-80 bg-slate-50 border-b lg:border-b-0 lg:border-r border-slate-200 p-5 sm:p-8">
+            <div className="lg:w-80 bg-muted border-b lg:border-b-0 lg:border-r border-border p-5 sm:p-8">
               <div className="flex flex-col items-center">
                 {/* Avatar */}
                 <div className="relative group mb-5">
@@ -242,14 +242,14 @@ export default function ProfilePage() {
                         <button
                           type="button"
                           onClick={() => fileInputRef.current?.click()}
-                          className="rounded-xl bg-white p-2 text-slate-700 hover:bg-white/90 shadow-md"
+                          className="rounded-xl bg-card p-2 text-foreground hover:bg-white/90 shadow-md"
                         >
                           <Camera className="h-4 w-4" />
                         </button>
                         <button
                           type="button"
                           onClick={removeImage}
-                          className="rounded-xl bg-white p-2 text-red-500 hover:bg-white/90 shadow-md"
+                          className="rounded-xl bg-card p-2 text-red-500 hover:bg-white/90 shadow-md"
                         >
                           <X className="h-4 w-4" />
                         </button>
@@ -259,7 +259,7 @@ export default function ProfilePage() {
                     <button
                       type="button"
                       onClick={() => fileInputRef.current?.click()}
-                      className="flex h-32 w-32 sm:h-48 sm:w-48 items-center justify-center rounded-2xl border-4 border-dashed border-slate-300 bg-white text-slate-400 transition-all hover:border-emerald-400 hover:text-emerald-500"
+                      className="flex h-32 w-32 sm:h-48 sm:w-48 items-center justify-center rounded-2xl border-4 border-dashed border-border bg-card text-muted-foreground transition-all hover:border-emerald-400 hover:text-emerald-500"
                     >
                       <div className="text-center">
                         <Camera className="mx-auto h-8 w-8 sm:h-10 sm:w-10 mb-1.5" />
@@ -270,16 +270,16 @@ export default function ProfilePage() {
                 </div>
 
                 {/* User Info */}
-                <h3 className="text-base font-bold text-slate-900">{user?.name}</h3>
-                <p className="text-sm text-slate-500">@{user?.username}</p>
+                <h3 className="text-base font-bold text-foreground">{user?.name}</h3>
+                <p className="text-sm text-muted-foreground">@{user?.username}</p>
 
                 <div className="mt-4 flex flex-col items-center gap-2 w-full">
-                  <div className="flex items-center gap-2 text-sm text-slate-600">
+                  <div className="flex items-center gap-2 text-sm text-foreground">
                     <Shield className="h-4 w-4 text-emerald-500" />
                     <span>{roleName}</span>
                   </div>
                   {user?.created_at && (
-                    <div className="flex items-center gap-2 text-sm text-slate-500">
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
                       <Calendar className="h-4 w-4" />
                       <span>Joined {new Date(user.created_at).toLocaleDateString("en-US", { month: "short", year: "numeric" })}</span>
                     </div>
@@ -291,20 +291,20 @@ export default function ProfilePage() {
             {/* Right - Form */}
             <div className="flex-1 p-5 sm:p-8">
               {/* Profile Information */}
-              <h2 className="text-lg font-bold text-slate-900 mb-1">Profile Information</h2>
-              <p className="text-sm text-slate-500 mb-6">Update your personal details and contact information.</p>
+              <h2 className="text-lg font-bold text-foreground mb-1">Profile Information</h2>
+              <p className="text-sm text-muted-foreground mb-6">Update your personal details and contact information.</p>
 
               <div className="space-y-5">
                 <div className="grid gap-5 sm:grid-cols-2">
                   <div>
-                    <label className="mb-1.5 block text-[13px] font-semibold text-slate-700">
+                    <label className="mb-1.5 block text-[13px] font-semibold text-foreground">
                       Full Name <span className="text-red-500">*</span>
                     </label>
                     <Input {...register("name")} className="h-11 rounded-xl" placeholder="Enter your full name" />
                     {errors.name && <p className="mt-1 text-xs text-red-500">{errors.name.message}</p>}
                   </div>
                   <div>
-                    <label className="mb-1.5 block text-[13px] font-semibold text-slate-700">
+                    <label className="mb-1.5 block text-[13px] font-semibold text-foreground">
                       Email Address
                     </label>
                     <Input {...register("email")} type="email" className="h-11 rounded-xl" placeholder="Enter your email" />
@@ -313,23 +313,23 @@ export default function ProfilePage() {
                 </div>
                 <div className="grid gap-5 sm:grid-cols-2">
                   <div>
-                    <label className="mb-1.5 block text-[13px] font-semibold text-slate-700">
+                    <label className="mb-1.5 block text-[13px] font-semibold text-foreground">
                       Phone Number
                     </label>
                     <Input {...register("phone")} className="h-11 rounded-xl" placeholder="Enter your phone number" />
                     {errors.phone && <p className="mt-1 text-xs text-red-500">{errors.phone.message}</p>}
                   </div>
                   <div>
-                    <label className="mb-1.5 block text-[13px] font-semibold text-slate-700">
+                    <label className="mb-1.5 block text-[13px] font-semibold text-foreground">
                       Username
                     </label>
-                    <Input value={user?.username || ""} className="h-11 rounded-xl bg-slate-50" disabled />
+                    <Input value={user?.username || ""} className="h-11 rounded-xl bg-muted" disabled />
                   </div>
                 </div>
               </div>
 
               {/* Divider */}
-              <div className="my-8 border-t border-slate-200" />
+              <div className="my-8 border-t border-border" />
 
               {/* Change Password */}
               <button
@@ -338,16 +338,16 @@ export default function ProfilePage() {
                 className="flex w-full items-center justify-between text-left group"
               >
                 <div>
-                  <h2 className="text-lg font-bold text-slate-900 group-hover:text-emerald-600 transition-colors">Change Password</h2>
-                  <p className="text-sm text-slate-500 mt-0.5">Update your password to keep your account secure.</p>
+                  <h2 className="text-lg font-bold text-foreground group-hover:text-emerald-600 transition-colors">Change Password</h2>
+                  <p className="text-sm text-muted-foreground mt-0.5">Update your password to keep your account secure.</p>
                 </div>
-                <div className="rounded-lg bg-slate-100 p-2 group-hover:bg-emerald-50 transition-colors">
-                  <ChevronDown className={`h-5 w-5 text-slate-400 group-hover:text-emerald-500 transition-all ${showPasswordSection ? "rotate-180" : ""}`} />
+                <div className="rounded-lg bg-muted p-2 group-hover:bg-emerald-500/10 transition-colors">
+                  <ChevronDown className={`h-5 w-5 text-muted-foreground group-hover:text-emerald-500 transition-all ${showPasswordSection ? "rotate-180" : ""}`} />
                 </div>
               </button>
 
               {showPasswordSection && (
-                <div className="mt-5 space-y-4 p-4 sm:p-5 rounded-xl bg-slate-50 border border-slate-200">
+                <div className="mt-5 space-y-4 p-4 sm:p-5 rounded-xl bg-muted border border-border">
                   <PasswordInputField
                     register={register}
                     name="current_password"
@@ -378,8 +378,8 @@ export default function ProfilePage() {
               )}
 
               {/* Action Buttons */}
-              <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 mt-8 pt-6 border-t border-slate-200">
-                <Button type="button" variant="outline" className="h-11 px-6 border-slate-200 text-slate-600 font-semibold" onClick={() => router.push("/settings")}>
+              <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 mt-8 pt-6 border-t border-border">
+                <Button type="button" variant="outline" className="h-11 px-6 border-border text-foreground font-semibold" onClick={() => router.push("/settings")}>
                   Cancel
                 </Button>
                 <Button type="submit" disabled={isSaving} className="h-11 px-8 bg-emerald-600 text-white hover:bg-emerald-700 font-semibold shadow-lg shadow-emerald-600/20">

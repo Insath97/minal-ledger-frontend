@@ -115,8 +115,8 @@ export default function UsersPage() {
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Users</h1>
-          <p className="mt-1 text-sm text-slate-500">Manage system users and their access.</p>
+          <h1 className="text-2xl font-bold text-foreground">Users</h1>
+          <p className="mt-1 text-sm text-muted-foreground">Manage system users and their access.</p>
         </div>
         {canCreate && (
           <Button onClick={() => router.push("/users/create")} className="bg-emerald-600 text-white hover:bg-emerald-700 shadow-lg shadow-emerald-600/20">
@@ -127,10 +127,10 @@ export default function UsersPage() {
       </div>
 
       {/* Search & Filters */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+      <div className="rounded-2xl border border-border bg-background p-4 shadow-sm">
         <div className="flex flex-wrap items-center gap-3">
           <div className="relative min-w-0 flex-1 sm:flex-1">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               placeholder="Search users by name, email, username..."
               value={search}
@@ -138,7 +138,7 @@ export default function UsersPage() {
               className="h-10 pl-9 pr-9 text-sm"
             />
             {search && (
-              <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+              <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
                 <X className="h-4 w-4" />
               </button>
             )}
@@ -146,7 +146,7 @@ export default function UsersPage() {
           <select
             value={statusFilter}
             onChange={(e) => { setStatusFilter(e.target.value as typeof statusFilter); setCurrentPage(1); }}
-            className="h-10 min-w-[140px] rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-600 outline-none transition-all hover:border-slate-300 focus:border-emerald-500"
+            className="h-10 min-w-[140px] rounded-lg border border-border bg-background px-3 text-sm text-foreground outline-none transition-all hover:border-border focus:border-emerald-500"
           >
             <option value="all">All Status</option>
             <option value="active">Active</option>
@@ -156,74 +156,74 @@ export default function UsersPage() {
       </div>
 
       {/* Data Table - Desktop */}
-      <div className="hidden md:block rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+      <div className="hidden md:block rounded-2xl border border-border bg-background shadow-sm overflow-hidden">
         <div className="overflow-x-auto scrollbar-thin">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-slate-100 bg-slate-50/80">
-                <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">#</th>
-                <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">User</th>
-                <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">Contact</th>
-                <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">Roles</th>
+              <tr className="border-b border-border bg-muted/50">
+                <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground">#</th>
+                <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground">User</th>
+                <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Contact</th>
+                <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Roles</th>
                 {canToggleStatus && (
-                  <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">Status</th>
+                  <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Status</th>
                 )}
                 {canToggleStatus && (
-                  <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">Login</th>
+                  <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Login</th>
                 )}
                 {showActions && (
-                  <th className="px-5 py-3.5 text-right text-[11px] font-bold uppercase tracking-wider text-slate-500">Actions</th>
+                  <th className="px-5 py-3.5 text-right text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Actions</th>
                 )}
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-50">
+            <tbody className="divide-y divide-border">
               {loading ? (
                 <tr>
                   <td colSpan={canToggleStatus ? (showActions ? 7 : 6) : (showActions ? 5 : 4)} className="px-5 py-16 text-center">
                     <Loader2 className="mx-auto h-8 w-8 text-emerald-500 animate-spin mb-3" />
-                    <p className="text-sm text-slate-500">Loading users...</p>
+                    <p className="text-sm text-muted-foreground">Loading users...</p>
                   </td>
                 </tr>
               ) : users.length === 0 ? (
                 <tr>
                   <td colSpan={canToggleStatus ? (showActions ? 7 : 6) : (showActions ? 5 : 4)} className="px-5 py-16 text-center">
-                    <Users className="mx-auto h-10 w-10 text-slate-300 mb-3" />
-                    <p className="text-sm font-semibold text-slate-600">No users found</p>
-                    <p className="text-xs text-slate-400 mt-1">Try adjusting your search or filters</p>
+                    <Users className="mx-auto h-10 w-10 text-muted-foreground/50 mb-3" />
+                    <p className="text-sm font-semibold text-foreground">No users found</p>
+                    <p className="text-xs text-muted-foreground mt-1">Try adjusting your search or filters</p>
                   </td>
                 </tr>
               ) : (
                 users.map((user, i) => {
                   const initials = user.name.split(" ").map((w) => w[0]).join("").toUpperCase().slice(0, 2);
                   return (
-                    <tr key={user.id} className="hover:bg-slate-50/50 transition-colors">
-                      <td className="px-5 py-3.5 text-sm text-slate-400">
+                    <tr key={user.id} className="hover:bg-accent/50 transition-colors">
+                      <td className="px-5 py-3.5 text-sm text-muted-foreground">
                         {(currentPage - 1) * perPage + i + 1}
                       </td>
                       <td className="px-5 py-3.5">
                         <div className="flex items-center gap-3">
-                          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-xs font-bold text-emerald-700">
+                          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-emerald-500/10 text-xs font-bold text-emerald-600">
                             {initials}
                           </div>
                           <div>
-                            <p className="text-sm font-semibold text-slate-800">{user.name}</p>
-                            <p className="text-xs text-slate-400">@{user.username}</p>
+                            <p className="text-sm font-semibold text-foreground">{user.name}</p>
+                            <p className="text-xs text-muted-foreground">@{user.username}</p>
                           </div>
                         </div>
                       </td>
                       <td className="px-5 py-3.5">
-                        <p className="text-sm text-slate-600">{user.email || "—"}</p>
-                        <p className="text-xs text-slate-400">{user.phone || ""}</p>
+                        <p className="text-sm text-foreground">{user.email || "—"}</p>
+                        <p className="text-xs text-muted-foreground">{user.phone || ""}</p>
                       </td>
                       <td className="px-5 py-3.5">
                         <div className="flex flex-wrap gap-1">
                           {user.roles?.map((role) => (
-                            <Badge key={role.id} variant="outline" className="border-emerald-200 bg-emerald-50 text-emerald-700 text-[10px] font-semibold">
+                            <Badge key={role.id} variant="outline" className="border-emerald-500/20 bg-emerald-500/10 text-emerald-600 text-[10px] font-semibold">
                               {role.name}
                             </Badge>
                           ))}
                           {(!user.roles || user.roles.length === 0) && (
-                            <span className="text-xs text-slate-400">No role</span>
+                            <span className="text-xs text-muted-foreground">No role</span>
                           )}
                         </div>
                       </td>
@@ -236,16 +236,16 @@ export default function UsersPage() {
                           >
                             <span
                               className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
-                                user.is_active ? "bg-emerald-500" : "bg-slate-200"
+                                user.is_active ? "bg-emerald-500" : "bg-muted"
                               }`}
                             >
                               <span
-                                className={`inline-block h-3.5 w-3.5 rounded-full bg-white shadow-sm transition-transform ${
+                                className={`inline-block h-3.5 w-3.5 rounded-full bg-card shadow-sm transition-transform ${
                                   user.is_active ? "translate-x-[18px]" : "translate-x-[3px]"
                                 }`}
                               />
                             </span>
-                            <span className={`text-xs font-medium ${user.is_active ? "text-emerald-600" : "text-slate-400"}`}>
+                            <span className={`text-xs font-medium ${user.is_active ? "text-emerald-600" : "text-muted-foreground"}`}>
                               {user.is_active ? "Active" : "Inactive"}
                             </span>
                           </button>
@@ -260,16 +260,16 @@ export default function UsersPage() {
                           >
                             <span
                               className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
-                                user.can_login ? "bg-emerald-500" : "bg-slate-200"
+                                user.can_login ? "bg-emerald-500" : "bg-muted"
                               }`}
                             >
                               <span
-                                className={`inline-block h-3.5 w-3.5 rounded-full bg-white shadow-sm transition-transform ${
+                                className={`inline-block h-3.5 w-3.5 rounded-full bg-card shadow-sm transition-transform ${
                                   user.can_login ? "translate-x-[18px]" : "translate-x-[3px]"
                                 }`}
                               />
                             </span>
-                            <span className={`text-xs font-medium ${user.can_login ? "text-emerald-600" : "text-slate-400"}`}>
+                            <span className={`text-xs font-medium ${user.can_login ? "text-emerald-600" : "text-muted-foreground"}`}>
                               {user.can_login ? "Yes" : "No"}
                             </span>
                           </button>
@@ -280,7 +280,7 @@ export default function UsersPage() {
                           <div className="flex items-center justify-end gap-1">
                             <button
                               onClick={() => router.push(`/users/${user.id}`)}
-                              className="rounded-lg p-1.5 text-slate-400 hover:bg-blue-50 hover:text-blue-600 transition-colors"
+                              className="rounded-lg p-1.5 text-muted-foreground hover:bg-blue-500/10 hover:text-blue-600 transition-colors"
                               title="View"
                             >
                               <Eye className="h-4 w-4" />
@@ -288,7 +288,7 @@ export default function UsersPage() {
                             {canEdit && (
                               <button
                                 onClick={() => router.push(`/users/${user.id}/edit`)}
-                                className="rounded-lg p-1.5 text-slate-400 hover:bg-emerald-50 hover:text-emerald-600 transition-colors"
+                                className="rounded-lg p-1.5 text-muted-foreground hover:bg-emerald-500/10 hover:text-emerald-600 transition-colors"
                                 title="Edit"
                               >
                                 <Edit className="h-4 w-4" />
@@ -297,7 +297,7 @@ export default function UsersPage() {
                             {canDelete && (
                               <button
                                 onClick={() => setShowDeleteConfirm(user)}
-                                className="rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-500 transition-colors"
+                                className="rounded-lg p-1.5 text-muted-foreground hover:bg-red-500/10 hover:text-red-500 transition-colors"
                                 title="Delete"
                               >
                                 <Trash2 className="h-4 w-4" />
@@ -333,37 +333,37 @@ export default function UsersPage() {
 
       {/* Mobile Cards */}
       {loading ? (
-        <div className="md:hidden rounded-2xl border border-slate-200 bg-white shadow-sm p-8 text-center">
+        <div className="md:hidden rounded-2xl border border-border bg-background shadow-sm p-8 text-center">
           <Loader2 className="mx-auto h-8 w-8 text-emerald-500 animate-spin mb-3" />
-          <p className="text-sm text-slate-500">Loading users...</p>
+          <p className="text-sm text-muted-foreground">Loading users...</p>
         </div>
       ) : users.length === 0 ? (
-        <div className="md:hidden rounded-2xl border border-slate-200 bg-white shadow-sm p-8 text-center">
-          <Users className="mx-auto h-10 w-10 text-slate-300 mb-3" />
-          <p className="text-sm font-semibold text-slate-600">No users found</p>
-          <p className="text-xs text-slate-400 mt-1">Try adjusting your search or filters</p>
+        <div className="md:hidden rounded-2xl border border-border bg-background shadow-sm p-8 text-center">
+          <Users className="mx-auto h-10 w-10 text-muted-foreground/50 mb-3" />
+          <p className="text-sm font-semibold text-foreground">No users found</p>
+          <p className="text-xs text-muted-foreground mt-1">Try adjusting your search or filters</p>
         </div>
       ) : (
         <div className="md:hidden space-y-3">
           {users.map((user) => {
             const initials = user.name.split(" ").map((w) => w[0]).join("").toUpperCase().slice(0, 2);
             return (
-              <div key={user.id} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+              <div key={user.id} className="rounded-2xl border border-border bg-background p-4 shadow-sm">
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex items-center gap-3 min-w-0">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-xs font-bold text-emerald-700">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-500/10 text-xs font-bold text-emerald-600">
                       {initials}
                     </div>
                     <div className="min-w-0">
-                      <p className="text-sm font-semibold text-slate-800 truncate">{user.name}</p>
-                      <p className="text-xs text-slate-400">@{user.username}</p>
+                      <p className="text-sm font-semibold text-foreground truncate">{user.name}</p>
+                      <p className="text-xs text-muted-foreground">@{user.username}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-1 shrink-0">
                     {canToggleStatus && (
                       <button
                         onClick={() => handleToggleStatus(user)}
-                        className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${user.is_active ? "bg-emerald-100 text-emerald-700" : "bg-slate-100 text-slate-500"}`}
+                        className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${user.is_active ? "bg-emerald-500/10 text-emerald-600" : "bg-muted text-muted-foreground"}`}
                       >
                         {user.is_active ? "Active" : "Inactive"}
                       </button>
@@ -373,26 +373,26 @@ export default function UsersPage() {
 
                 <div className="flex flex-wrap gap-1 mb-3">
                   {user.roles?.map((role) => (
-                    <Badge key={role.id} variant="outline" className="border-emerald-200 bg-emerald-50 text-emerald-700 text-[10px] font-semibold">
+                    <Badge key={role.id} variant="outline" className="border-emerald-500/20 bg-emerald-500/10 text-emerald-600 text-[10px] font-semibold">
                       {role.name}
                     </Badge>
                   ))}
                   {(!user.roles || user.roles.length === 0) && (
-                    <span className="text-xs text-slate-400">No role</span>
+                    <span className="text-xs text-muted-foreground">No role</span>
                   )}
                 </div>
 
-                <div className="flex items-center justify-end gap-1 pt-2 border-t border-slate-100">
+                <div className="flex items-center justify-end gap-1 pt-2 border-t border-border">
                   <button
                     onClick={() => router.push(`/users/${user.id}`)}
-                    className="rounded-lg p-1.5 text-slate-400 hover:bg-blue-50 hover:text-blue-600 transition-colors"
+                    className="rounded-lg p-1.5 text-muted-foreground hover:bg-blue-500/10 hover:text-blue-600 transition-colors"
                   >
                     <Eye className="h-4 w-4" />
                   </button>
                   {canEdit && (
                     <button
                       onClick={() => router.push(`/users/${user.id}/edit`)}
-                      className="rounded-lg p-1.5 text-slate-400 hover:bg-emerald-50 hover:text-emerald-600 transition-colors"
+                      className="rounded-lg p-1.5 text-muted-foreground hover:bg-emerald-500/10 hover:text-emerald-600 transition-colors"
                     >
                       <Edit className="h-4 w-4" />
                     </button>
@@ -400,7 +400,7 @@ export default function UsersPage() {
                   {canDelete && (
                     <button
                       onClick={() => setShowDeleteConfirm(user)}
-                      className="rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-500 transition-colors"
+                      className="rounded-lg p-1.5 text-muted-foreground hover:bg-red-500/10 hover:text-red-500 transition-colors"
                     >
                       <Trash2 className="h-4 w-4" />
                     </button>
@@ -417,21 +417,21 @@ export default function UsersPage() {
         <div className="fixed inset-0 z-[100] flex items-center justify-center">
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowDeleteConfirm(null)} />
           <div className="relative z-10 w-full max-w-sm mx-4 animate-in zoom-in-95 fade-in duration-200">
-            <div className="rounded-2xl bg-white shadow-2xl border border-slate-100 overflow-hidden">
+            <div className="rounded-2xl bg-card shadow-2xl border border-border overflow-hidden">
               <div className="h-1.5 bg-gradient-to-r from-red-500 via-red-400 to-red-500" />
               <div className="p-4 sm:p-6 text-center">
-                <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-red-50 border border-red-100">
+                <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-red-500/10 border border-red-500/20">
                   <Trash2 className="h-7 w-7 text-red-500" />
                 </div>
-                <h3 className="text-lg font-bold text-slate-900 mb-1">Delete User?</h3>
-                <p className="text-sm text-slate-500 leading-relaxed">
-                  This will permanently remove <span className="font-semibold text-slate-700">{showDeleteConfirm.name}</span>. This action cannot be undone.
+                <h3 className="text-lg font-bold text-foreground mb-1">Delete User?</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  This will permanently remove <span className="font-semibold text-foreground">{showDeleteConfirm.name}</span>. This action cannot be undone.
                 </p>
               </div>
               <div className="flex gap-3 px-4 sm:px-6 pb-4 sm:pb-6">
                 <button
                   onClick={() => setShowDeleteConfirm(null)}
-                  className="flex-1 h-11 rounded-xl border border-slate-200 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+                  className="flex-1 h-11 rounded-xl border border-border text-sm font-semibold text-foreground hover:bg-accent"
                 >
                   Cancel
                 </button>

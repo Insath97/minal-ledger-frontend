@@ -62,10 +62,10 @@ const borderMap: Record<ToastType, string> = {
 };
 
 const bgMap: Record<ToastType, string> = {
-  success: "bg-emerald-50",
-  error: "bg-red-50",
-  warning: "bg-amber-50",
-  info: "bg-blue-50",
+  success: "bg-emerald-500/10",
+  error: "bg-red-500/10",
+  warning: "bg-amber-500/10",
+  info: "bg-blue-500/10",
 };
 
 function ToastItem({ toast, onRemove }: { toast: Toast; onRemove: (id: string) => void }) {
@@ -78,13 +78,13 @@ function ToastItem({ toast, onRemove }: { toast: Toast; onRemove: (id: string) =
 
   return (
     <div
-      className={`pointer-events-auto flex items-start gap-3 rounded-xl border border-slate-200 border-l-4 ${borderMap[toast.type]} ${bgMap[toast.type]} px-4 py-3.5 shadow-lg shadow-black/5 animate-in slide-in-from-right-5 fade-in duration-300 min-w-[320px] max-w-[420px]`}
+      className={`pointer-events-auto flex items-start gap-3 rounded-xl border border-border border-l-4 ${borderMap[toast.type]} ${bgMap[toast.type]} px-4 py-3.5 shadow-lg shadow-black/5 animate-in slide-in-from-right-5 fade-in duration-300 min-w-[320px] max-w-[420px]`}
     >
       <div className="mt-0.5 shrink-0">{iconMap[toast.type]}</div>
-      <p className="flex-1 text-sm font-medium text-slate-800 leading-snug">{toast.message}</p>
+      <p className="flex-1 text-sm font-medium text-foreground leading-snug">{toast.message}</p>
       <button
         onClick={() => onRemove(toast.id)}
-        className="shrink-0 rounded-md p-1 text-slate-400 hover:text-slate-600 hover:bg-white/60 transition-colors"
+        className="shrink-0 rounded-md p-1 text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
       >
         <X className="h-4 w-4" />
       </button>

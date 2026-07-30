@@ -124,8 +124,8 @@ export default function CustomersPage() {
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Customers</h1>
-          <p className="mt-1 text-sm text-slate-500">Manage your customer accounts.</p>
+          <h1 className="text-2xl font-bold text-foreground">Customers</h1>
+          <p className="mt-1 text-sm text-muted-foreground">Manage your customer accounts.</p>
         </div>
         {canCreate && (
           <Button onClick={() => router.push("/customers/create")} className="bg-emerald-600 text-white hover:bg-emerald-700 shadow-lg shadow-emerald-600/20">
@@ -136,10 +136,10 @@ export default function CustomersPage() {
       </div>
 
       {/* Search & Filters */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+      <div className="rounded-2xl border border-border bg-card p-4 shadow-sm">
         <div className="flex flex-wrap items-center gap-3">
           <div className="relative min-w-0 flex-1 sm:flex-1">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               placeholder="Search customers by name, email, code..."
               value={search}
@@ -147,7 +147,7 @@ export default function CustomersPage() {
               className="h-10 pl-9 pr-9 text-sm"
             />
             {search && (
-              <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+              <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
                 <X className="h-4 w-4" />
               </button>
             )}
@@ -155,7 +155,7 @@ export default function CustomersPage() {
           <select
             value={statusFilter}
             onChange={(e) => { setStatusFilter(e.target.value as typeof statusFilter); setCurrentPage(1); }}
-            className="h-10 w-full sm:w-auto sm:min-w-[180px] rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-600 outline-none transition-all hover:border-slate-300 focus:border-emerald-500"
+            className="h-10 w-full sm:w-auto sm:min-w-[180px] rounded-lg border border-border bg-background px-3 text-sm text-foreground outline-none transition-all hover:border-border focus:border-emerald-500"
           >
             <option value="all">All Status</option>
             <option value="active">Active</option>
@@ -165,55 +165,55 @@ export default function CustomersPage() {
       </div>
 
       {/* Data Table - Desktop */}
-      <div className="hidden md:block rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+      <div className="hidden md:block rounded-2xl border border-border bg-background shadow-sm overflow-hidden">
         <div className="overflow-x-auto scrollbar-thin">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-slate-100 bg-slate-50/80">
-                <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">#</th>
-                <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">Code</th>
-                <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">Customer</th>
-                <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">Contact</th>
-                <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">City</th>
-                <th className="px-5 py-3.5 text-right text-[11px] font-bold uppercase tracking-wider text-slate-500">Balance</th>
+              <tr className="border-b border-border bg-muted/50">
+                <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground">#</th>
+                <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Code</th>
+                <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Customer</th>
+                <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Contact</th>
+                <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground">City</th>
+                <th className="px-5 py-3.5 text-right text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Balance</th>
                 {canToggleStatus && (
-                  <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">Status</th>
+                  <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Status</th>
                 )}
                 {showActions && (
-                  <th className="px-5 py-3.5 text-right text-[11px] font-bold uppercase tracking-wider text-slate-500">Actions</th>
+                  <th className="px-5 py-3.5 text-right text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Actions</th>
                 )}
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-50">
+            <tbody className="divide-y divide-border">
               {loading ? (
                 <tr>
                   <td colSpan={canToggleStatus ? (showActions ? 8 : 7) : (showActions ? 7 : 6)} className="px-5 py-16 text-center">
                     <Loader2 className="mx-auto h-8 w-8 text-emerald-500 animate-spin mb-3" />
-                    <p className="text-sm text-slate-500">Loading customers...</p>
+                    <p className="text-sm text-muted-foreground">Loading customers...</p>
                   </td>
                 </tr>
               ) : customers.length === 0 ? (
                 <tr>
                   <td colSpan={canToggleStatus ? (showActions ? 8 : 7) : (showActions ? 7 : 6)} className="px-5 py-16 text-center">
-                    <UserCheck className="mx-auto h-10 w-10 text-slate-300 mb-3" />
-                    <p className="text-sm font-semibold text-slate-600">No customers found</p>
-                    <p className="text-xs text-slate-400 mt-1">Try adjusting your search or filters</p>
+                    <UserCheck className="mx-auto h-10 w-10 text-muted-foreground/50 mb-3" />
+                    <p className="text-sm font-semibold text-foreground">No customers found</p>
+                    <p className="text-xs text-muted-foreground mt-1">Try adjusting your search or filters</p>
                   </td>
                 </tr>
               ) : (
                 customers.map((customer, i) => {
                   const initials = customer.name.split(" ").map((w) => w[0]).join("").toUpperCase().slice(0, 2);
                   return (
-                    <tr key={customer.id} className="hover:bg-slate-50/50 transition-colors">
-                      <td className="px-5 py-3.5 text-sm text-slate-400">
+                    <tr key={customer.id} className="hover:bg-accent/50 transition-colors">
+                      <td className="px-5 py-3.5 text-sm text-muted-foreground">
                         {(currentPage - 1) * perPage + i + 1}
                       </td>
                       <td className="px-5 py-3.5">
-                        <span className="font-mono text-xs bg-slate-100 px-2 py-1 rounded">{customer.code}</span>
+                        <span className="font-mono text-xs bg-muted px-2 py-1 rounded">{customer.code}</span>
                       </td>
                       <td className="px-5 py-3.5">
                         <div className="flex items-center gap-3">
-                          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-xs font-bold text-emerald-700">
+                          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-emerald-500/10 text-xs font-bold text-emerald-600">
                             {customer.profile_image ? (
                               <img src={getImageUrl(customer.profile_image) || ""} alt={customer.name} className="h-9 w-9 rounded-full object-cover" />
                             ) : (
@@ -221,22 +221,22 @@ export default function CustomersPage() {
                             )}
                           </div>
                           <div>
-                            <p className="text-sm font-semibold text-slate-800">{customer.name}</p>
-                            <p className="text-xs text-slate-400">{customer.email || "—"}</p>
+                            <p className="text-sm font-semibold text-foreground">{customer.name}</p>
+                            <p className="text-xs text-muted-foreground">{customer.email || "—"}</p>
                           </div>
                         </div>
                       </td>
                       <td className="px-5 py-3.5">
-                        <p className="text-sm text-slate-600">{customer.phone}</p>
+                        <p className="text-sm text-foreground">{customer.phone}</p>
                         {customer.phone_secondary && (
-                          <p className="text-xs text-slate-400">{customer.phone_secondary}</p>
+                          <p className="text-xs text-muted-foreground">{customer.phone_secondary}</p>
                         )}
                       </td>
                       <td className="px-5 py-3.5">
-                        <p className="text-sm text-slate-600">{customer.city || "—"}</p>
+                        <p className="text-sm text-foreground">{customer.city || "—"}</p>
                       </td>
                       <td className="px-5 py-3.5 text-right">
-                        <p className="text-sm font-semibold text-slate-800">{formatCurrency(customer.outstanding_balance)}</p>
+                        <p className="text-sm font-semibold text-foreground">{formatCurrency(customer.outstanding_balance)}</p>
                       </td>
                       {canToggleStatus && (
                         <td className="px-5 py-3.5">
@@ -247,16 +247,16 @@ export default function CustomersPage() {
                           >
                             <span
                               className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
-                                customer.is_active ? "bg-emerald-500" : "bg-slate-200"
+                                customer.is_active ? "bg-emerald-500" : "bg-muted"
                               }`}
                             >
                               <span
-                                className={`inline-block h-3.5 w-3.5 rounded-full bg-white shadow-sm transition-transform ${
+                                className={`inline-block h-3.5 w-3.5 rounded-full bg-card shadow-sm transition-transform ${
                                   customer.is_active ? "translate-x-[18px]" : "translate-x-[3px]"
                                 }`}
                               />
                             </span>
-                            <span className={`text-xs font-medium ${customer.is_active ? "text-emerald-600" : "text-slate-400"}`}>
+                            <span className={`text-xs font-medium ${customer.is_active ? "text-emerald-600" : "text-muted-foreground"}`}>
                               {customer.is_active ? "Active" : "Inactive"}
                             </span>
                           </button>
@@ -267,7 +267,7 @@ export default function CustomersPage() {
                           <div className="flex items-center justify-end gap-1">
                             <button
                               onClick={() => router.push(`/customers/${customer.id}`)}
-                              className="rounded-lg p-1.5 text-slate-400 hover:bg-blue-50 hover:text-blue-600 transition-colors"
+                              className="rounded-lg p-1.5 text-muted-foreground hover:bg-blue-500/10 hover:text-blue-600 transition-colors"
                               title="View"
                             >
                               <Eye className="h-4 w-4" />
@@ -275,7 +275,7 @@ export default function CustomersPage() {
                             {canEdit && (
                               <button
                                 onClick={() => router.push(`/customers/${customer.id}/edit`)}
-                                className="rounded-lg p-1.5 text-slate-400 hover:bg-emerald-50 hover:text-emerald-600 transition-colors"
+                                className="rounded-lg p-1.5 text-muted-foreground hover:bg-emerald-500/10 hover:text-emerald-600 transition-colors"
                                 title="Edit"
                               >
                                 <Pencil className="h-4 w-4" />
@@ -284,7 +284,7 @@ export default function CustomersPage() {
                             {canDelete && (
                               <button
                                 onClick={() => setShowDeleteConfirm(customer)}
-                                className="rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-500 transition-colors"
+                                className="rounded-lg p-1.5 text-muted-foreground hover:bg-red-500/10 hover:text-red-500 transition-colors"
                                 title="Delete"
                               >
                                 <Trash2 className="h-4 w-4" />
@@ -320,25 +320,25 @@ export default function CustomersPage() {
 
       {/* Mobile Cards */}
       {loading ? (
-        <div className="md:hidden rounded-2xl border border-slate-200 bg-white shadow-sm p-8 text-center">
+        <div className="md:hidden rounded-2xl border border-border bg-background shadow-sm p-8 text-center">
           <Loader2 className="mx-auto h-8 w-8 text-emerald-500 animate-spin mb-3" />
-          <p className="text-sm text-slate-500">Loading customers...</p>
+          <p className="text-sm text-muted-foreground">Loading customers...</p>
         </div>
       ) : customers.length === 0 ? (
-        <div className="md:hidden rounded-2xl border border-slate-200 bg-white shadow-sm p-8 text-center">
-          <UserCheck className="mx-auto h-10 w-10 text-slate-300 mb-3" />
-          <p className="text-sm font-semibold text-slate-600">No customers found</p>
-          <p className="text-xs text-slate-400 mt-1">Try adjusting your search or filters</p>
+        <div className="md:hidden rounded-2xl border border-border bg-background shadow-sm p-8 text-center">
+          <UserCheck className="mx-auto h-10 w-10 text-muted-foreground/50 mb-3" />
+          <p className="text-sm font-semibold text-foreground">No customers found</p>
+          <p className="text-xs text-muted-foreground mt-1">Try adjusting your search or filters</p>
         </div>
       ) : (
         <div className="md:hidden space-y-3">
           {customers.map((customer) => {
             const initials = customer.name.split(" ").map((w) => w[0]).join("").toUpperCase().slice(0, 2);
             return (
-              <div key={customer.id} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+              <div key={customer.id} className="rounded-2xl border border-border bg-card p-4 shadow-sm">
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex items-center gap-3 min-w-0">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-xs font-bold text-emerald-700">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-500/10 text-xs font-bold text-emerald-600">
                       {customer.profile_image ? (
                         <img src={getImageUrl(customer.profile_image) || ""} alt={customer.name} className="h-10 w-10 rounded-full object-cover" />
                       ) : (
@@ -346,37 +346,37 @@ export default function CustomersPage() {
                       )}
                     </div>
                     <div className="min-w-0">
-                      <p className="text-sm font-semibold text-slate-800 truncate">{customer.name}</p>
-                      <Badge variant="outline" className="border-slate-200 bg-slate-50 text-slate-600 text-[10px] font-bold">{customer.code}</Badge>
+                      <p className="text-sm font-semibold text-foreground truncate">{customer.name}</p>
+                      <Badge variant="outline" className="border-border bg-muted text-foreground text-[10px] font-bold">{customer.code}</Badge>
                     </div>
                   </div>
                   {canToggleStatus && (
                     <button
                       onClick={() => handleToggleStatus(customer)}
-                      className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${customer.is_active ? "bg-emerald-100 text-emerald-700" : "bg-slate-100 text-slate-500"}`}
+                      className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${customer.is_active ? "bg-emerald-500/10 text-emerald-600" : "bg-muted text-muted-foreground"}`}
                     >
                       {customer.is_active ? "Active" : "Inactive"}
                     </button>
                   )}
                 </div>
 
-                <div className="flex items-center justify-between text-xs text-slate-500 mb-3">
+                <div className="flex items-center justify-between text-xs text-muted-foreground mb-3">
                   <span>{customer.phone || "—"}</span>
                   <span>{customer.city || "—"}</span>
-                  <span className="font-semibold text-slate-700">{formatCurrency(customer.outstanding_balance)}</span>
+                  <span className="font-semibold text-foreground">{formatCurrency(customer.outstanding_balance)}</span>
                 </div>
 
-                <div className="flex items-center justify-end gap-1 pt-2 border-t border-slate-100">
+                <div className="flex items-center justify-end gap-1 pt-2 border-t border-border">
                   <button
                     onClick={() => router.push(`/customers/${customer.id}`)}
-                    className="rounded-lg p-1.5 text-slate-400 hover:bg-blue-50 hover:text-blue-600 transition-colors"
+                    className="rounded-lg p-1.5 text-muted-foreground hover:bg-blue-500/10 hover:text-blue-600 transition-colors"
                   >
                     <Eye className="h-4 w-4" />
                   </button>
                   {canEdit && (
                     <button
                       onClick={() => router.push(`/customers/${customer.id}/edit`)}
-                      className="rounded-lg p-1.5 text-slate-400 hover:bg-emerald-50 hover:text-emerald-600 transition-colors"
+                      className="rounded-lg p-1.5 text-muted-foreground hover:bg-emerald-500/10 hover:text-emerald-600 transition-colors"
                     >
                       <Pencil className="h-4 w-4" />
                     </button>
@@ -384,7 +384,7 @@ export default function CustomersPage() {
                   {canDelete && (
                     <button
                       onClick={() => setShowDeleteConfirm(customer)}
-                      className="rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-500 transition-colors"
+                      className="rounded-lg p-1.5 text-muted-foreground hover:bg-red-500/10 hover:text-red-500 transition-colors"
                     >
                       <Trash2 className="h-4 w-4" />
                     </button>
@@ -401,21 +401,21 @@ export default function CustomersPage() {
         <div className="fixed inset-0 z-[100] flex items-center justify-center">
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowDeleteConfirm(null)} />
           <div className="relative z-10 w-full max-w-sm mx-4 animate-in zoom-in-95 fade-in duration-200">
-            <div className="rounded-2xl bg-white shadow-2xl border border-slate-100 overflow-hidden">
+            <div className="rounded-2xl bg-card shadow-2xl border border-border overflow-hidden">
               <div className="h-1.5 bg-gradient-to-r from-red-500 via-red-400 to-red-500" />
               <div className="p-4 sm:p-6 text-center">
-                <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-red-50 border border-red-100">
+                <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-red-500/10 border border-red-500/20">
                   <Trash2 className="h-7 w-7 text-red-500" />
                 </div>
-                <h3 className="text-lg font-bold text-slate-900 mb-1">Delete Customer?</h3>
-                <p className="text-sm text-slate-500 leading-relaxed">
-                  This will permanently remove <span className="font-semibold text-slate-700">{showDeleteConfirm.name}</span>. This action cannot be undone.
+                <h3 className="text-lg font-bold text-foreground mb-1">Delete Customer?</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  This will permanently remove <span className="font-semibold text-foreground">{showDeleteConfirm.name}</span>. This action cannot be undone.
                 </p>
               </div>
               <div className="flex gap-3 px-4 sm:px-6 pb-4 sm:pb-6">
                 <button
                   onClick={() => setShowDeleteConfirm(null)}
-                  className="flex-1 h-11 rounded-xl border border-slate-200 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+                  className="flex-1 h-11 rounded-xl border border-border text-sm font-semibold text-foreground hover:bg-accent"
                 >
                   Cancel
                 </button>

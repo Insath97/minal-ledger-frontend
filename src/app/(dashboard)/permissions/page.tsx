@@ -170,15 +170,15 @@ export default function PermissionsPage() {
       {/* Header */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Permissions</h1>
-          <p className="mt-0.5 text-sm text-slate-500">
+          <h1 className="text-2xl font-bold text-foreground">Permissions</h1>
+          <p className="mt-0.5 text-sm text-muted-foreground">
             Manage system permissions and access controls.
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-3">
-          <nav className="flex items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-1.5 text-xs">
-            <button onClick={() => router.push("/settings")} className="font-medium text-slate-500 hover:text-emerald-600 transition-colors">Settings</button>
-            <ChevronRight className="h-3 w-3 text-slate-400" />
+          <nav className="flex items-center gap-1.5 rounded-lg bg-muted px-3 py-1.5 text-xs">
+            <button onClick={() => router.push("/settings")} className="font-medium text-muted-foreground hover:text-emerald-600 transition-colors">Settings</button>
+            <ChevronRight className="h-3 w-3 text-muted-foreground" />
             <span className="font-semibold text-emerald-600">Permissions</span>
           </nav>
           {canCreate && (
@@ -191,10 +191,10 @@ export default function PermissionsPage() {
       </div>
 
       {/* Search & Filters */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+      <div className="rounded-2xl border border-border bg-background p-4 shadow-sm">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
           <div className="relative min-w-0 flex-1">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               placeholder="Search permissions by name, group..."
               value={search}
@@ -202,36 +202,36 @@ export default function PermissionsPage() {
               className="h-10 pl-9 pr-9 text-sm"
             />
             {search && (
-              <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+              <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
                 <X className="h-4 w-4" />
               </button>
             )}
           </div>
-          <div className="relative w-full sm:w-auto" ref={groupDropdownRef}>
+          <div className="relative w-full sm:w-64" ref={groupDropdownRef}>
             <button
               onClick={() => setGroupDropdownOpen(!groupDropdownOpen)}
-              className="flex h-10 w-full items-center justify-between gap-2 rounded-lg border border-slate-200 bg-white px-3 text-sm transition-all hover:border-slate-300 focus:border-emerald-500"
+              className="flex h-10 w-full items-center justify-between gap-2 rounded-lg border border-border bg-background px-3 text-sm transition-all hover:border-border focus:border-emerald-500"
             >
-              <span className={groupNameFilter ? "text-slate-700 font-medium" : "text-slate-400"}>
+              <span className={groupNameFilter ? "text-foreground font-medium" : "text-muted-foreground"}>
                 {groupNameFilter || "All Groups"}
               </span>
-              <ChevronDown className={`h-4 w-4 shrink-0 text-slate-500 transition-transform ${groupDropdownOpen ? "rotate-180" : ""}`} />
+              <ChevronDown className={`h-4 w-4 shrink-0 text-muted-foreground transition-transform ${groupDropdownOpen ? "rotate-180" : ""}`} />
             </button>
             {groupDropdownOpen && (
-              <div className="absolute z-50 mt-1 w-64 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-xl">
+              <div className="absolute z-50 mt-1 w-64 overflow-hidden rounded-lg border border-border bg-background shadow-xl">
                 <div className="p-1.5">
                   <input
                     autoFocus
                     value={groupSearch}
                     onChange={(e) => setGroupSearch(e.target.value)}
                     placeholder="Search..."
-                    className="h-8 w-full rounded-md border border-slate-200 bg-slate-50 px-2.5 text-xs outline-none focus:border-emerald-500"
+                    className="h-8 w-full rounded-md border border-border bg-muted px-2.5 text-xs outline-none focus:border-emerald-500"
                   />
                 </div>
-                <div className="max-h-40 overflow-y-auto border-t border-slate-100 scrollbar-thin">
+                <div className="max-h-40 overflow-y-auto border-t border-border scrollbar-thin">
                   <button
                     onClick={() => { setGroupNameFilter(""); setGroupDropdownOpen(false); setGroupSearch(""); setCurrentPage(1); }}
-                    className="flex w-full items-center px-3 py-1.5 text-xs text-slate-500 hover:bg-slate-50"
+                    className="flex w-full items-center px-3 py-1.5 text-xs text-muted-foreground hover:bg-accent"
                   >
                     All Groups
                   </button>
@@ -239,13 +239,13 @@ export default function PermissionsPage() {
                     <button
                       key={g}
                       onClick={() => { setGroupNameFilter(g); setGroupDropdownOpen(false); setGroupSearch(""); setCurrentPage(1); }}
-                      className={`flex w-full items-center px-3 py-1.5 text-xs hover:bg-slate-50 ${groupNameFilter === g ? "bg-emerald-50 text-emerald-700 font-medium" : "text-slate-600"}`}
+                      className={`flex w-full items-center px-3 py-1.5 text-xs hover:bg-accent ${groupNameFilter === g ? "bg-emerald-500/10 text-emerald-600 font-medium" : "text-foreground"}`}
                     >
                       <span className="truncate">{g}</span>
                     </button>
                   ))}
                   {filteredGroups.length === 0 && (
-                    <p className="py-4 text-center text-xs text-slate-400">No groups found</p>
+                    <p className="py-4 text-center text-xs text-muted-foreground">No groups found</p>
                   )}
                 </div>
               </div>
@@ -255,62 +255,62 @@ export default function PermissionsPage() {
       </div>
 
       {/* Data Table - Desktop */}
-      <div className="hidden md:block rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+      <div className="hidden md:block rounded-2xl border border-border bg-background shadow-sm overflow-hidden">
         <div className="overflow-x-auto scrollbar-thin">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-slate-100 bg-slate-50/80">
-                <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">
+              <tr className="border-b border-border bg-muted/50">
+                <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
                   #
                 </th>
-                <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
                   Permission Name
                 </th>
-                <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
                   Group
                 </th>
-                <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
                   Guard
                 </th>
                 {showActions && (
-                  <th className="px-5 py-3.5 text-right text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                  <th className="px-5 py-3.5 text-right text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
                     Actions
                   </th>
                 )}
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-50">
+            <tbody className="divide-y divide-border">
               {loading ? (
                 <tr>
                   <td colSpan={showActions ? 5 : 4} className="px-5 py-16 text-center">
                     <Loader2 className="mx-auto h-8 w-8 text-emerald-500 animate-spin mb-3" />
-                    <p className="text-sm text-slate-500">Loading permissions...</p>
+                    <p className="text-sm text-muted-foreground">Loading permissions...</p>
                   </td>
                 </tr>
               ) : permissions.length === 0 ? (
                 <tr>
                   <td colSpan={showActions ? 5 : 4} className="px-5 py-16 text-center">
-                    <Shield className="mx-auto h-10 w-10 text-slate-300 mb-3" />
-                    <p className="text-sm font-semibold text-slate-600">No permissions found</p>
-                    <p className="text-xs text-slate-400 mt-1">Try adjusting your search or filters</p>
+                    <Shield className="mx-auto h-10 w-10 text-muted-foreground/50 mb-3" />
+                    <p className="text-sm font-semibold text-foreground">No permissions found</p>
+                    <p className="text-xs text-muted-foreground mt-1">Try adjusting your search or filters</p>
                   </td>
                 </tr>
               ) : (
                 permissions.map((perm, i) => (
-                  <tr key={perm.id} className="hover:bg-slate-50/50 transition-colors">
-                    <td className="px-5 py-3.5 text-sm text-slate-400">
+                  <tr key={perm.id} className="hover:bg-accent/50 transition-colors">
+                    <td className="px-5 py-3.5 text-sm text-muted-foreground">
                       {(currentPage - 1) * perPage + i + 1}
                     </td>
                     <td className="px-5 py-3.5">
-                      <p className="text-sm font-semibold text-slate-800">{perm.name}</p>
+                      <p className="text-sm font-semibold text-foreground">{perm.name}</p>
                     </td>
                     <td className="px-5 py-3.5">
-                      <Badge variant="outline" className="border-emerald-200 bg-emerald-50 text-emerald-700 font-medium">
+                      <Badge variant="outline" className="border-emerald-500/20 bg-emerald-500/10 text-emerald-600 font-medium">
                         {perm.group_name}
                       </Badge>
                     </td>
                     <td className="px-5 py-3.5">
-                      <code className="rounded-md bg-slate-100 px-2 py-1 text-xs font-medium text-slate-600">
+                      <code className="rounded-md bg-muted px-2 py-1 text-xs font-medium text-foreground">
                         {perm.guard_name}
                       </code>
                     </td>
@@ -320,7 +320,7 @@ export default function PermissionsPage() {
                           {canEdit && (
                             <button
                               onClick={() => openEdit(perm)}
-                              className="rounded-lg p-1.5 text-slate-400 hover:bg-emerald-50 hover:text-emerald-600 transition-colors"
+                              className="rounded-lg p-1.5 text-muted-foreground hover:bg-emerald-500/10 hover:text-emerald-600 transition-colors"
                               title="Edit"
                             >
                               <Edit className="h-4 w-4" />
@@ -329,7 +329,7 @@ export default function PermissionsPage() {
                           {canDelete && (
                             <button
                               onClick={() => setShowDeleteConfirm(perm)}
-                              className="rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-500 transition-colors"
+                              className="rounded-lg p-1.5 text-muted-foreground hover:bg-red-500/10 hover:text-red-500 transition-colors"
                               title="Delete"
                             >
                               <Trash2 className="h-4 w-4" />
@@ -364,25 +364,25 @@ export default function PermissionsPage() {
 
       {/* Mobile Cards */}
       {loading ? (
-        <div className="md:hidden rounded-2xl border border-slate-200 bg-white shadow-sm p-8 text-center">
+        <div className="md:hidden rounded-2xl border border-border bg-background shadow-sm p-8 text-center">
           <Loader2 className="mx-auto h-8 w-8 text-emerald-500 animate-spin mb-3" />
-          <p className="text-sm text-slate-500">Loading permissions...</p>
+          <p className="text-sm text-muted-foreground">Loading permissions...</p>
         </div>
       ) : permissions.length === 0 ? (
-        <div className="md:hidden rounded-2xl border border-slate-200 bg-white shadow-sm p-8 text-center">
-          <Shield className="mx-auto h-10 w-10 text-slate-300 mb-3" />
-          <p className="text-sm font-semibold text-slate-600">No permissions found</p>
-          <p className="text-xs text-slate-400 mt-1">Try adjusting your search or filters</p>
+        <div className="md:hidden rounded-2xl border border-border bg-background shadow-sm p-8 text-center">
+          <Shield className="mx-auto h-10 w-10 text-muted-foreground/50 mb-3" />
+          <p className="text-sm font-semibold text-foreground">No permissions found</p>
+          <p className="text-xs text-muted-foreground mt-1">Try adjusting your search or filters</p>
         </div>
       ) : (
         <div className="md:hidden space-y-3">
           {permissions.map((perm) => (
-            <div key={perm.id} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+            <div key={perm.id} className="rounded-2xl border border-border bg-background p-4 shadow-sm">
               <div className="flex items-start justify-between mb-2">
                 <div className="min-w-0">
-                  <p className="text-sm font-semibold text-slate-800 truncate">{perm.name}</p>
-                  <p className="text-xs text-slate-400 mt-0.5">
-                    <code className="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-medium text-slate-600">{perm.guard_name}</code>
+                  <p className="text-sm font-semibold text-foreground truncate">{perm.name}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    <code className="rounded bg-muted px-1.5 py-0.5 text-[10px] font-medium text-foreground">{perm.guard_name}</code>
                   </p>
                 </div>
                 {showActions && (
@@ -390,7 +390,7 @@ export default function PermissionsPage() {
                     {canEdit && (
                       <button
                         onClick={() => openEdit(perm)}
-                        className="rounded-lg p-1.5 text-slate-400 hover:bg-emerald-50 hover:text-emerald-600 transition-colors"
+                        className="rounded-lg p-1.5 text-muted-foreground hover:bg-emerald-500/10 hover:text-emerald-600 transition-colors"
                       >
                         <Edit className="h-4 w-4" />
                       </button>
@@ -398,7 +398,7 @@ export default function PermissionsPage() {
                     {canDelete && (
                       <button
                         onClick={() => setShowDeleteConfirm(perm)}
-                        className="rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-500 transition-colors"
+                        className="rounded-lg p-1.5 text-muted-foreground hover:bg-red-500/10 hover:text-red-500 transition-colors"
                       >
                         <Trash2 className="h-4 w-4" />
                       </button>
@@ -406,7 +406,7 @@ export default function PermissionsPage() {
                   </div>
                 )}
               </div>
-              <Badge variant="outline" className="border-emerald-200 bg-emerald-50 text-emerald-700 font-medium text-xs">
+              <Badge variant="outline" className="border-emerald-500/20 bg-emerald-500/10 text-emerald-600 font-medium text-xs">
                 {perm.group_name}
               </Badge>
             </div>
@@ -419,31 +419,31 @@ export default function PermissionsPage() {
         <div className="fixed inset-0 z-[100] flex items-center justify-center">
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => { setShowModal(false); resetForm(); }} />
           <div className="relative z-10 w-full max-w-lg mx-4 animate-in zoom-in-95 fade-in duration-200">
-            <div className="rounded-2xl bg-white shadow-2xl border border-slate-100 overflow-hidden">
+            <div className="rounded-2xl bg-card shadow-2xl border border-border overflow-hidden">
               <div className="h-1.5 bg-gradient-to-r from-emerald-600 via-emerald-500 to-emerald-600" />
               <div className="p-4 sm:p-6">
                 <div className="flex items-start justify-between mb-6">
                   <div className="flex items-center gap-3 min-w-0">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-100 border border-emerald-200/50 shrink-0">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/10 border border-emerald-500/20/50 shrink-0">
                       <Shield className="h-5 w-5 text-emerald-600" />
                     </div>
                     <div className="min-w-0">
-                      <h2 className="text-lg font-bold text-slate-900">
+                      <h2 className="text-lg font-bold text-foreground">
                         {editingPermission ? "Edit Permission" : "Create Permission"}
                       </h2>
-                      <p className="text-xs text-slate-500">
+                      <p className="text-xs text-muted-foreground">
                         {editingPermission ? "Update permission details" : "Add a new permission to the system"}
                       </p>
                     </div>
                   </div>
-                  <button onClick={() => { setShowModal(false); resetForm(); }} className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 shrink-0">
+                  <button onClick={() => { setShowModal(false); resetForm(); }} className="rounded-lg p-1.5 text-muted-foreground hover:bg-accent shrink-0">
                     <X className="h-4 w-4" />
                   </button>
                 </div>
 
                 <div className="space-y-4">
                   <div>
-                    <label className="mb-1.5 block text-[13px] font-semibold text-slate-700">Group Name</label>
+                    <label className="mb-1.5 block text-[13px] font-semibold text-foreground">Group Name</label>
                     <Input
                       value={formData.group_name}
                       onChange={(e) => setFormData({ ...formData, group_name: e.target.value })}
@@ -452,7 +452,7 @@ export default function PermissionsPage() {
                     />
                   </div>
                   <div>
-                    <label className="mb-1.5 block text-[13px] font-semibold text-slate-700">Permission Name</label>
+                    <label className="mb-1.5 block text-[13px] font-semibold text-foreground">Permission Name</label>
                     <Input
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -466,7 +466,7 @@ export default function PermissionsPage() {
                   <Button
                     variant="outline"
                     onClick={() => { setShowModal(false); resetForm(); }}
-                    className="flex-1 border-slate-200"
+                    className="flex-1 border-border"
                   >
                     Cancel
                   </Button>
@@ -490,21 +490,21 @@ export default function PermissionsPage() {
         <div className="fixed inset-0 z-[100] flex items-center justify-center">
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowDeleteConfirm(null)} />
           <div className="relative z-10 w-full max-w-sm mx-4 animate-in zoom-in-95 fade-in duration-200">
-            <div className="rounded-2xl bg-white shadow-2xl border border-slate-100 overflow-hidden">
+            <div className="rounded-2xl bg-card shadow-2xl border border-border overflow-hidden">
               <div className="h-1.5 bg-gradient-to-r from-red-500 via-red-400 to-red-500" />
               <div className="p-4 sm:p-6 text-center">
-                <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-red-50 border border-red-100">
+                <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-red-500/10 border border-red-500/20">
                   <Trash2 className="h-7 w-7 text-red-500" />
                 </div>
-                <h3 className="text-lg font-bold text-slate-900 mb-1">Delete Permission?</h3>
-                <p className="text-sm text-slate-500 leading-relaxed">
-                  This will permanently remove <span className="font-semibold text-slate-700">{showDeleteConfirm.name}</span>. This action cannot be undone.
+                <h3 className="text-lg font-bold text-foreground mb-1">Delete Permission?</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  This will permanently remove <span className="font-semibold text-foreground">{showDeleteConfirm.name}</span>. This action cannot be undone.
                 </p>
               </div>
               <div className="flex gap-3 px-4 sm:px-6 pb-4 sm:pb-6">
                 <button
                   onClick={() => setShowDeleteConfirm(null)}
-                  className="flex-1 h-11 rounded-xl border border-slate-200 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+                  className="flex-1 h-11 rounded-xl border border-border text-sm font-semibold text-foreground hover:bg-accent"
                 >
                   Cancel
                 </button>

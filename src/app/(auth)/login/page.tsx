@@ -88,24 +88,24 @@ export default function LoginPage() {
       <AuthBadge label="ADMIN PORTAL" />
 
       <div className="mb-10">
-        <h1 className="text-[32px] font-bold text-slate-900 tracking-tight leading-[1.15]">
+        <h1 className="text-[32px] font-bold text-foreground tracking-tight leading-[1.15]">
           Welcome back
         </h1>
-        <p className="mt-2.5 text-[15px] text-slate-500 leading-relaxed">
+        <p className="mt-2.5 text-[15px] text-muted-foreground leading-relaxed">
           Sign in to manage your financial dashboard.
         </p>
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
         <div>
-          <label htmlFor="login" className="mb-2 block text-[13px] font-semibold text-slate-700 uppercase tracking-wide">
+          <label htmlFor="login" className="mb-2 block text-[13px] font-semibold text-foreground uppercase tracking-wide">
             Email or Username
           </label>
           <Input
             id="login"
             type="text"
             placeholder="Enter email or username"
-            className="h-12 rounded-xl border-slate-200 bg-white px-4 text-sm placeholder:text-slate-400 focus:border-emerald-500 focus:ring-emerald-500/20"
+            className="h-12 rounded-xl bg-background px-4 text-sm placeholder:text-muted-foreground focus:border-emerald-500 focus:ring-emerald-500/20"
             aria-invalid={!!errors.login}
             {...register("login")}
           />
@@ -118,7 +118,7 @@ export default function LoginPage() {
         </div>
 
         <div>
-          <label htmlFor="password" className="mb-2 block text-[13px] font-semibold text-slate-700 uppercase tracking-wide">
+          <label htmlFor="password" className="mb-2 block text-[13px] font-semibold text-foreground uppercase tracking-wide">
             Password
           </label>
           <div className="relative">
@@ -126,14 +126,14 @@ export default function LoginPage() {
               id="password"
               type={showPassword ? "text" : "password"}
               placeholder="Enter your password"
-              className="h-12 rounded-xl border-slate-200 bg-white px-4 pr-12 text-sm placeholder:text-slate-400 focus:border-emerald-500 focus:ring-emerald-500/20"
+              className="h-12 rounded-xl bg-background px-4 pr-12 text-sm placeholder:text-muted-foreground focus:border-emerald-500 focus:ring-emerald-500/20"
               aria-invalid={!!errors.password}
               {...register("password")}
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors"
+              className="absolute right-3 top-1/2 -translate-y-1/2 rounded-lg p-1.5 text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
             >
               {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
             </button>
@@ -145,7 +145,7 @@ export default function LoginPage() {
             </p>
           )}
           <div className="mt-2 text-right">
-            <Link href="/forgot-password" className="text-[13px] font-semibold text-emerald-600 hover:text-emerald-700 transition-colors">
+            <Link href="/forgot-password" className="text-[13px] font-semibold text-emerald-600 hover:text-emerald-500 transition-colors">
               Forgot Password?
             </Link>
           </div>
@@ -181,12 +181,13 @@ export default function LoginPage() {
         icon={ShieldCheck}
       />
 
-      <p className="mt-8 text-center text-[13px] text-slate-500">
+      <p className="mt-8 text-center text-[13px] text-muted-foreground">
         Need access?{" "}
-        <Link href="#" className="font-semibold text-emerald-600 hover:text-emerald-700 transition-colors">
+        <Link href="#" className="font-semibold text-emerald-600 hover:text-emerald-500 transition-colors">
           Contact admin
         </Link>
       </p>
     </div>
   );
 }
+

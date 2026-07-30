@@ -16,17 +16,17 @@ const messages = [
 export function Messages() {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger render={<button className="rounded-lg p-2 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700" />}>
+      <DropdownMenuTrigger render={<button className="rounded-lg p-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground" />}>
         <Mail className="h-5 w-5" />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-80">
-        <div className="border-b border-slate-100 px-4 py-3">
-          <p className="text-sm font-semibold text-slate-900">Messages</p>
+        <div className="border-b border-border px-4 py-3">
+          <p className="text-sm font-semibold text-foreground">Messages</p>
         </div>
         {messages.map((m) => (
           <DropdownMenuItem key={m.id} className="flex flex-col items-start gap-1 px-4 py-3">
-            <p className="text-sm text-slate-700">{m.text}</p>
-            <p className="text-xs text-slate-400">{m.time}</p>
+            <p className="text-sm text-foreground">{m.text}</p>
+            <p className="text-xs text-muted-foreground">{m.time}</p>
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>

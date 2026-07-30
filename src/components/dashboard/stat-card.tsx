@@ -19,20 +19,20 @@ export function StatCard({ data }: StatCardProps) {
   const Icon = iconMap[data.icon] || Wallet;
 
   return (
-    <Card className="border-slate-200 bg-white shadow-sm">
+    <Card className="border-border bg-card shadow-sm">
       <CardContent className="p-5">
         <div className="mb-3 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-50">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-500/10">
               <Icon className="h-5 w-5 text-emerald-600" />
             </div>
-            <h3 className="text-sm font-medium text-slate-600">{data.title}</h3>
+            <h3 className="text-sm font-medium text-muted-foreground">{data.title}</h3>
           </div>
-          <button className="rounded-md p-1 text-slate-400 hover:bg-slate-50 hover:text-slate-600">
+          <button className="rounded-md p-1 text-muted-foreground hover:bg-accent hover:text-foreground">
             <MoreHorizontal className="h-4 w-4" />
           </button>
         </div>
-        <p className="text-3xl font-bold text-slate-900">
+        <p className="text-3xl font-bold text-foreground">
           {data.prefix || ""}
           {data.value.toLocaleString("en-US", {
             minimumFractionDigits: 2,

@@ -41,16 +41,16 @@ export function WelcomeHeader({ onExport }: WelcomeHeaderProps) {
   return (
     <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <div>
-        <h1 className="text-2xl font-bold text-slate-900">
+        <h1 className="text-2xl font-bold text-foreground">
           {getGreeting()}, {name}
         </h1>
-        <p className="mt-1 text-sm text-slate-500">
+        <p className="mt-1 text-sm text-muted-foreground">
           Welcome back! Monitor and control what happens with your money today for financial health.
         </p>
       </div>
       <div className="flex items-center gap-3">
-        <div className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-600">
-          <Calendar className="h-4 w-4 text-slate-400" />
+        <div className="flex items-center gap-2 rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground">
+          <Calendar className="h-4 w-4 text-muted-foreground" />
           {today}
         </div>
         <Button

@@ -34,10 +34,10 @@ const PAYMENT_METHODS = [
 ];
 
 const METHOD_STYLES: Record<string, string> = {
-  cash: "bg-emerald-50 text-emerald-700 border-emerald-200",
-  credit_card: "bg-blue-50 text-blue-700 border-blue-200",
-  bank_transfer: "bg-violet-50 text-violet-700 border-violet-200",
-  cheque: "bg-amber-50 text-amber-700 border-amber-200",
+  cash: "bg-emerald-500/10 text-emerald-600 border-emerald-500/20",
+  credit_card: "bg-blue-500/10 text-blue-600 border-blue-500/20",
+  bank_transfer: "bg-violet-500/10 text-violet-600 border-violet-500/20",
+  cheque: "bg-amber-500/10 text-amber-600 border-amber-500/20",
 };
 
 export default function PaymentsPage() {
@@ -128,8 +128,8 @@ export default function PaymentsPage() {
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Payments</h1>
-          <p className="mt-1 text-sm text-slate-500">Track customer payments and FIFO allocations.</p>
+          <h1 className="text-2xl font-bold text-foreground">Payments</h1>
+          <p className="mt-1 text-sm text-muted-foreground">Track customer payments and FIFO allocations.</p>
         </div>
         {canCreate && (
           <Button onClick={() => router.push("/payments/create")} className="bg-emerald-600 text-white hover:bg-emerald-700 shadow-lg shadow-emerald-600/20">
@@ -140,10 +140,10 @@ export default function PaymentsPage() {
       </div>
 
       {/* Search & Filters */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+      <div className="rounded-2xl border border-border bg-background p-4 shadow-sm">
         <div className="flex flex-wrap items-center gap-3">
           <div className="relative min-w-0 flex-1 sm:flex-1">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               placeholder="Search by customer, notes..."
               value={search}
@@ -151,7 +151,7 @@ export default function PaymentsPage() {
               className="h-10 pl-9 pr-9 text-sm"
             />
             {search && (
-              <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+              <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
                 <X className="h-4 w-4" />
               </button>
             )}
@@ -159,7 +159,7 @@ export default function PaymentsPage() {
           <select
             value={methodFilter}
             onChange={(e) => { setMethodFilter(e.target.value); setCurrentPage(1); }}
-            className="h-10 w-full sm:w-auto sm:min-w-[150px] rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-600 outline-none transition-all hover:border-slate-300 focus:border-emerald-500"
+            className="h-10 w-full sm:w-auto sm:min-w-[150px] rounded-lg border border-border bg-background px-3 text-sm text-foreground outline-none transition-all hover:border-border focus:border-emerald-500"
           >
             {PAYMENT_METHODS.map((m) => (
               <option key={m.value} value={m.value}>{m.label}</option>
@@ -180,7 +180,7 @@ export default function PaymentsPage() {
             placeholder="To"
           />
           {(search || methodFilter || dateFrom || dateTo) && (
-            <button onClick={clearFilters} className="h-10 rounded-lg border border-slate-200 bg-white px-3 text-xs font-medium text-slate-500 hover:bg-slate-50">
+            <button onClick={clearFilters} className="h-10 rounded-lg border border-border bg-background px-3 text-xs font-medium text-muted-foreground hover:bg-accent">
               Clear Filters
             </button>
           )}
@@ -188,68 +188,68 @@ export default function PaymentsPage() {
       </div>
 
       {/* Data Table - Desktop */}
-      <div className="hidden md:block rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+      <div className="hidden md:block rounded-2xl border border-border bg-background shadow-sm overflow-hidden">
         <div className="overflow-x-auto scrollbar-thin">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-slate-100 bg-slate-50/80">
-                <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">#</th>
-                <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">Customer</th>
-                <th className="px-5 py-3.5 text-right text-[11px] font-bold uppercase tracking-wider text-slate-500">Amount</th>
-                <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">Method</th>
-                <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">Date</th>
-                <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">Allocations</th>
+              <tr className="border-b border-border bg-muted/50">
+                <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground">#</th>
+                <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Customer</th>
+                <th className="px-5 py-3.5 text-right text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Amount</th>
+                <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Method</th>
+                <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Date</th>
+                <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Allocations</th>
                 {showActions && (
-                  <th className="px-5 py-3.5 text-right text-[11px] font-bold uppercase tracking-wider text-slate-500">Actions</th>
+                  <th className="px-5 py-3.5 text-right text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Actions</th>
                 )}
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-50">
+            <tbody className="divide-y divide-border">
               {loading ? (
                 <tr>
                   <td colSpan={showActions ? 7 : 6} className="px-5 py-16 text-center">
                     <Loader2 className="mx-auto h-8 w-8 text-emerald-500 animate-spin mb-3" />
-                    <p className="text-sm text-slate-500">Loading payments...</p>
+                    <p className="text-sm text-muted-foreground">Loading payments...</p>
                   </td>
                 </tr>
               ) : payments.length === 0 ? (
                 <tr>
                   <td colSpan={showActions ? 7 : 6} className="px-5 py-16 text-center">
-                    <ArrowDownRight className="mx-auto h-10 w-10 text-slate-300 mb-3" />
-                    <p className="text-sm font-semibold text-slate-600">No payments found</p>
-                    <p className="text-xs text-slate-400 mt-1">Try adjusting your search or filters</p>
+                    <ArrowDownRight className="mx-auto h-10 w-10 text-muted-foreground/50 mb-3" />
+                    <p className="text-sm font-semibold text-foreground">No payments found</p>
+                    <p className="text-xs text-muted-foreground mt-1">Try adjusting your search or filters</p>
                   </td>
                 </tr>
               ) : (
                 payments.map((payment, i) => (
-                  <tr key={payment.id} className="hover:bg-slate-50/50 transition-colors">
-                    <td className="px-5 py-3.5 text-sm text-slate-400">
+                  <tr key={payment.id} className="hover:bg-accent/50 transition-colors">
+                    <td className="px-5 py-3.5 text-sm text-muted-foreground">
                       {(currentPage - 1) * perPage + i + 1}
                     </td>
                     <td className="px-5 py-3.5">
-                      <p className="text-sm font-semibold text-slate-800">{payment.customer?.name || "—"}</p>
-                      <p className="text-xs text-slate-400">{payment.customer?.code || ""}</p>
+                      <p className="text-sm font-semibold text-foreground">{payment.customer?.name || "—"}</p>
+                      <p className="text-xs text-muted-foreground">{payment.customer?.code || ""}</p>
                     </td>
                     <td className="px-5 py-3.5 text-right">
                       <p className="text-sm font-bold text-emerald-600">{formatCurrency(payment.total_amount)}</p>
                     </td>
                     <td className="px-5 py-3.5">
-                      <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold capitalize ${METHOD_STYLES[payment.payment_method] || "bg-slate-50 text-slate-500 border-slate-200"}`}>
+                      <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold capitalize ${METHOD_STYLES[payment.payment_method] || "bg-muted text-muted-foreground border-border"}`}>
                         {formatMethod(payment.payment_method)}
                       </span>
                     </td>
                     <td className="px-5 py-3.5">
-                      <p className="text-sm text-slate-600">{formatDate(payment.payment_date)}</p>
+                      <p className="text-sm text-foreground">{formatDate(payment.payment_date)}</p>
                     </td>
                     <td className="px-5 py-3.5">
-                      <p className="text-sm text-slate-600">{(payment.payment_sales || payment.paymentSales || []).length} sale(s)</p>
+                      <p className="text-sm text-foreground">{(payment.payment_sales || payment.paymentSales || []).length} sale(s)</p>
                     </td>
                     {showActions && (
                       <td className="px-5 py-3.5 text-right">
                         <div className="flex items-center justify-end gap-1">
                           <button
                             onClick={() => router.push(`/payments/${payment.id}`)}
-                            className="rounded-lg p-1.5 text-slate-400 hover:bg-blue-50 hover:text-blue-600 transition-colors"
+                            className="rounded-lg p-1.5 text-muted-foreground hover:bg-blue-500/10 hover:text-blue-600 transition-colors"
                             title="View"
                           >
                             <Eye className="h-4 w-4" />
@@ -257,7 +257,7 @@ export default function PaymentsPage() {
                           {canDelete && (
                             <button
                               onClick={() => setShowDeleteConfirm(payment)}
-                              className="rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-500 transition-colors"
+                              className="rounded-lg p-1.5 text-muted-foreground hover:bg-red-500/10 hover:text-red-500 transition-colors"
                               title="Delete"
                             >
                               <Trash2 className="h-4 w-4" />
@@ -292,41 +292,41 @@ export default function PaymentsPage() {
 
       {/* Mobile Cards */}
       {loading ? (
-        <div className="md:hidden rounded-2xl border border-slate-200 bg-white shadow-sm p-8 text-center">
+        <div className="md:hidden rounded-2xl border border-border bg-background shadow-sm p-8 text-center">
           <Loader2 className="mx-auto h-8 w-8 text-emerald-500 animate-spin mb-3" />
-          <p className="text-sm text-slate-500">Loading payments...</p>
+          <p className="text-sm text-muted-foreground">Loading payments...</p>
         </div>
       ) : payments.length === 0 ? (
-        <div className="md:hidden rounded-2xl border border-slate-200 bg-white shadow-sm p-8 text-center">
-          <ArrowDownRight className="mx-auto h-10 w-10 text-slate-300 mb-3" />
-          <p className="text-sm font-semibold text-slate-600">No payments found</p>
-          <p className="text-xs text-slate-400 mt-1">Try adjusting your search or filters</p>
+        <div className="md:hidden rounded-2xl border border-border bg-background shadow-sm p-8 text-center">
+          <ArrowDownRight className="mx-auto h-10 w-10 text-muted-foreground/50 mb-3" />
+          <p className="text-sm font-semibold text-foreground">No payments found</p>
+          <p className="text-xs text-muted-foreground mt-1">Try adjusting your search or filters</p>
         </div>
       ) : (
         <div className="md:hidden space-y-3">
           {payments.map((payment) => (
-            <div key={payment.id} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+            <div key={payment.id} className="rounded-2xl border border-border bg-background p-4 shadow-sm">
               <div className="flex items-start justify-between mb-3">
                 <div className="min-w-0">
-                  <p className="text-sm font-semibold text-slate-800 truncate">{payment.customer?.name || "—"}</p>
-                  <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-semibold capitalize mt-1 ${METHOD_STYLES[payment.payment_method] || "bg-slate-50 text-slate-500 border-slate-200"}`}>
+                  <p className="text-sm font-semibold text-foreground truncate">{payment.customer?.name || "—"}</p>
+                  <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-semibold capitalize mt-1 ${METHOD_STYLES[payment.payment_method] || "bg-muted text-muted-foreground border-border"}`}>
                     {formatMethod(payment.payment_method)}
                   </span>
                 </div>
                 <p className="text-sm font-bold text-emerald-600 shrink-0 ml-2">{formatCurrency(payment.total_amount)}</p>
               </div>
 
-              <div className="flex items-center justify-between text-xs text-slate-500 mb-3">
+              <div className="flex items-center justify-between text-xs text-muted-foreground mb-3">
                 <span>{formatDate(payment.payment_date)}</span>
                 <span>{(payment.payment_sales || payment.paymentSales || []).length} sale(s)</span>
               </div>
 
-              <div className="flex items-center justify-end gap-1 pt-2 border-t border-slate-100">
-                <button onClick={() => router.push(`/payments/${payment.id}`)} className="rounded-lg p-1.5 text-slate-400 hover:bg-blue-50 hover:text-blue-600 transition-colors">
+              <div className="flex items-center justify-end gap-1 pt-2 border-t border-border">
+                <button onClick={() => router.push(`/payments/${payment.id}`)} className="rounded-lg p-1.5 text-muted-foreground hover:bg-blue-500/10 hover:text-blue-600 transition-colors">
                   <Eye className="h-4 w-4" />
                 </button>
                 {canDelete && (
-                  <button onClick={() => setShowDeleteConfirm(payment)} className="rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-500 transition-colors">
+                  <button onClick={() => setShowDeleteConfirm(payment)} className="rounded-lg p-1.5 text-muted-foreground hover:bg-red-500/10 hover:text-red-500 transition-colors">
                     <Trash2 className="h-4 w-4" />
                   </button>
                 )}
@@ -341,21 +341,21 @@ export default function PaymentsPage() {
         <div className="fixed inset-0 z-[100] flex items-center justify-center">
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowDeleteConfirm(null)} />
           <div className="relative z-10 w-full max-w-sm mx-4 animate-in zoom-in-95 fade-in duration-200">
-            <div className="rounded-2xl bg-white shadow-2xl border border-slate-100 overflow-hidden">
+            <div className="rounded-2xl bg-card shadow-2xl border border-border overflow-hidden">
               <div className="h-1.5 bg-gradient-to-r from-red-500 via-red-400 to-red-500" />
               <div className="p-4 sm:p-6 text-center">
-                <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-red-50 border border-red-100">
+                <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-red-500/10 border border-red-500/20">
                   <Trash2 className="h-7 w-7 text-red-500" />
                 </div>
-                <h3 className="text-lg font-bold text-slate-900 mb-1">Delete Payment?</h3>
-                <p className="text-sm text-slate-500 leading-relaxed">
-                  This will permanently remove payment of <span className="font-semibold text-slate-700">{formatCurrency(showDeleteConfirm.total_amount)}</span> and reverse all sale allocations. This action cannot be undone.
+                <h3 className="text-lg font-bold text-foreground mb-1">Delete Payment?</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  This will permanently remove payment of <span className="font-semibold text-foreground">{formatCurrency(showDeleteConfirm.total_amount)}</span> and reverse all sale allocations. This action cannot be undone.
                 </p>
               </div>
               <div className="flex gap-3 px-4 sm:px-6 pb-4 sm:pb-6">
                 <button
                   onClick={() => setShowDeleteConfirm(null)}
-                  className="flex-1 h-11 rounded-xl border border-slate-200 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+                  className="flex-1 h-11 rounded-xl border border-border text-sm font-semibold text-foreground hover:bg-accent"
                 >
                   Cancel
                 </button>

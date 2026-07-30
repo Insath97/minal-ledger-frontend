@@ -66,52 +66,52 @@ export function BankSelect({
         type="button"
         onClick={() => !disabled && setDropdownOpen(!dropdownOpen)}
         disabled={disabled}
-        className="flex h-11 w-full items-center justify-between gap-2 rounded-xl border border-slate-200 bg-white px-4 text-sm transition-all hover:border-slate-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="flex h-11 w-full items-center justify-between gap-2 rounded-xl border border-border bg-background px-4 text-sm transition-all hover:border-border focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        <span className={selectedBank ? "text-slate-700 font-medium" : "text-slate-400"}>
+        <span className={selectedBank ? "text-foreground font-medium" : "text-muted-foreground"}>
           {loading ? "Loading banks..." : selectedBank ? `${selectedBank.name} (${selectedBank.code})` : placeholder}
         </span>
-        <ChevronDown className={`h-4 w-4 shrink-0 text-slate-500 transition-transform ${dropdownOpen ? "rotate-180" : ""}`} />
+        <ChevronDown className={`h-4 w-4 shrink-0 text-muted-foreground transition-transform ${dropdownOpen ? "rotate-180" : ""}`} />
       </button>
       {dropdownOpen && (
-        <div className="absolute z-50 mt-1 w-full overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xl">
+        <div className="absolute z-50 mt-1 w-full overflow-hidden rounded-xl border border-border bg-card shadow-xl">
           <div className="p-1.5">
             <div className="relative">
-              <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-400" />
+              <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
               <input
                 autoFocus
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search banks..."
-                className="h-9 w-full rounded-lg border border-slate-200 bg-slate-50 pl-8 pr-2.5 text-xs outline-none focus:border-emerald-500"
+                className="h-9 w-full rounded-lg border border-border bg-background pl-8 pr-2.5 text-xs outline-none focus:border-emerald-500"
               />
               {search && (
-                <button onClick={() => setSearch("")} className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                <button onClick={() => setSearch("")} className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
                   <X className="h-3.5 w-3.5" />
                 </button>
               )}
             </div>
           </div>
-          <div className="max-h-48 overflow-y-auto border-t border-slate-100 scrollbar-thin">
+          <div className="max-h-48 overflow-y-auto border-t border-border scrollbar-thin">
             <button
               type="button"
               onClick={() => { onChange(""); setDropdownOpen(false); setSearch(""); }}
-              className="flex w-full items-center px-3 py-2 text-xs text-slate-500 hover:bg-slate-50"
+              className="flex w-full items-center px-3 py-2 text-xs text-muted-foreground hover:bg-accent"
             >
               No bank selected
             </button>
             {filteredBanks.length === 0 ? (
-              <div className="px-3 py-4 text-center text-xs text-slate-400">No banks found</div>
+              <div className="px-3 py-4 text-center text-xs text-muted-foreground">No banks found</div>
             ) : (
               filteredBanks.map((b) => (
                 <button
                   key={b.id}
                   type="button"
                   onClick={() => { onChange(b.name); setDropdownOpen(false); setSearch(""); }}
-                  className={`flex w-full items-center justify-between px-3 py-2 text-xs hover:bg-slate-50 ${value === b.name ? "bg-emerald-50 text-emerald-700 font-medium" : "text-slate-600"}`}
+                  className={`flex w-full items-center justify-between px-3 py-2 text-xs hover:bg-accent ${value === b.name ? "bg-emerald-500/10 text-emerald-600 font-medium" : "text-foreground"}`}
                 >
                   <span className="font-medium">{b.name}</span>
-                  <span className="text-slate-400 font-mono">{b.code}</span>
+                  <span className="text-muted-foreground font-mono">{b.code}</span>
                 </button>
               ))
             )}

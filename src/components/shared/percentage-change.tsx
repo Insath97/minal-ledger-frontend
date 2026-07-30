@@ -15,8 +15,8 @@ export function PercentageChange({ value, label }: PercentageChangeProps) {
         className={cn(
           "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold",
           isPositive
-            ? "bg-emerald-50 text-emerald-600"
-            : "bg-red-50 text-red-600"
+            ? "bg-emerald-500/10 text-emerald-600"
+            : "bg-red-500/10 text-red-600"
         )}
       >
         {isPositive ? (
@@ -27,7 +27,7 @@ export function PercentageChange({ value, label }: PercentageChangeProps) {
         {isPositive ? "+" : ""}
         {value}%
       </span>
-      <span className="text-xs text-slate-500">{label}</span>
+      <span className="text-xs text-muted-foreground">{label}</span>
     </div>
   );
 }

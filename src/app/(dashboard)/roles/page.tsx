@@ -87,8 +87,8 @@ export default function RolesPage() {
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Roles</h1>
-          <p className="mt-1 text-sm text-slate-500">
+          <h1 className="text-2xl font-bold text-foreground">Roles</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
             Manage user roles and permission assignments.
           </p>
         </div>
@@ -101,10 +101,10 @@ export default function RolesPage() {
       </div>
 
       {/* Search */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+      <div className="rounded-2xl border border-border bg-background p-4 shadow-sm">
         <div className="flex flex-wrap items-center gap-3">
           <div className="relative min-w-0 flex-1 sm:flex-1">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               placeholder="Search roles by name..."
               value={search}
@@ -112,7 +112,7 @@ export default function RolesPage() {
               className="h-10 pl-9 pr-9 text-sm"
             />
             {search && (
-              <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+              <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
                 <X className="h-4 w-4" />
               </button>
             )}
@@ -121,60 +121,60 @@ export default function RolesPage() {
       </div>
 
       {/* Data Table - Desktop */}
-      <div className="hidden md:block rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+      <div className="hidden md:block rounded-2xl border border-border bg-background shadow-sm overflow-hidden">
         <div className="overflow-x-auto scrollbar-thin">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-slate-100 bg-slate-50/80">
-                <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">
+              <tr className="border-b border-border bg-muted/50">
+                <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
                   #
                 </th>
-                <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
                   Role Name
                 </th>
-                <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
                   Guard
                 </th>
-                <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
                   Permissions
                 </th>
-                <th className="px-5 py-3.5 text-right text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                <th className="px-5 py-3.5 text-right text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
                   Actions
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-50">
+            <tbody className="divide-y divide-border">
               {loading ? (
                 <tr>
                   <td colSpan={5} className="px-5 py-16 text-center">
                     <Loader2 className="mx-auto h-8 w-8 text-emerald-500 animate-spin mb-3" />
-                    <p className="text-sm text-slate-500">Loading roles...</p>
+                    <p className="text-sm text-muted-foreground">Loading roles...</p>
                   </td>
                 </tr>
               ) : roles.length === 0 ? (
                 <tr>
                   <td colSpan={5} className="px-5 py-16 text-center">
-                    <Shield className="mx-auto h-10 w-10 text-slate-300 mb-3" />
-                    <p className="text-sm font-semibold text-slate-600">No roles found</p>
-                    <p className="text-xs text-slate-400 mt-1">Try adjusting your search</p>
+                    <Shield className="mx-auto h-10 w-10 text-muted-foreground/50 mb-3" />
+                    <p className="text-sm font-semibold text-foreground">No roles found</p>
+                    <p className="text-xs text-muted-foreground mt-1">Try adjusting your search</p>
                   </td>
                 </tr>
               ) : (
                 roles.map((role, i) => (
-                  <tr key={role.id} className="hover:bg-slate-50/50 transition-colors">
-                    <td className="px-5 py-3.5 text-sm text-slate-400">
+                  <tr key={role.id} className="hover:bg-accent/50 transition-colors">
+                    <td className="px-5 py-3.5 text-sm text-muted-foreground">
                       {(currentPage - 1) * perPage + i + 1}
                     </td>
                     <td className="px-5 py-3.5">
-                      <p className="text-sm font-semibold text-slate-800">{role.name}</p>
+                      <p className="text-sm font-semibold text-foreground">{role.name}</p>
                     </td>
                     <td className="px-5 py-3.5">
-                      <code className="rounded-md bg-slate-100 px-2 py-1 text-xs font-medium text-slate-600">
+                      <code className="rounded-md bg-muted px-2 py-1 text-xs font-medium text-foreground">
                         {role.guard_name}
                       </code>
                     </td>
                     <td className="px-5 py-3.5">
-                      <Badge variant="outline" className="border-emerald-200 bg-emerald-50 text-emerald-700 font-medium">
+                      <Badge variant="outline" className="border-emerald-500/20 bg-emerald-500/10 text-emerald-600 font-medium">
                         {role.permissions?.length ?? 0} permissions
                       </Badge>
                     </td>
@@ -182,7 +182,7 @@ export default function RolesPage() {
                       <div className="flex items-center justify-end gap-1">
                         <button
                           onClick={() => router.push(`/roles/${role.id}`)}
-                          className="rounded-lg p-1.5 text-slate-400 hover:bg-blue-50 hover:text-blue-600 transition-colors"
+                          className="rounded-lg p-1.5 text-muted-foreground hover:bg-blue-500/10 hover:text-blue-600 transition-colors"
                           title="View"
                         >
                           <Eye className="h-4 w-4" />
@@ -192,7 +192,7 @@ export default function RolesPage() {
                             {canEdit && (
                               <button
                                 onClick={() => router.push(`/roles/${role.id}/edit`)}
-                                className="rounded-lg p-1.5 text-slate-400 hover:bg-emerald-50 hover:text-emerald-600 transition-colors"
+                                className="rounded-lg p-1.5 text-muted-foreground hover:bg-emerald-500/10 hover:text-emerald-600 transition-colors"
                                 title="Edit"
                               >
                                 <Edit className="h-4 w-4" />
@@ -201,7 +201,7 @@ export default function RolesPage() {
                             {canDelete && (
                               <button
                                 onClick={() => setShowDeleteConfirm(role)}
-                                className="rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-500 transition-colors"
+                                className="rounded-lg p-1.5 text-muted-foreground hover:bg-red-500/10 hover:text-red-500 transition-colors"
                                   title="Delete"
                                 >
                                   <Trash2 className="h-4 w-4" />
@@ -237,33 +237,33 @@ export default function RolesPage() {
 
       {/* Mobile Cards */}
       {loading ? (
-        <div className="md:hidden rounded-2xl border border-slate-200 bg-white shadow-sm p-8 text-center">
+        <div className="md:hidden rounded-2xl border border-border bg-background shadow-sm p-8 text-center">
           <Loader2 className="mx-auto h-8 w-8 text-emerald-500 animate-spin mb-3" />
-          <p className="text-sm text-slate-500">Loading roles...</p>
+          <p className="text-sm text-muted-foreground">Loading roles...</p>
         </div>
       ) : roles.length === 0 ? (
-        <div className="md:hidden rounded-2xl border border-slate-200 bg-white shadow-sm p-8 text-center">
-          <Shield className="mx-auto h-10 w-10 text-slate-300 mb-3" />
-          <p className="text-sm font-semibold text-slate-600">No roles found</p>
-          <p className="text-xs text-slate-400 mt-1">Try adjusting your search</p>
+        <div className="md:hidden rounded-2xl border border-border bg-background shadow-sm p-8 text-center">
+          <Shield className="mx-auto h-10 w-10 text-muted-foreground/50 mb-3" />
+          <p className="text-sm font-semibold text-foreground">No roles found</p>
+          <p className="text-xs text-muted-foreground mt-1">Try adjusting your search</p>
         </div>
       ) : (
         <div className="md:hidden space-y-3">
           {roles.map((role) => (
-            <div key={role.id} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+            <div key={role.id} className="rounded-2xl border border-border bg-background p-4 shadow-sm">
               <div className="flex items-start justify-between mb-3">
                 <div className="min-w-0">
-                  <p className="text-sm font-semibold text-slate-800 truncate">{role.name}</p>
-                  <code className="rounded-md bg-slate-100 px-2 py-0.5 text-[10px] font-medium text-slate-600">{role.guard_name}</code>
+                  <p className="text-sm font-semibold text-foreground truncate">{role.name}</p>
+                  <code className="rounded-md bg-muted px-2 py-0.5 text-[10px] font-medium text-foreground">{role.guard_name}</code>
                 </div>
-                <Badge variant="outline" className="border-emerald-200 bg-emerald-50 text-emerald-700 font-medium text-xs shrink-0">
+                <Badge variant="outline" className="border-emerald-500/20 bg-emerald-500/10 text-emerald-600 font-medium text-xs shrink-0">
                   {role.permissions?.length ?? 0} perms
                 </Badge>
               </div>
-              <div className="flex items-center justify-end gap-1 pt-2 border-t border-slate-100">
+              <div className="flex items-center justify-end gap-1 pt-2 border-t border-border">
                 <button
                   onClick={() => router.push(`/roles/${role.id}`)}
-                  className="rounded-lg p-1.5 text-slate-400 hover:bg-blue-50 hover:text-blue-600 transition-colors"
+                  className="rounded-lg p-1.5 text-muted-foreground hover:bg-blue-500/10 hover:text-blue-600 transition-colors"
                 >
                   <Eye className="h-4 w-4" />
                 </button>
@@ -272,7 +272,7 @@ export default function RolesPage() {
                     {canEdit && (
                       <button
                         onClick={() => router.push(`/roles/${role.id}/edit`)}
-                        className="rounded-lg p-1.5 text-slate-400 hover:bg-emerald-50 hover:text-emerald-600 transition-colors"
+                        className="rounded-lg p-1.5 text-muted-foreground hover:bg-emerald-500/10 hover:text-emerald-600 transition-colors"
                       >
                         <Edit className="h-4 w-4" />
                       </button>
@@ -280,7 +280,7 @@ export default function RolesPage() {
                     {canDelete && (
                       <button
                         onClick={() => setShowDeleteConfirm(role)}
-                        className="rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-500 transition-colors"
+                        className="rounded-lg p-1.5 text-muted-foreground hover:bg-red-500/10 hover:text-red-500 transition-colors"
                       >
                         <Trash2 className="h-4 w-4" />
                       </button>
@@ -298,21 +298,21 @@ export default function RolesPage() {
         <div className="fixed inset-0 z-[100] flex items-center justify-center">
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowDeleteConfirm(null)} />
           <div className="relative z-10 w-full max-w-sm mx-4 animate-in zoom-in-95 fade-in duration-200">
-            <div className="rounded-2xl bg-white shadow-2xl border border-slate-100 overflow-hidden">
+            <div className="rounded-2xl bg-card shadow-2xl border border-border overflow-hidden">
               <div className="h-1.5 bg-gradient-to-r from-red-500 via-red-400 to-red-500" />
               <div className="p-4 sm:p-6 text-center">
-                <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-red-50 border border-red-100">
+                <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-red-500/10 border border-red-500/20">
                   <Trash2 className="h-7 w-7 text-red-500" />
                 </div>
-                <h3 className="text-lg font-bold text-slate-900 mb-1">Delete Role?</h3>
-                <p className="text-sm text-slate-500 leading-relaxed">
-                  This will permanently remove <span className="font-semibold text-slate-700">{showDeleteConfirm.name}</span>. This action cannot be undone.
+                <h3 className="text-lg font-bold text-foreground mb-1">Delete Role?</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  This will permanently remove <span className="font-semibold text-foreground">{showDeleteConfirm.name}</span>. This action cannot be undone.
                 </p>
               </div>
               <div className="flex gap-3 px-4 sm:px-6 pb-4 sm:pb-6">
                 <button
                   onClick={() => setShowDeleteConfirm(null)}
-                  className="flex-1 h-11 rounded-xl border border-slate-200 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+                  className="flex-1 h-11 rounded-xl border border-border text-sm font-semibold text-foreground hover:bg-accent"
                 >
                   Cancel
                 </button>

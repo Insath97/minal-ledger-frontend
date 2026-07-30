@@ -37,12 +37,12 @@ const CATEGORIES = [
 ];
 
 const CATEGORY_STYLES: Record<string, string> = {
-  rent: "bg-blue-50 text-blue-700 border-blue-200",
-  electricity: "bg-amber-50 text-amber-700 border-amber-200",
-  salaries: "bg-emerald-50 text-emerald-700 border-emerald-200",
-  transport: "bg-violet-50 text-violet-700 border-violet-200",
-  maintenance: "bg-orange-50 text-orange-700 border-orange-200",
-  other: "bg-slate-50 text-slate-600 border-slate-200",
+  rent: "bg-blue-500/10 text-blue-600 border-blue-500/20",
+  electricity: "bg-amber-500/10 text-amber-600 border-amber-500/20",
+  salaries: "bg-emerald-500/10 text-emerald-600 border-emerald-500/20",
+  transport: "bg-violet-500/10 text-violet-600 border-violet-500/20",
+  maintenance: "bg-orange-500/10 text-orange-600 border-orange-500/20",
+  other: "bg-muted text-muted-foreground border-border",
 };
 
 export default function ExpensesPage() {
@@ -131,8 +131,8 @@ export default function ExpensesPage() {
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Expenses</h1>
-          <p className="mt-1 text-sm text-slate-500">Track and manage business expenses.</p>
+          <h1 className="text-2xl font-bold text-foreground">Expenses</h1>
+          <p className="mt-1 text-sm text-muted-foreground">Track and manage business expenses.</p>
         </div>
         {canCreate && (
           <Button onClick={() => router.push("/expenses/create")} className="bg-emerald-600 text-white hover:bg-emerald-700 shadow-lg shadow-emerald-600/20">
@@ -143,10 +143,10 @@ export default function ExpensesPage() {
       </div>
 
       {/* Search & Filters */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+      <div className="rounded-2xl border border-border bg-background p-4 shadow-sm">
         <div className="flex flex-wrap items-center gap-3">
           <div className="relative min-w-0 flex-1 sm:flex-1">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               placeholder="Search by title, notes..."
               value={search}
@@ -154,7 +154,7 @@ export default function ExpensesPage() {
               className="h-10 pl-9 pr-9 text-sm"
             />
             {search && (
-              <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+              <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
                 <X className="h-4 w-4" />
               </button>
             )}
@@ -162,63 +162,63 @@ export default function ExpensesPage() {
           <select
             value={categoryFilter}
             onChange={(e) => { setCategoryFilter(e.target.value); setCurrentPage(1); }}
-            className="h-10 w-full sm:w-auto sm:min-w-[150px] rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-600 outline-none transition-all hover:border-slate-300 focus:border-emerald-500"
+            className="h-10 w-full sm:w-auto sm:min-w-[150px] rounded-lg border border-border bg-background px-3 text-sm text-foreground outline-none transition-all hover:border-border focus:border-emerald-500"
           >
             {CATEGORIES.map((c) => <option key={c.value} value={c.value}>{c.label}</option>)}
           </select>
           <Input type="date" value={dateFrom} onChange={(e) => { setDateFrom(e.target.value); setCurrentPage(1); }} className="h-10 w-full sm:w-[150px] text-sm" />
           <Input type="date" value={dateTo} onChange={(e) => { setDateTo(e.target.value); setCurrentPage(1); }} className="h-10 w-full sm:w-[150px] text-sm" />
           {(search || categoryFilter || dateFrom || dateTo) && (
-            <button onClick={clearFilters} className="h-10 rounded-lg border border-slate-200 bg-white px-3 text-xs font-medium text-slate-500 hover:bg-slate-50">Clear Filters</button>
+            <button onClick={clearFilters} className="h-10 rounded-lg border border-border bg-background px-3 text-xs font-medium text-muted-foreground hover:bg-accent">Clear Filters</button>
           )}
         </div>
       </div>
 
       {/* Data Table - Desktop */}
-      <div className="hidden md:block rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+      <div className="hidden md:block rounded-2xl border border-border bg-background shadow-sm overflow-hidden">
         <div className="overflow-x-auto scrollbar-thin">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-slate-100 bg-slate-50/80">
-                <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">#</th>
-                <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">Title</th>
-                <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">Category</th>
-                <th className="px-5 py-3.5 text-right text-[11px] font-bold uppercase tracking-wider text-slate-500">Amount</th>
-                <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">Date</th>
-                <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">Items</th>
+              <tr className="border-b border-border bg-muted/50">
+                <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground">#</th>
+                <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Title</th>
+                <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Category</th>
+                <th className="px-5 py-3.5 text-right text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Amount</th>
+                <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Date</th>
+                <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Items</th>
                 {showActions && (
-                  <th className="px-5 py-3.5 text-right text-[11px] font-bold uppercase tracking-wider text-slate-500">Actions</th>
+                  <th className="px-5 py-3.5 text-right text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Actions</th>
                 )}
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-50">
+            <tbody className="divide-y divide-border">
               {loading ? (
                 <tr>
                   <td colSpan={showActions ? 7 : 6} className="px-5 py-16 text-center">
                     <Loader2 className="mx-auto h-8 w-8 text-emerald-500 animate-spin mb-3" />
-                    <p className="text-sm text-slate-500">Loading expenses...</p>
+                    <p className="text-sm text-muted-foreground">Loading expenses...</p>
                   </td>
                 </tr>
               ) : expenses.length === 0 ? (
                 <tr>
                   <td colSpan={showActions ? 7 : 6} className="px-5 py-16 text-center">
-                    <Receipt className="mx-auto h-10 w-10 text-slate-300 mb-3" />
-                    <p className="text-sm font-semibold text-slate-600">No expenses found</p>
-                    <p className="text-xs text-slate-400 mt-1">Try adjusting your search or filters</p>
+                    <Receipt className="mx-auto h-10 w-10 text-muted-foreground/50 mb-3" />
+                    <p className="text-sm font-semibold text-foreground">No expenses found</p>
+                    <p className="text-xs text-muted-foreground mt-1">Try adjusting your search or filters</p>
                   </td>
                 </tr>
               ) : (
                 expenses.map((expense, i) => (
-                  <tr key={expense.id} className="hover:bg-slate-50/50 transition-colors">
-                    <td className="px-5 py-3.5 text-sm text-slate-400">
+                  <tr key={expense.id} className="hover:bg-accent/50 transition-colors">
+                    <td className="px-5 py-3.5 text-sm text-muted-foreground">
                       {(currentPage - 1) * perPage + i + 1}
                     </td>
                     <td className="px-5 py-3.5">
-                      <p className="text-sm font-semibold text-slate-800">{expense.title}</p>
-                      {expense.notes && <p className="text-xs text-slate-400 truncate max-w-[200px]">{expense.notes}</p>}
+                      <p className="text-sm font-semibold text-foreground">{expense.title}</p>
+                      {expense.notes && <p className="text-xs text-muted-foreground truncate max-w-[200px]">{expense.notes}</p>}
                     </td>
                     <td className="px-5 py-3.5">
-                      <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold capitalize ${CATEGORY_STYLES[expense.category] || "bg-slate-50 text-slate-600 border-slate-200"}`}>
+                      <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold capitalize ${CATEGORY_STYLES[expense.category] || "bg-muted text-foreground border-border"}`}>
                         {expense.category}
                       </span>
                     </td>
@@ -226,24 +226,24 @@ export default function ExpensesPage() {
                       <p className="text-sm font-bold text-red-600">{formatCurrency(expense.amount)}</p>
                     </td>
                     <td className="px-5 py-3.5">
-                      <p className="text-sm text-slate-600">{formatDate(expense.expense_date)}</p>
+                      <p className="text-sm text-foreground">{formatDate(expense.expense_date)}</p>
                     </td>
                     <td className="px-5 py-3.5">
-                      <p className="text-sm text-slate-600">{(expense.items || expense.expense_items || []).length}</p>
+                      <p className="text-sm text-foreground">{(expense.items || expense.expense_items || []).length}</p>
                     </td>
                     {showActions && (
                       <td className="px-5 py-3.5 text-right">
                         <div className="flex items-center justify-end gap-1">
-                          <button onClick={() => router.push(`/expenses/${expense.id}`)} className="rounded-lg p-1.5 text-slate-400 hover:bg-blue-50 hover:text-blue-600 transition-colors" title="View">
+                          <button onClick={() => router.push(`/expenses/${expense.id}`)} className="rounded-lg p-1.5 text-muted-foreground hover:bg-blue-500/10 hover:text-blue-600 transition-colors" title="View">
                             <Eye className="h-4 w-4" />
                           </button>
                           {canEdit && (
-                            <button onClick={() => router.push(`/expenses/${expense.id}/edit`)} className="rounded-lg p-1.5 text-slate-400 hover:bg-emerald-50 hover:text-emerald-600 transition-colors" title="Edit">
+                            <button onClick={() => router.push(`/expenses/${expense.id}/edit`)} className="rounded-lg p-1.5 text-muted-foreground hover:bg-emerald-500/10 hover:text-emerald-600 transition-colors" title="Edit">
                               <Pencil className="h-4 w-4" />
                             </button>
                           )}
                           {canDelete && (
-                            <button onClick={() => setShowDeleteConfirm(expense)} className="rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-500 transition-colors" title="Delete">
+                            <button onClick={() => setShowDeleteConfirm(expense)} className="rounded-lg p-1.5 text-muted-foreground hover:bg-red-500/10 hover:text-red-500 transition-colors" title="Delete">
                               <Trash2 className="h-4 w-4" />
                             </button>
                           )}
@@ -276,46 +276,46 @@ export default function ExpensesPage() {
 
       {/* Mobile Cards */}
       {loading ? (
-        <div className="md:hidden rounded-2xl border border-slate-200 bg-white shadow-sm p-8 text-center">
+        <div className="md:hidden rounded-2xl border border-border bg-background shadow-sm p-8 text-center">
           <Loader2 className="mx-auto h-8 w-8 text-emerald-500 animate-spin mb-3" />
-          <p className="text-sm text-slate-500">Loading expenses...</p>
+          <p className="text-sm text-muted-foreground">Loading expenses...</p>
         </div>
       ) : expenses.length === 0 ? (
-        <div className="md:hidden rounded-2xl border border-slate-200 bg-white shadow-sm p-8 text-center">
-          <Receipt className="mx-auto h-10 w-10 text-slate-300 mb-3" />
-          <p className="text-sm font-semibold text-slate-600">No expenses found</p>
-          <p className="text-xs text-slate-400 mt-1">Try adjusting your search or filters</p>
+        <div className="md:hidden rounded-2xl border border-border bg-background shadow-sm p-8 text-center">
+          <Receipt className="mx-auto h-10 w-10 text-muted-foreground/50 mb-3" />
+          <p className="text-sm font-semibold text-foreground">No expenses found</p>
+          <p className="text-xs text-muted-foreground mt-1">Try adjusting your search or filters</p>
         </div>
       ) : (
         <div className="md:hidden space-y-3">
           {expenses.map((expense) => (
-            <div key={expense.id} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+            <div key={expense.id} className="rounded-2xl border border-border bg-background p-4 shadow-sm">
               <div className="flex items-start justify-between mb-3">
                 <div className="min-w-0">
-                  <p className="text-sm font-semibold text-slate-800 truncate">{expense.title}</p>
-                  <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-semibold capitalize mt-1 ${CATEGORY_STYLES[expense.category] || "bg-slate-50 text-slate-600 border-slate-200"}`}>
+                  <p className="text-sm font-semibold text-foreground truncate">{expense.title}</p>
+                  <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-semibold capitalize mt-1 ${CATEGORY_STYLES[expense.category] || "bg-muted text-foreground border-border"}`}>
                     {expense.category}
                   </span>
                 </div>
                 <p className="text-sm font-bold text-red-600 shrink-0 ml-2">{formatCurrency(expense.amount)}</p>
               </div>
 
-              <div className="flex items-center justify-between text-xs text-slate-500 mb-3">
+              <div className="flex items-center justify-between text-xs text-muted-foreground mb-3">
                 <span>{formatDate(expense.expense_date)}</span>
                 <span>{(expense.items || expense.expense_items || []).length} item(s)</span>
               </div>
 
-              <div className="flex items-center justify-end gap-1 pt-2 border-t border-slate-100">
-                <button onClick={() => router.push(`/expenses/${expense.id}`)} className="rounded-lg p-1.5 text-slate-400 hover:bg-blue-50 hover:text-blue-600 transition-colors">
+              <div className="flex items-center justify-end gap-1 pt-2 border-t border-border">
+                <button onClick={() => router.push(`/expenses/${expense.id}`)} className="rounded-lg p-1.5 text-muted-foreground hover:bg-blue-500/10 hover:text-blue-600 transition-colors">
                   <Eye className="h-4 w-4" />
                 </button>
                 {canEdit && (
-                  <button onClick={() => router.push(`/expenses/${expense.id}/edit`)} className="rounded-lg p-1.5 text-slate-400 hover:bg-emerald-50 hover:text-emerald-600 transition-colors">
+                  <button onClick={() => router.push(`/expenses/${expense.id}/edit`)} className="rounded-lg p-1.5 text-muted-foreground hover:bg-emerald-500/10 hover:text-emerald-600 transition-colors">
                     <Pencil className="h-4 w-4" />
                   </button>
                 )}
                 {canDelete && (
-                  <button onClick={() => setShowDeleteConfirm(expense)} className="rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-500 transition-colors">
+                  <button onClick={() => setShowDeleteConfirm(expense)} className="rounded-lg p-1.5 text-muted-foreground hover:bg-red-500/10 hover:text-red-500 transition-colors">
                     <Trash2 className="h-4 w-4" />
                   </button>
                 )}
@@ -330,19 +330,19 @@ export default function ExpensesPage() {
         <div className="fixed inset-0 z-[100] flex items-center justify-center">
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowDeleteConfirm(null)} />
           <div className="relative z-10 w-full max-w-sm mx-4 animate-in zoom-in-95 fade-in duration-200">
-            <div className="rounded-2xl bg-white shadow-2xl border border-slate-100 overflow-hidden">
+            <div className="rounded-2xl bg-card shadow-2xl border border-border overflow-hidden">
               <div className="h-1.5 bg-gradient-to-r from-red-500 via-red-400 to-red-500" />
               <div className="p-4 sm:p-6 text-center">
-                <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-red-50 border border-red-100">
+                <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-red-500/10 border border-red-500/20">
                   <Trash2 className="h-7 w-7 text-red-500" />
                 </div>
-                <h3 className="text-lg font-bold text-slate-900 mb-1">Delete Expense?</h3>
-                <p className="text-sm text-slate-500 leading-relaxed">
-                  This will permanently remove <span className="font-semibold text-slate-700">{showDeleteConfirm.title}</span>. This action cannot be undone.
+                <h3 className="text-lg font-bold text-foreground mb-1">Delete Expense?</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  This will permanently remove <span className="font-semibold text-foreground">{showDeleteConfirm.title}</span>. This action cannot be undone.
                 </p>
               </div>
               <div className="flex gap-3 px-4 sm:px-6 pb-4 sm:pb-6">
-                <button onClick={() => setShowDeleteConfirm(null)} className="flex-1 h-11 rounded-xl border border-slate-200 text-sm font-semibold text-slate-700 hover:bg-slate-50">Cancel</button>
+                <button onClick={() => setShowDeleteConfirm(null)} className="flex-1 h-11 rounded-xl border border-border text-sm font-semibold text-foreground hover:bg-accent">Cancel</button>
                 <button onClick={() => handleDelete(showDeleteConfirm)} disabled={isDeleting} className="flex-1 h-11 rounded-xl bg-red-500 text-white text-sm font-semibold hover:bg-red-600 shadow-lg shadow-red-500/25 disabled:opacity-70">
                   {isDeleting ? <Loader2 className="mx-auto h-4 w-4 animate-spin" /> : "Delete"}
                 </button>

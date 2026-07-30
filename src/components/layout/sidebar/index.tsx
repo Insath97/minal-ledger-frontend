@@ -48,7 +48,7 @@ export function Sidebar() {
 
       <aside
         className={cn(
-          "fixed left-0 top-0 z-50 flex h-full flex-col border-r border-slate-200 bg-white transition-all duration-300",
+          "fixed left-0 top-0 z-50 flex h-full flex-col border-r border-border bg-sidebar transition-all duration-300",
           isMobile
             ? isMobileOpen
               ? "translate-x-0 w-[260px]"
@@ -58,12 +58,12 @@ export function Sidebar() {
               : "w-[260px]"
         )}
       >
-        <div className="flex items-center gap-2 border-b border-slate-100 px-4 py-4">
+        <div className="flex items-center gap-2 border-b border-border px-4 py-4">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-600">
             <Wallet className="h-4 w-4 text-white" />
           </div>
           {(!isCollapsed || isMobileOpen) && (
-            <span className="text-lg font-bold text-slate-900">Minal Ledger</span>
+            <span className="text-lg font-bold text-sidebar-foreground">Minal Ledger</span>
           )}
         </div>
 
@@ -78,21 +78,21 @@ export function Sidebar() {
           ))}
         </nav>
 
-        <div className="px-3 py-2 border-t border-slate-100">
+        <div className="px-3 py-2 border-t border-border">
           <SidebarItem
             item={{ label: "Log out", href: "#", icon: "LogOut" }}
             isCollapsed={isCollapsed}
           />
         </div>
 
-        <div className="border-t border-slate-100 p-3 pt-2">
+        <div className="border-t border-border p-3 pt-2">
           <HelpCard isCollapsed={isCollapsed} />
         </div>
 
         {!isMobile && (
           <button
             onClick={toggle}
-            className="absolute -right-3 top-20 flex h-6 w-6 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-500 shadow-sm hover:bg-slate-50"
+            className="absolute -right-3 top-20 flex h-6 w-6 items-center justify-center rounded-full border border-border bg-background text-muted-foreground shadow-sm hover:bg-accent"
           >
             {isCollapsed ? (
               <ChevronRight className="h-3 w-3" />

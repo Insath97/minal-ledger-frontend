@@ -28,7 +28,7 @@ const GROUP_COLORS: Record<string, string> = {
   "Wallet": "bg-cyan-500",
   "Subscriptions": "bg-pink-500",
   "Recurring": "bg-indigo-500",
-  "Settings": "bg-slate-500",
+  "Settings": "bg-muted0",
   "Roles": "bg-orange-500",
   "Users": "bg-teal-500",
 };
@@ -82,13 +82,13 @@ export default function ViewRolePage() {
     return (
       <div className="space-y-6">
         <div className="flex items-center gap-4">
-          <div className="h-10 w-10 rounded-xl bg-slate-100 animate-pulse" />
-          <div className="h-7 w-40 rounded bg-slate-100 animate-pulse" />
+          <div className="h-10 w-10 rounded-xl bg-muted animate-pulse" />
+          <div className="h-7 w-40 rounded bg-muted animate-pulse" />
         </div>
-        <div className="rounded-2xl bg-slate-100 h-32 animate-pulse" />
+        <div className="rounded-2xl bg-muted h-32 animate-pulse" />
       <div className="grid grid-cols-2 gap-3 sm:gap-4 sm:grid-cols-3">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="h-24 rounded-2xl bg-slate-100 animate-pulse" />
+            <div key={i} className="h-24 rounded-2xl bg-muted animate-pulse" />
           ))}
         </div>
       </div>
@@ -98,8 +98,8 @@ export default function ViewRolePage() {
   if (!role) {
     return (
       <div className="flex flex-col items-center justify-center py-20">
-        <Shield className="h-12 w-12 text-slate-300 mb-3" />
-        <p className="text-sm font-semibold text-slate-600">Role not found</p>
+        <Shield className="h-12 w-12 text-muted-foreground/50 mb-3" />
+        <p className="text-sm font-semibold text-foreground">Role not found</p>
         <Button onClick={() => router.push("/roles")} className="mt-4" variant="outline">
           Back to Roles
         </Button>
@@ -120,39 +120,39 @@ export default function ViewRolePage() {
       {/* Header with Breadcrumb */}
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Role Details</h1>
-          <p className="mt-0.5 text-sm text-slate-500">View role information and assigned permissions.</p>
+          <h1 className="text-2xl font-bold text-foreground">Role Details</h1>
+          <p className="mt-0.5 text-sm text-muted-foreground">View role information and assigned permissions.</p>
         </div>
-        <nav className="flex items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-1.5 text-xs shrink-0">
-          <button onClick={() => router.push("/roles")} className="font-medium text-slate-500 hover:text-emerald-600 transition-colors">
+        <nav className="flex items-center gap-1.5 rounded-lg bg-muted px-3 py-1.5 text-xs shrink-0">
+          <button onClick={() => router.push("/roles")} className="font-medium text-muted-foreground hover:text-emerald-600 transition-colors">
             Roles
           </button>
-          <BreadcrumbSep className="h-3 w-3 text-slate-400" />
+          <BreadcrumbSep className="h-3 w-3 text-muted-foreground" />
           <span className="font-semibold text-emerald-600">{role.name}</span>
         </nav>
       </div>
 
       {/* Hero Card */}
-      <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4 sm:p-6">
+      <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/10 p-4 sm:p-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="flex items-center gap-4">
             <div className="flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-emerald-600 shadow-lg shadow-emerald-600/20 shrink-0">
               <span className="text-xl sm:text-2xl font-bold text-white">{initials}</span>
             </div>
             <div>
-              <h2 className="text-xl sm:text-2xl font-bold text-slate-900">{role.name}</h2>
+              <h2 className="text-xl sm:text-2xl font-bold text-foreground">{role.name}</h2>
               <div className="mt-1 flex flex-wrap items-center gap-2">
-                <Badge variant="outline" className="border-emerald-200 bg-emerald-100 text-emerald-700 text-xs font-semibold">
+                <Badge variant="outline" className="border-emerald-500/20 bg-emerald-500/10 text-emerald-600 text-xs font-semibold">
                   <Shield className="mr-1 h-3 w-3" />
                   {role.guard_name}
                 </Badge>
                 {role.is_protected ? (
-                  <Badge className="bg-amber-100 text-amber-700 border-amber-200 text-xs font-semibold">
+                  <Badge className="bg-amber-500/10 text-amber-600 border-amber-500/20 text-xs font-semibold">
                     <Lock className="mr-1 h-3 w-3" />
                     Protected
                   </Badge>
                 ) : (
-                  <Badge className="bg-blue-100 text-blue-700 border-blue-200 text-xs font-semibold">
+                  <Badge className="bg-blue-500/10 text-blue-600 border-blue-500/20 text-xs font-semibold">
                     <Unlock className="mr-1 h-3 w-3" />
                     Editable
                   </Badge>
@@ -176,7 +176,7 @@ export default function ViewRolePage() {
                 <Button
                   onClick={() => setShowDeleteConfirm(true)}
                   variant="outline"
-                  className="border-red-200 text-red-600 hover:bg-red-50 font-semibold"
+                  className="border-red-500/20 text-red-600 hover:bg-red-500/10 font-semibold"
                 >
                   <Trash2 className="mr-2 h-4 w-4" />
                   Delete
@@ -190,56 +190,56 @@ export default function ViewRolePage() {
 
       {/* Stats */}
       <div className="grid gap-4 sm:grid-cols-3">
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+        <div className="rounded-2xl border border-border bg-card p-5 shadow-sm">
           <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-100">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-500/10">
               <Shield className="h-5 w-5 text-emerald-600" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-slate-900">{role.permissions.length}</p>
-              <p className="text-xs text-slate-500">Total Permissions</p>
+              <p className="text-2xl font-bold text-foreground">{role.permissions.length}</p>
+              <p className="text-xs text-muted-foreground">Total Permissions</p>
             </div>
           </div>
         </div>
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+        <div className="rounded-2xl border border-border bg-card p-5 shadow-sm">
           <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-violet-100">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-violet-500/10">
               <Users className="h-5 w-5 text-violet-600" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-slate-900">{Object.keys(groupedPermissions).length}</p>
-              <p className="text-xs text-slate-500">Permission Groups</p>
+              <p className="text-2xl font-bold text-foreground">{Object.keys(groupedPermissions).length}</p>
+              <p className="text-xs text-muted-foreground">Permission Groups</p>
             </div>
           </div>
         </div>
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+        <div className="rounded-2xl border border-border bg-card p-5 shadow-sm">
           <div className="flex items-center gap-3">
-            <div className={`flex h-11 w-11 items-center justify-center rounded-xl ${role.is_protected ? "bg-amber-100" : "bg-blue-100"}`}>
+            <div className={`flex h-11 w-11 items-center justify-center rounded-xl ${role.is_protected ? "bg-amber-500/10" : "bg-blue-500/10"}`}>
               {role.is_protected ? <Lock className="h-5 w-5 text-amber-600" /> : <Unlock className="h-5 w-5 text-blue-600" />}
             </div>
             <div>
-              <p className="text-2xl font-bold text-slate-900">{role.is_protected ? "Yes" : "No"}</p>
-              <p className="text-xs text-slate-500">Protected Role</p>
+              <p className="text-2xl font-bold text-foreground">{role.is_protected ? "Yes" : "No"}</p>
+              <p className="text-xs text-muted-foreground">Protected Role</p>
             </div>
           </div>
         </div>
       </div>
 
       {/* Permissions by Group */}
-      <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
-        <div className="border-b border-slate-100 px-4 sm:px-6 py-4">
-          <h2 className="text-lg font-semibold text-slate-900">Assigned Permissions</h2>
-          <p className="text-xs text-slate-500 mt-1">
+      <div className="rounded-2xl border border-border bg-card shadow-sm overflow-hidden">
+        <div className="border-b border-border px-4 sm:px-6 py-4">
+          <h2 className="text-lg font-semibold text-foreground">Assigned Permissions</h2>
+          <p className="text-xs text-muted-foreground mt-1">
             {role.permissions.length} permissions across {Object.keys(groupedPermissions).length} groups
           </p>
         </div>
-        <div className="divide-y divide-slate-100">
+        <div className="divide-y divide-border">
           {Object.entries(groupedPermissions).map(([group, perms]) => (
             <div key={group} className="px-4 sm:px-6 py-4">
               <div className="flex items-center gap-3 mb-3">
                 <div className={`h-2.5 w-2.5 rounded-full ${getGroupColor(group)}`} />
-                <span className="text-sm font-semibold text-slate-800">{group}</span>
-                <Badge variant="outline" className="border-slate-200 bg-slate-50 text-slate-600 text-[10px] font-bold">
+                <span className="text-sm font-semibold text-foreground">{group}</span>
+                <Badge variant="outline" className="border-border bg-muted text-foreground text-[10px] font-bold">
                   {perms.length}
                 </Badge>
               </div>
@@ -247,14 +247,14 @@ export default function ViewRolePage() {
                 {perms.map((perm) => (
                   <div
                     key={perm.id}
-                    className="flex items-center gap-2 rounded-lg bg-emerald-50/70 border border-emerald-100 px-3 py-2"
+                    className="flex items-center gap-2 rounded-lg bg-emerald-500/10/70 border border-emerald-500/20 px-3 py-2"
                   >
                     <div className="flex h-4 w-4 shrink-0 items-center justify-center rounded bg-emerald-500">
                       <svg className="h-2.5 w-2.5 text-white" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                       </svg>
                     </div>
-                    <span className="text-[13px] font-medium text-emerald-800">{perm.name}</span>
+                    <span className="text-[13px] font-medium text-emerald-600">{perm.name}</span>
                   </div>
                 ))}
               </div>
@@ -262,8 +262,8 @@ export default function ViewRolePage() {
           ))}
           {role.permissions.length === 0 && (
             <div className="px-4 sm:px-6 py-12 text-center">
-              <Shield className="mx-auto h-10 w-10 text-slate-300 mb-3" />
-              <p className="text-sm text-slate-400">No permissions assigned to this role</p>
+              <Shield className="mx-auto h-10 w-10 text-muted-foreground/50 mb-3" />
+              <p className="text-sm text-muted-foreground">No permissions assigned to this role</p>
             </div>
           )}
         </div>
@@ -274,21 +274,21 @@ export default function ViewRolePage() {
         <div className="fixed inset-0 z-[100] flex items-center justify-center">
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowDeleteConfirm(false)} />
           <div className="relative z-10 w-full max-w-sm mx-4 animate-in zoom-in-95 fade-in duration-200">
-            <div className="rounded-2xl bg-white shadow-2xl border border-slate-100 overflow-hidden">
+            <div className="rounded-2xl bg-card shadow-2xl border border-border overflow-hidden">
               <div className="h-1.5 bg-gradient-to-r from-red-500 via-red-400 to-red-500" />
               <div className="p-4 sm:p-6 text-center">
-                <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-red-50 border border-red-100">
+                <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-red-500/10 border border-red-500/20">
                   <Trash2 className="h-7 w-7 text-red-500" />
                 </div>
-                <h3 className="text-lg font-bold text-slate-900 mb-1">Delete Role?</h3>
-                <p className="text-sm text-slate-500 leading-relaxed">
-                  This will permanently remove <span className="font-semibold text-slate-700">{role.name}</span>. This action cannot be undone.
+                <h3 className="text-lg font-bold text-foreground mb-1">Delete Role?</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  This will permanently remove <span className="font-semibold text-foreground">{role.name}</span>. This action cannot be undone.
                 </p>
               </div>
               <div className="flex gap-3 px-4 sm:px-6 pb-4 sm:pb-6">
                 <button
                   onClick={() => setShowDeleteConfirm(false)}
-                  className="flex-1 h-11 rounded-xl border border-slate-200 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+                  className="flex-1 h-11 rounded-xl border border-border text-sm font-semibold text-foreground hover:bg-muted"
                 >
                   Cancel
                 </button>

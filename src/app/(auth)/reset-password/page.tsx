@@ -66,15 +66,15 @@ function ResetPasswordForm() {
     return (
       <div className="text-center">
         <div className="mx-auto mb-8 relative w-fit">
-          <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-amber-100 border border-amber-200/60">
-            <AlertTriangle className="h-10 w-10 text-amber-600" />
+          <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-amber-500/10 border border-amber-500/20">
+            <AlertTriangle className="h-10 w-10 text-amber-600 dark:text-amber-400" />
           </div>
         </div>
 
-        <h1 className="text-[28px] font-bold text-slate-900 tracking-tight">
+        <h1 className="text-[28px] font-bold text-foreground tracking-tight">
           Invalid Reset Link
         </h1>
-        <p className="mt-3 text-[15px] text-slate-500 leading-relaxed max-w-sm mx-auto">
+        <p className="mt-3 text-[15px] text-muted-foreground leading-relaxed max-w-sm mx-auto">
           This password reset link is invalid or missing. Please request a new one.
         </p>
 
@@ -89,7 +89,7 @@ function ResetPasswordForm() {
         <div className="mt-6 text-center">
           <Link
             href="/login"
-            className="inline-flex items-center gap-2 text-[13px] font-semibold text-slate-600 hover:text-emerald-600 transition-colors"
+            className="inline-flex items-center gap-2 text-[13px] font-semibold text-muted-foreground hover:text-emerald-600 transition-colors"
           >
             <ArrowLeft className="h-4 w-4" />
             Back to Sign In
@@ -105,14 +105,14 @@ function ResetPasswordForm() {
         title="Password Reset!"
         subtitle="Your password has been updated successfully. You can now sign in with your new credentials."
       >
-        <div className="rounded-2xl bg-gradient-to-br from-emerald-50/80 to-white border border-emerald-100/60 p-5 text-left">
+        <div className="rounded-2xl bg-gradient-to-br from-emerald-500/10 to-background border border-emerald-500/20 p-5 text-left">
           <div className="flex items-start gap-3">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-emerald-100 border border-emerald-200/50">
-              <ShieldCheck className="h-[18px] w-[18px] text-emerald-600" />
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-emerald-500/10 border border-emerald-500/20">
+              <ShieldCheck className="h-[18px] w-[18px] text-emerald-600 dark:text-emerald-400" />
             </div>
             <div>
-              <p className="text-[13px] font-bold text-slate-800">Security Tip</p>
-              <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">
+              <p className="text-[13px] font-bold text-foreground">Security Tip</p>
+              <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">
                 Use a unique password that you don&apos;t use for other accounts.
               </p>
             </div>
@@ -135,20 +135,20 @@ function ResetPasswordForm() {
       <AuthBadge label="SECURITY" />
 
       <div className="mb-10">
-        <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-100 border border-emerald-200/60">
-          <ShieldCheck className="h-7 w-7 text-emerald-600" />
+        <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-500/10 border border-emerald-500/20">
+          <ShieldCheck className="h-7 w-7 text-emerald-600 dark:text-emerald-400" />
         </div>
-        <h1 className="text-[28px] font-bold text-slate-900 tracking-tight leading-[1.15]">
+        <h1 className="text-[28px] font-bold text-foreground tracking-tight leading-[1.15]">
           Create New Password
         </h1>
-        <p className="mt-2.5 text-[15px] text-slate-500 leading-relaxed">
+        <p className="mt-2.5 text-[15px] text-muted-foreground leading-relaxed">
           Your new password must be different from previously used passwords.
         </p>
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
         <div>
-          <label htmlFor="email" className="mb-2 block text-[13px] font-semibold text-slate-700 uppercase tracking-wide">
+          <label htmlFor="email" className="mb-2 block text-[13px] font-semibold text-foreground uppercase tracking-wide">
             Email Address
           </label>
           <Input
@@ -156,12 +156,12 @@ function ResetPasswordForm() {
             type="email"
             readOnly
             value={emailFromUrl || ""}
-            className="h-12 rounded-xl border-slate-200 bg-slate-50 px-4 text-sm text-slate-500 cursor-not-allowed placeholder:text-slate-400"
+            className="h-12 rounded-xl bg-muted px-4 text-sm text-muted-foreground cursor-not-allowed placeholder:text-muted-foreground"
           />
         </div>
 
         <div>
-          <label htmlFor="password" className="mb-2 block text-[13px] font-semibold text-slate-700 uppercase tracking-wide">
+          <label htmlFor="password" className="mb-2 block text-[13px] font-semibold text-foreground uppercase tracking-wide">
             New Password
           </label>
           <div className="relative">
@@ -169,13 +169,13 @@ function ResetPasswordForm() {
               id="password"
               type={showPassword ? "text" : "password"}
               placeholder="Enter new password"
-              className="h-12 rounded-xl border-slate-200 bg-white px-4 pr-12 text-sm placeholder:text-slate-400 focus:border-emerald-500 focus:ring-emerald-500/20"
+              className="h-12 rounded-xl bg-background px-4 pr-12 text-sm placeholder:text-muted-foreground focus:border-emerald-500 focus:ring-emerald-500/20"
               {...register("password")}
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors"
+              className="absolute right-3 top-1/2 -translate-y-1/2 rounded-lg p-1.5 text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
             >
               {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
             </button>
@@ -189,7 +189,7 @@ function ResetPasswordForm() {
         </div>
 
         <div>
-          <label htmlFor="confirmPassword" className="mb-2 block text-[13px] font-semibold text-slate-700 uppercase tracking-wide">
+          <label htmlFor="confirmPassword" className="mb-2 block text-[13px] font-semibold text-foreground uppercase tracking-wide">
             Confirm Password
           </label>
           <div className="relative">
@@ -197,13 +197,13 @@ function ResetPasswordForm() {
               id="confirmPassword"
               type={showConfirm ? "text" : "password"}
               placeholder="Confirm new password"
-              className="h-12 rounded-xl border-slate-200 bg-white px-4 pr-12 text-sm placeholder:text-slate-400 focus:border-emerald-500 focus:ring-emerald-500/20"
+              className="h-12 rounded-xl bg-background px-4 pr-12 text-sm placeholder:text-muted-foreground focus:border-emerald-500 focus:ring-emerald-500/20"
               {...register("confirmPassword")}
             />
             <button
               type="button"
               onClick={() => setShowConfirm(!showConfirm)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors"
+              className="absolute right-3 top-1/2 -translate-y-1/2 rounded-lg p-1.5 text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
             >
               {showConfirm ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
             </button>
@@ -220,7 +220,7 @@ function ResetPasswordForm() {
           <>
             <PasswordStrength password={password} />
 
-            <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+            <div className="rounded-2xl border border-border bg-card p-5 shadow-sm">
               <PasswordRules password={password} />
             </div>
           </>
@@ -259,7 +259,7 @@ function ResetPasswordForm() {
       <div className="mt-8 text-center">
         <Link
           href="/login"
-          className="inline-flex items-center gap-2 text-[13px] font-semibold text-slate-600 hover:text-emerald-600 transition-colors"
+          className="inline-flex items-center gap-2 text-[13px] font-semibold text-muted-foreground hover:text-emerald-600 transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />
           Back to Sign In

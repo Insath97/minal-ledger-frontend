@@ -59,31 +59,31 @@ export function Pagination({
   const pageNumbers = getPageNumbers(currentPage, totalPages);
 
   return (
-    <div className="flex flex-col gap-3 border-t border-slate-100 bg-slate-50/50 px-5 py-3 sm:flex-row sm:items-center sm:justify-between">
+    <div className="flex flex-col gap-3 border-t border-border bg-muted/50 px-5 py-3 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex flex-wrap items-center gap-3">
-        <p className="text-xs text-slate-500">Rows per page:</p>
+        <p className="text-xs text-muted-foreground">Rows per page:</p>
         <select
           value={perPage}
           onChange={(e) => onPerPageChange(Number(e.target.value))}
-          className="h-8 rounded-lg border border-slate-200 bg-white px-2 text-xs font-medium text-slate-600 outline-none focus:border-emerald-500"
+          className="h-8 rounded-lg border border-border bg-background px-2 text-xs font-medium text-foreground outline-none focus:border-emerald-500"
         >
           {perPageOptions.map((opt) => (
             <option key={opt} value={opt}>{opt}</option>
           ))}
         </select>
-        <p className="text-xs text-slate-500">
-          Showing <span className="font-semibold text-slate-700">{from}</span>
+        <p className="text-xs text-muted-foreground">
+          Showing <span className="font-semibold text-foreground">{from}</span>
           {" "}to{" "}
-          <span className="font-semibold text-slate-700">{to}</span>
+          <span className="font-semibold text-foreground">{to}</span>
           {" "}of{" "}
-          <span className="font-semibold text-slate-700">{totalItems}</span> {itemLabel}
+          <span className="font-semibold text-foreground">{totalItems}</span> {itemLabel}
         </p>
       </div>
       <div className="flex items-center gap-1.5">
         <button
           onClick={() => onPageChange(Math.max(1, currentPage - 1))}
           disabled={currentPage === 1}
-          className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-500 transition-colors hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed"
+          className="flex h-8 w-8 items-center justify-center rounded-lg border border-border bg-background text-muted-foreground transition-colors hover:bg-accent disabled:opacity-40 disabled:cursor-not-allowed"
         >
           <ChevronLeft className="h-4 w-4" />
         </button>
@@ -91,7 +91,7 @@ export function Pagination({
           page === "..." ? (
             <span
               key={`ellipsis-${i}`}
-              className="flex h-8 w-8 items-center justify-center text-xs text-slate-400"
+              className="flex h-8 w-8 items-center justify-center text-xs text-muted-foreground"
             >
               ...
             </span>
@@ -102,7 +102,7 @@ export function Pagination({
               className={`flex h-8 w-8 items-center justify-center rounded-lg text-xs font-semibold transition-colors ${
                 currentPage === page
                   ? "bg-emerald-600 text-white shadow-sm"
-                  : "border border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
+                  : "border border-border bg-background text-foreground hover:bg-accent"
               }`}
             >
               {page}
@@ -112,7 +112,7 @@ export function Pagination({
         <button
           onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
           disabled={currentPage === totalPages}
-          className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-500 transition-colors hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed"
+          className="flex h-8 w-8 items-center justify-center rounded-lg border border-border bg-background text-muted-foreground transition-colors hover:bg-accent disabled:opacity-40 disabled:cursor-not-allowed"
         >
           <ChevronRight className="h-4 w-4" />
         </button>

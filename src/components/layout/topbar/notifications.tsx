@@ -17,18 +17,18 @@ const notifications = [
 export function Notifications() {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger render={<button className="relative rounded-lg p-2 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700" />}>
+      <DropdownMenuTrigger render={<button className="relative rounded-lg p-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground" />}>
         <Bell className="h-5 w-5" />
         <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-emerald-500" />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-80">
-        <div className="border-b border-slate-100 px-4 py-3">
-          <p className="text-sm font-semibold text-slate-900">Notifications</p>
+        <div className="border-b border-border px-4 py-3">
+          <p className="text-sm font-semibold text-foreground">Notifications</p>
         </div>
         {notifications.map((n) => (
           <DropdownMenuItem key={n.id} className="flex flex-col items-start gap-1 px-4 py-3">
-            <p className="text-sm text-slate-700">{n.text}</p>
-            <p className="text-xs text-slate-400">{n.time}</p>
+            <p className="text-sm text-foreground">{n.text}</p>
+            <p className="text-xs text-muted-foreground">{n.time}</p>
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>

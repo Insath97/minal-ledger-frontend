@@ -108,12 +108,12 @@ export default function CreateCustomerPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Create Customer</h1>
-          <p className="mt-0.5 text-sm text-slate-500">Add a new customer to the system.</p>
+          <h1 className="text-2xl font-bold text-foreground">Create Customer</h1>
+          <p className="mt-0.5 text-sm text-muted-foreground">Add a new customer to the system.</p>
         </div>
-        <nav className="flex items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-1.5 text-xs shrink-0">
-          <button onClick={() => router.push("/customers")} className="font-medium text-slate-500 hover:text-emerald-600 transition-colors">Customers</button>
-          <BreadcrumbSep className="h-3 w-3 text-slate-400" />
+        <nav className="flex items-center gap-1.5 rounded-lg bg-muted px-3 py-1.5 text-xs shrink-0">
+          <button onClick={() => router.push("/customers")} className="font-medium text-muted-foreground hover:text-emerald-600 transition-colors">Customers</button>
+          <BreadcrumbSep className="h-3 w-3 text-muted-foreground" />
           <span className="font-semibold text-emerald-600">Create</span>
         </nav>
       </div>
@@ -124,7 +124,7 @@ export default function CreateCustomerPage() {
           <ImageUpload
             label=""
             preview={profileImagePreview}
-            icon={<Camera className="h-6 w-6 text-slate-400 mb-1" />}
+            icon={<Camera className="h-6 w-6 text-muted-foreground mb-1" />}
             uploadText="Upload Photo"
             onRemove={() => removeImage("profile")}
             onChange={(e) => handleImageChange(e, "profile")}
@@ -156,7 +156,7 @@ export default function CreateCustomerPage() {
               <FormField label="ID Type">
                 <select
                   {...register("id_type")}
-                  className="flex h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm outline-none transition-all hover:border-slate-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
+                  className="flex h-11 w-full rounded-xl border border-border bg-background px-4 text-sm outline-none transition-all hover:border-border focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
                 >
                   <option value="">None</option>
                   <option value="nic">NIC</option>
@@ -172,7 +172,7 @@ export default function CreateCustomerPage() {
             <ImageUpload
               label="NIC / ID Image"
               preview={nicImagePreview}
-              icon={<CreditCard className="h-5 w-5 text-slate-400 mb-1" />}
+              icon={<CreditCard className="h-5 w-5 text-muted-foreground mb-1" />}
               uploadText="Upload ID"
               onRemove={() => removeImage("nic")}
               onChange={(e) => handleImageChange(e, "nic")}
@@ -203,14 +203,14 @@ export default function CreateCustomerPage() {
               {...register("notes")}
               placeholder="Additional notes about the customer"
               rows={3}
-              className="flex w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition-all placeholder:text-slate-400 hover:border-slate-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
+              className="flex w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none transition-all placeholder:text-muted-foreground hover:border-border focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
             />
           </FormField>
         </FormSection>
 
         {/* Actions */}
         <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-3">
-          <Button type="button" variant="outline" onClick={() => router.push("/customers")} className="h-11 px-6 border-slate-200 text-slate-600 font-semibold">
+          <Button type="button" variant="outline" onClick={() => router.push("/customers")} className="h-11 px-6 border-border text-foreground font-semibold">
             Cancel
           </Button>
           <Button type="submit" disabled={isSaving} className="h-11 px-8 bg-emerald-600 text-white hover:bg-emerald-700 font-semibold shadow-lg shadow-emerald-600/20">

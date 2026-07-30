@@ -8,7 +8,7 @@ export function QuickActions() {
         <ArrowUpRight className="mr-2 h-4 w-4" />
         Send Money
       </Button>
-      <Button variant="outline" className="border-slate-200">
+      <Button variant="outline" className="border-border">
         <ArrowDownLeft className="mr-2 h-4 w-4 text-emerald-600" />
         Request Money
       </Button>

@@ -31,14 +31,14 @@ export function PasswordRules({ password }: PasswordRulesProps) {
         <div key={rule.label} className="flex items-center gap-3">
           <div
             className={`flex h-5 w-5 items-center justify-center rounded-full transition-all duration-300 ${
-              rule.check ? "bg-emerald-500 scale-110" : "bg-slate-200"
+              rule.check ? "bg-emerald-500 scale-110" : "bg-muted"
             }`}
           >
             {rule.check && <Check className="h-3 w-3 text-white" strokeWidth={3} />}
           </div>
           <span
             className={`text-[13px] transition-colors duration-300 ${
-              rule.check ? "text-emerald-600 font-semibold" : "text-slate-500"
+              rule.check ? "text-emerald-600 font-semibold" : "text-muted-foreground"
             }`}
           >
             {rule.label}

@@ -4,10 +4,10 @@ import { WalletCard } from "./wallet-card";
 
 export function WalletGrid() {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+    <div className="rounded-2xl border border-border bg-card p-5 shadow-sm">
       <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-lg font-semibold text-slate-900">My Wallet</h2>
-        <button className="flex items-center gap-1 text-sm font-medium text-emerald-600 hover:text-emerald-700">
+        <h2 className="text-lg font-semibold text-foreground">My Wallet</h2>
+        <button className="flex items-center gap-1 text-sm font-medium text-emerald-600 hover:text-emerald-500">
           <Plus className="h-4 w-4" />
           Add New
         </button>

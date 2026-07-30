@@ -16,10 +16,10 @@ function getImageUrl(path: string | null): string | null {
 }
 
 const STATUS_STYLES: Record<string, { bg: string; text: string; border: string; dot: string }> = {
-  pending: { bg: "bg-amber-50", text: "text-amber-700", border: "border-amber-200", dot: "bg-amber-500" },
-  cleared: { bg: "bg-emerald-50", text: "text-emerald-700", border: "border-emerald-200", dot: "bg-emerald-500" },
-  bounced: { bg: "bg-red-50", text: "text-red-700", border: "border-red-200", dot: "bg-red-500" },
-  cancelled: { bg: "bg-slate-100", text: "text-slate-500", border: "border-slate-200", dot: "bg-slate-400" },
+  pending: { bg: "bg-amber-500/10", text: "text-amber-600", border: "border-amber-500/20", dot: "bg-amber-500" },
+  cleared: { bg: "bg-emerald-500/10", text: "text-emerald-600", border: "border-emerald-500/20", dot: "bg-emerald-500" },
+  bounced: { bg: "bg-red-500/10", text: "text-red-600", border: "border-red-500/20", dot: "bg-red-500" },
+  cancelled: { bg: "bg-muted", text: "text-muted-foreground", border: "border-border", dot: "bg-muted-foreground" },
 };
 
 export default function ChequeDetailPage() {
@@ -102,8 +102,8 @@ export default function ChequeDetailPage() {
   if (loading) {
     return (
       <div className="space-y-6">
-        <div className="h-10 w-40 rounded-lg bg-slate-100 animate-pulse" />
-        <div className="h-64 rounded-2xl bg-slate-100 animate-pulse" />
+        <div className="h-10 w-40 rounded-lg bg-muted animate-pulse" />
+        <div className="h-64 rounded-2xl bg-muted animate-pulse" />
       </div>
     );
   }
@@ -119,12 +119,12 @@ export default function ChequeDetailPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Cheque Details</h1>
-          <p className="mt-0.5 text-sm text-slate-500">Cheque <span className="font-mono font-semibold text-slate-700">{cheque.cheque_number}</span></p>
+          <h1 className="text-2xl font-bold text-foreground">Cheque Details</h1>
+          <p className="mt-0.5 text-sm text-muted-foreground">Cheque <span className="font-mono font-semibold text-foreground">{cheque.cheque_number}</span></p>
         </div>
-        <nav className="flex items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-1.5 text-xs shrink-0">
-          <button onClick={() => router.push("/cheques")} className="font-medium text-slate-500 hover:text-emerald-600 transition-colors">Cheques</button>
-          <BreadcrumbSep className="h-3 w-3 text-slate-400" />
+        <nav className="flex items-center gap-1.5 rounded-lg bg-muted px-3 py-1.5 text-xs shrink-0">
+          <button onClick={() => router.push("/cheques")} className="font-medium text-muted-foreground hover:text-emerald-600 transition-colors">Cheques</button>
+          <BreadcrumbSep className="h-3 w-3 text-muted-foreground" />
           <span className="font-semibold text-emerald-600">Detail</span>
         </nav>
       </div>
@@ -133,12 +133,12 @@ export default function ChequeDetailPage() {
       <div className={`rounded-2xl border ${statusStyle.border} ${statusStyle.bg} p-4 sm:p-6 shadow-sm`}>
         <div className="flex flex-col sm:flex-row sm:items-start gap-4">
           <div className="flex items-center gap-4 min-w-0 flex-1">
-            <div className="flex h-12 w-12 sm:h-14 sm:w-14 shrink-0 items-center justify-center rounded-2xl bg-white/80 border border-white/50 shadow-sm">
+            <div className="flex h-12 w-12 sm:h-14 sm:w-14 shrink-0 items-center justify-center rounded-2xl bg-muted border border-border shadow-sm">
               <CreditCard className={`h-6 w-6 sm:h-7 sm:w-7 ${statusStyle.text}`} />
             </div>
             <div className="min-w-0">
-              <p className="text-xs text-slate-500">Cheque Number</p>
-              <p className="text-base sm:text-lg font-bold text-slate-900 font-mono truncate">{cheque.cheque_number}</p>
+              <p className="text-xs text-muted-foreground">Cheque Number</p>
+              <p className="text-base sm:text-lg font-bold text-foreground font-mono truncate">{cheque.cheque_number}</p>
               <span className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[10px] sm:text-xs font-bold capitalize mt-1 ${statusStyle.border} ${statusStyle.bg} ${statusStyle.text}`}>
                 <span className={`h-1.5 w-1.5 rounded-full ${statusStyle.dot}`} />
                 {cheque.status}
@@ -162,7 +162,7 @@ export default function ChequeDetailPage() {
                 </button>
                 <button
                   onClick={() => setShowStatusModal("cancelled")}
-                  className="h-9 rounded-lg border border-slate-200 bg-white px-3 text-xs font-semibold text-slate-600 hover:bg-slate-50 shadow-sm flex items-center gap-1.5"
+                  className="h-9 rounded-lg border border-border bg-card px-3 text-xs font-semibold text-foreground hover:bg-accent shadow-sm flex items-center gap-1.5"
                 >
                   <Ban className="h-3.5 w-3.5" /> Cancel
                 </button>
@@ -171,7 +171,7 @@ export default function ChequeDetailPage() {
             {cheque.status !== "cleared" && canDelete && (
               <button
                 onClick={() => setShowDeleteConfirm(true)}
-                className="h-9 rounded-lg border border-red-200 bg-white px-3 text-xs font-semibold text-red-600 hover:bg-red-50 shadow-sm flex items-center gap-1.5"
+                className="h-9 rounded-lg border border-red-500/20 bg-card px-3 text-xs font-semibold text-red-600 hover:bg-red-500/10 shadow-sm flex items-center gap-1.5"
               >
                 <Trash2 className="h-3.5 w-3.5" /> Delete
               </button>
@@ -179,21 +179,21 @@ export default function ChequeDetailPage() {
           </div>
         </div>
         <div className="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
-          <div className="rounded-xl bg-white/80 border border-white/50 p-3">
-            <p className="text-xs text-slate-500">Amount</p>
-            <p className="text-lg font-bold text-slate-900">{formatCurrency(cheque.amount)}</p>
+          <div className="rounded-xl bg-card border border-border p-3">
+            <p className="text-xs text-muted-foreground">Amount</p>
+            <p className="text-lg font-bold text-foreground">{formatCurrency(cheque.amount)}</p>
           </div>
-          <div className="rounded-xl bg-white/80 border border-white/50 p-3">
-            <p className="text-xs text-slate-500">Bank</p>
-            <p className="text-sm font-semibold text-slate-700">{cheque.bank_name}</p>
+          <div className="rounded-xl bg-card border border-border p-3">
+            <p className="text-xs text-muted-foreground">Bank</p>
+            <p className="text-sm font-semibold text-foreground">{cheque.bank_name}</p>
           </div>
-          <div className="rounded-xl bg-white/80 border border-white/50 p-3">
-            <p className="text-xs text-slate-500">Cheque Date</p>
-            <p className="text-sm font-semibold text-slate-700">{formatDate(cheque.cheque_date)}</p>
+          <div className="rounded-xl bg-card border border-border p-3">
+            <p className="text-xs text-muted-foreground">Cheque Date</p>
+            <p className="text-sm font-semibold text-foreground">{formatDate(cheque.cheque_date)}</p>
           </div>
-          <div className="rounded-xl bg-white/80 border border-white/50 p-3">
-            <p className="text-xs text-slate-500">Clearance Date</p>
-            <p className="text-sm font-semibold text-slate-700">{cheque.clearance_date ? formatDate(cheque.clearance_date) : "—"}</p>
+          <div className="rounded-xl bg-card border border-border p-3">
+            <p className="text-xs text-muted-foreground">Clearance Date</p>
+            <p className="text-sm font-semibold text-foreground">{cheque.clearance_date ? formatDate(cheque.clearance_date) : "—"}</p>
           </div>
         </div>
       </div>
@@ -201,64 +201,64 @@ export default function ChequeDetailPage() {
       {/* Details Grid */}
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Customer Info */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-sm">
-          <h3 className="mb-4 text-sm font-semibold text-slate-700">Customer Information</h3>
+        <div className="rounded-2xl border border-border bg-card p-4 sm:p-6 shadow-sm">
+          <h3 className="mb-4 text-sm font-semibold text-foreground">Customer Information</h3>
           {cheque.customer ? (
             <div className="space-y-3">
-              <div className="flex justify-between"><span className="text-sm text-slate-500">Name</span><span className="text-sm font-semibold text-slate-700">{cheque.customer.name}</span></div>
-              <div className="flex justify-between"><span className="text-sm text-slate-500">Code</span><span className="text-sm font-mono text-slate-700">{cheque.customer.code}</span></div>
-              <div className="flex justify-between"><span className="text-sm text-slate-500">Phone</span><span className="text-sm text-slate-700">{cheque.customer.phone}</span></div>
+              <div className="flex justify-between"><span className="text-sm text-muted-foreground">Name</span><span className="text-sm font-semibold text-foreground">{cheque.customer.name}</span></div>
+              <div className="flex justify-between"><span className="text-sm text-muted-foreground">Code</span><span className="text-sm font-mono text-foreground">{cheque.customer.code}</span></div>
+              <div className="flex justify-between"><span className="text-sm text-muted-foreground">Phone</span><span className="text-sm text-foreground">{cheque.customer.phone}</span></div>
               {cheque.customer.outstanding_balance !== undefined && (
-                <div className="flex justify-between"><span className="text-sm text-slate-500">Outstanding</span><span className="text-sm font-semibold text-slate-700">{formatCurrency(cheque.customer.outstanding_balance)}</span></div>
+                <div className="flex justify-between"><span className="text-sm text-muted-foreground">Outstanding</span><span className="text-sm font-semibold text-foreground">{formatCurrency(cheque.customer.outstanding_balance)}</span></div>
               )}
             </div>
           ) : (
-            <p className="text-sm text-slate-400">No customer linked</p>
+            <p className="text-sm text-muted-foreground">No customer linked</p>
           )}
         </div>
 
         {/* Sale Info */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-sm">
-          <h3 className="mb-4 text-sm font-semibold text-slate-700">Linked Sale</h3>
+        <div className="rounded-2xl border border-border bg-card p-4 sm:p-6 shadow-sm">
+          <h3 className="mb-4 text-sm font-semibold text-foreground">Linked Sale</h3>
           {cheque.sale ? (
             <div className="space-y-3">
-              <div className="flex justify-between"><span className="text-sm text-slate-500">Reference</span><span className="text-sm font-mono font-semibold text-slate-700">{cheque.sale.reference_number}</span></div>
-              {cheque.sale.total_amount !== undefined && <div className="flex justify-between"><span className="text-sm text-slate-500">Total</span><span className="text-sm font-semibold text-slate-700">{formatCurrency(cheque.sale.total_amount)}</span></div>}
-              {cheque.sale.due_amount !== undefined && <div className="flex justify-between"><span className="text-sm text-slate-500">Due</span><span className="text-sm font-semibold text-red-600">{formatCurrency(cheque.sale.due_amount)}</span></div>}
+              <div className="flex justify-between"><span className="text-sm text-muted-foreground">Reference</span><span className="text-sm font-mono font-semibold text-foreground">{cheque.sale.reference_number}</span></div>
+              {cheque.sale.total_amount !== undefined && <div className="flex justify-between"><span className="text-sm text-muted-foreground">Total</span><span className="text-sm font-semibold text-foreground">{formatCurrency(cheque.sale.total_amount)}</span></div>}
+              {cheque.sale.due_amount !== undefined && <div className="flex justify-between"><span className="text-sm text-muted-foreground">Due</span><span className="text-sm font-semibold text-red-600">{formatCurrency(cheque.sale.due_amount)}</span></div>}
               {cheque.sale.payment_status && (
                 <div className="flex justify-between">
-                  <span className="text-sm text-slate-500">Status</span>
+                  <span className="text-sm text-muted-foreground">Status</span>
                   <span className={`text-xs font-semibold capitalize ${cheque.sale.payment_status === "paid" ? "text-emerald-600" : "text-amber-600"}`}>{cheque.sale.payment_status}</span>
                 </div>
               )}
             </div>
           ) : (
-            <p className="text-sm text-slate-400">No sale linked</p>
+            <p className="text-sm text-muted-foreground">No sale linked</p>
           )}
         </div>
 
         {/* Cheque Image */}
         {cheque.cheque_image && (
-          <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-sm">
-            <h3 className="mb-4 text-sm font-semibold text-slate-700">Cheque Image</h3>
-            <img src={getImageUrl(cheque.cheque_image) || ""} alt="Cheque" className="h-40 w-full max-w-md rounded-xl object-cover border border-slate-200" />
+          <div className="rounded-2xl border border-border bg-card p-4 sm:p-6 shadow-sm">
+            <h3 className="mb-4 text-sm font-semibold text-foreground">Cheque Image</h3>
+            <img src={getImageUrl(cheque.cheque_image) || ""} alt="Cheque" className="h-40 w-full max-w-md rounded-xl object-cover border border-border" />
           </div>
         )}
 
         {/* Notes */}
         {cheque.notes && (
-          <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-sm">
-            <h3 className="mb-4 text-sm font-semibold text-slate-700">Notes</h3>
-            <p className="text-sm text-slate-600 whitespace-pre-wrap">{cheque.notes}</p>
+          <div className="rounded-2xl border border-border bg-card p-4 sm:p-6 shadow-sm">
+            <h3 className="mb-4 text-sm font-semibold text-foreground">Notes</h3>
+            <p className="text-sm text-foreground whitespace-pre-wrap">{cheque.notes}</p>
           </div>
         )}
       </div>
 
       {/* Timestamps */}
-      <div className="rounded-2xl border border-slate-200 bg-white px-4 sm:px-6 py-3 sm:py-4 shadow-sm">
-        <div className="flex flex-col sm:flex-row sm:flex-wrap gap-2 sm:gap-6 text-xs text-slate-500">
-          <div>Created by <span className="font-semibold text-slate-700">{cheque.creator?.name || "—"}</span> on {formatDate(cheque.created_at)}</div>
-          {cheque.updater && <div>Updated by <span className="font-semibold text-slate-700">{cheque.updater.name}</span> on {formatDate(cheque.updated_at)}</div>}
+      <div className="rounded-2xl border border-border bg-card px-4 sm:px-6 py-3 sm:py-4 shadow-sm">
+        <div className="flex flex-col sm:flex-row sm:flex-wrap gap-2 sm:gap-6 text-xs text-muted-foreground">
+          <div>Created by <span className="font-semibold text-foreground">{cheque.creator?.name || "—"}</span> on {formatDate(cheque.created_at)}</div>
+          {cheque.updater && <div>Updated by <span className="font-semibold text-foreground">{cheque.updater.name}</span> on {formatDate(cheque.updated_at)}</div>}
         </div>
       </div>
 
@@ -267,17 +267,17 @@ export default function ChequeDetailPage() {
         <div className="fixed inset-0 z-[100] flex items-center justify-center">
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowDeleteConfirm(false)} />
           <div className="relative z-10 w-full max-w-sm mx-4 animate-in zoom-in-95 fade-in duration-200">
-            <div className="rounded-2xl bg-white shadow-2xl border border-slate-100 overflow-hidden">
+            <div className="rounded-2xl bg-card shadow-2xl border border-border overflow-hidden">
               <div className="h-1.5 bg-gradient-to-r from-red-500 via-red-400 to-red-500" />
               <div className="p-4 sm:p-6 text-center">
-                <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-red-50 border border-red-100">
+                <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-red-500/10 border border-red-500/20">
                   <Trash2 className="h-7 w-7 text-red-500" />
                 </div>
-                <h3 className="text-lg font-bold text-slate-900 mb-1">Delete Cheque?</h3>
-                <p className="text-sm text-slate-500 leading-relaxed">This will permanently remove cheque <span className="font-semibold text-slate-700">{cheque.cheque_number}</span>. This action cannot be undone.</p>
+                <h3 className="text-lg font-bold text-foreground mb-1">Delete Cheque?</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">This will permanently remove cheque <span className="font-semibold text-foreground">{cheque.cheque_number}</span>. This action cannot be undone.</p>
               </div>
               <div className="flex gap-3 px-4 sm:px-6 pb-4 sm:pb-6">
-                <button onClick={() => setShowDeleteConfirm(false)} className="flex-1 h-11 rounded-xl border border-slate-200 text-sm font-semibold text-slate-700 hover:bg-slate-50">Cancel</button>
+                <button onClick={() => setShowDeleteConfirm(false)} className="flex-1 h-11 rounded-xl border border-border text-sm font-semibold text-foreground hover:bg-muted">Cancel</button>
                 <button onClick={handleDelete} disabled={isDeleting} className="flex-1 h-11 rounded-xl bg-red-500 text-white text-sm font-semibold hover:bg-red-600 shadow-lg shadow-red-500/25 disabled:opacity-70">
                   {isDeleting ? <Loader2 className="mx-auto h-4 w-4 animate-spin" /> : "Delete"}
                 </button>
@@ -292,27 +292,27 @@ export default function ChequeDetailPage() {
         <div className="fixed inset-0 z-[100] flex items-center justify-center">
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowStatusModal(null)} />
           <div className="relative z-10 w-full max-w-md mx-4">
-            <div className="rounded-2xl bg-white shadow-2xl border border-slate-100 overflow-hidden">
+            <div className="rounded-2xl bg-card shadow-2xl border border-border overflow-hidden">
               <div className={`h-1.5 ${showStatusModal === "cleared" ? "bg-gradient-to-r from-emerald-500 via-emerald-400 to-emerald-500" : showStatusModal === "bounced" ? "bg-gradient-to-r from-red-500 via-red-400 to-red-500" : "bg-gradient-to-r from-slate-500 via-slate-400 to-slate-500"}`} />
               <div className="p-4 sm:p-6">
-                <h3 className="text-lg font-bold text-slate-900 mb-4">
+                <h3 className="text-lg font-bold text-foreground mb-4">
                   Mark Cheque as {showStatusModal.charAt(0).toUpperCase() + showStatusModal.slice(1)}
                 </h3>
                 {showStatusModal === "cleared" && (
                   <div className="space-y-2 mb-4">
-                    <label className="mb-1.5 block text-[13px] font-semibold text-slate-700">Clearance Date <span className="text-red-500">*</span></label>
-                    <input type="date" value={clearanceDate} onChange={(e) => setClearanceDate(e.target.value)} className="flex h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20" />
+                    <label className="mb-1.5 block text-[13px] font-semibold text-foreground">Clearance Date <span className="text-red-500">*</span></label>
+                    <input type="date" value={clearanceDate} onChange={(e) => setClearanceDate(e.target.value)} className="flex h-11 w-full rounded-xl border border-border bg-card px-4 text-sm outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20" />
                   </div>
                 )}
                 <div className="space-y-2">
-                  <label className="mb-1.5 block text-[13px] font-semibold text-slate-700">Notes</label>
-                  <textarea value={statusNotes} onChange={(e) => setStatusNotes(e.target.value)} placeholder="Optional notes..." rows={3} className="flex w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20" />
+                  <label className="mb-1.5 block text-[13px] font-semibold text-foreground">Notes</label>
+                  <textarea value={statusNotes} onChange={(e) => setStatusNotes(e.target.value)} placeholder="Optional notes..." rows={3} className="flex w-full rounded-xl border border-border bg-card px-4 py-3 text-sm outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20" />
                 </div>
               </div>
               <div className="flex gap-3 px-4 sm:px-6 pb-4 sm:pb-6">
-                <button onClick={() => setShowStatusModal(null)} className="flex-1 h-11 rounded-xl border border-slate-200 text-sm font-semibold text-slate-700 hover:bg-slate-50">Cancel</button>
+                <button onClick={() => setShowStatusModal(null)} className="flex-1 h-11 rounded-xl border border-border text-sm font-semibold text-foreground hover:bg-muted">Cancel</button>
                 <button onClick={handleStatusUpdate} disabled={isUpdatingStatus || (showStatusModal === "cleared" && !clearanceDate)} className={`flex-1 h-11 rounded-xl text-white text-sm font-semibold shadow-lg disabled:opacity-70 ${
-                  showStatusModal === "cleared" ? "bg-emerald-600 hover:bg-emerald-700 shadow-emerald-600/20" : showStatusModal === "bounced" ? "bg-red-500 hover:bg-red-600 shadow-red-500/25" : "bg-slate-500 hover:bg-slate-600 shadow-slate-500/20"
+                  showStatusModal === "cleared" ? "bg-emerald-600 hover:bg-emerald-700 shadow-emerald-600/20" : showStatusModal === "bounced" ? "bg-red-500 hover:bg-red-600 shadow-red-500/25" : "bg-muted hover:bg-muted/80 shadow-border"
                 }`}>
                   {isUpdatingStatus ? <Loader2 className="mx-auto h-4 w-4 animate-spin" /> : `Mark ${showStatusModal.charAt(0).toUpperCase() + showStatusModal.slice(1)}`}
                 </button>

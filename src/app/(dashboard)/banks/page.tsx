@@ -141,8 +141,8 @@ export default function BanksPage() {
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Banks</h1>
-          <p className="mt-1 text-sm text-slate-500">Manage banks and financial institutions.</p>
+          <h1 className="text-2xl font-bold text-foreground">Banks</h1>
+          <p className="mt-1 text-sm text-muted-foreground">Manage banks and financial institutions.</p>
         </div>
         {canCreate && (
           <Button onClick={openCreate} className="bg-emerald-600 text-white hover:bg-emerald-700 shadow-lg shadow-emerald-600/20">
@@ -153,10 +153,10 @@ export default function BanksPage() {
       </div>
 
       {/* Search & Filters */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+      <div className="rounded-2xl border border-border bg-background p-4 shadow-sm">
         <div className="flex flex-wrap items-center gap-3">
           <div className="relative min-w-0 flex-1 sm:flex-1">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               placeholder="Search banks by name, code..."
               value={search}
@@ -164,7 +164,7 @@ export default function BanksPage() {
               className="h-10 pl-9 pr-9 text-sm"
             />
             {search && (
-              <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+              <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
                 <X className="h-4 w-4" />
               </button>
             )}
@@ -172,7 +172,7 @@ export default function BanksPage() {
           <select
             value={statusFilter}
             onChange={(e) => { setStatusFilter(e.target.value as typeof statusFilter); setCurrentPage(1); }}
-            className="h-10 min-w-[140px] rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-600 outline-none transition-all hover:border-slate-300 focus:border-emerald-500"
+            className="h-10 min-w-[140px] rounded-lg border border-border bg-background px-3 text-sm text-foreground outline-none transition-all hover:border-border focus:border-emerald-500"
           >
             <option value="all">All Status</option>
             <option value="active">Active</option>
@@ -182,60 +182,60 @@ export default function BanksPage() {
       </div>
 
       {/* Data Table - Desktop */}
-      <div className="hidden md:block rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+      <div className="hidden md:block rounded-2xl border border-border bg-background shadow-sm overflow-hidden">
         <div className="overflow-x-auto scrollbar-thin">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-slate-100 bg-slate-50/80">
-                <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">#</th>
-                <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">Bank</th>
-                <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">Code</th>
-                <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">Description</th>
+              <tr className="border-b border-border bg-muted/50">
+                <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground">#</th>
+                <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Bank</th>
+                <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Code</th>
+                <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Description</th>
                 {canToggleStatus && (
-                  <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">Status</th>
+                  <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Status</th>
                 )}
                 {showActions && (
-                  <th className="px-5 py-3.5 text-right text-[11px] font-bold uppercase tracking-wider text-slate-500">Actions</th>
+                  <th className="px-5 py-3.5 text-right text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Actions</th>
                 )}
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-50">
+            <tbody className="divide-y divide-border">
               {loading ? (
                 <tr>
                   <td colSpan={canToggleStatus ? (showActions ? 6 : 5) : (showActions ? 5 : 4)} className="px-5 py-16 text-center">
                     <Loader2 className="mx-auto h-8 w-8 text-emerald-500 animate-spin mb-3" />
-                    <p className="text-sm text-slate-500">Loading banks...</p>
+                    <p className="text-sm text-muted-foreground">Loading banks...</p>
                   </td>
                 </tr>
               ) : banks.length === 0 ? (
                 <tr>
                   <td colSpan={canToggleStatus ? (showActions ? 6 : 5) : (showActions ? 5 : 4)} className="px-5 py-16 text-center">
-                    <Building2 className="mx-auto h-10 w-10 text-slate-300 mb-3" />
-                    <p className="text-sm font-semibold text-slate-600">No banks found</p>
-                    <p className="text-xs text-slate-400 mt-1">Try adjusting your search or filters</p>
+                    <Building2 className="mx-auto h-10 w-10 text-muted-foreground/50 mb-3" />
+                    <p className="text-sm font-semibold text-foreground">No banks found</p>
+                    <p className="text-xs text-muted-foreground mt-1">Try adjusting your search or filters</p>
                   </td>
                 </tr>
               ) : (
                 banks.map((bank, i) => (
-                  <tr key={bank.id} className="hover:bg-slate-50/50 transition-colors">
-                    <td className="px-5 py-3.5 text-sm text-slate-400">
+                  <tr key={bank.id} className="hover:bg-accent/50 transition-colors">
+                    <td className="px-5 py-3.5 text-sm text-muted-foreground">
                       {(currentPage - 1) * perPage + i + 1}
                     </td>
                     <td className="px-5 py-3.5">
                       <div className="flex items-center gap-3">
-                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-blue-100 text-xs font-bold text-blue-700">
+                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-blue-500/10 text-xs font-bold text-blue-600">
                           <Building2 className="h-4 w-4" />
                         </div>
-                        <p className="text-sm font-semibold text-slate-800">{bank.name}</p>
+                        <p className="text-sm font-semibold text-foreground">{bank.name}</p>
                       </div>
                     </td>
                     <td className="px-5 py-3.5">
-                      <Badge variant="outline" className="border-slate-200 bg-slate-50 text-slate-600 text-[10px] font-bold">
+                      <Badge variant="outline" className="border-border bg-muted text-foreground text-[10px] font-bold">
                         {bank.code}
                       </Badge>
                     </td>
                     <td className="px-5 py-3.5">
-                      <p className="max-w-xs truncate text-sm text-slate-500">{bank.description || "—"}</p>
+                      <p className="max-w-xs truncate text-sm text-muted-foreground">{bank.description || "—"}</p>
                     </td>
                     {canToggleStatus && (
                       <td className="px-5 py-3.5">
@@ -246,16 +246,16 @@ export default function BanksPage() {
                         >
                           <span
                             className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
-                              bank.is_active ? "bg-emerald-500" : "bg-slate-200"
+                              bank.is_active ? "bg-emerald-500" : "bg-muted"
                             }`}
                           >
                             <span
-                              className={`inline-block h-3.5 w-3.5 rounded-full bg-white shadow-sm transition-transform ${
+                              className={`inline-block h-3.5 w-3.5 rounded-full bg-card shadow-sm transition-transform ${
                                 bank.is_active ? "translate-x-[18px]" : "translate-x-[3px]"
                               }`}
                             />
                           </span>
-                          <span className={`text-xs font-medium ${bank.is_active ? "text-emerald-600" : "text-slate-400"}`}>
+                          <span className={`text-xs font-medium ${bank.is_active ? "text-emerald-600" : "text-muted-foreground"}`}>
                             {bank.is_active ? "Active" : "Inactive"}
                           </span>
                         </button>
@@ -267,7 +267,7 @@ export default function BanksPage() {
                           {canEdit && (
                             <button
                               onClick={() => openEdit(bank)}
-                              className="rounded-lg p-1.5 text-slate-400 hover:bg-emerald-50 hover:text-emerald-600 transition-colors"
+                              className="rounded-lg p-1.5 text-muted-foreground hover:bg-emerald-500/10 hover:text-emerald-600 transition-colors"
                               title="Edit"
                             >
                               <Edit className="h-4 w-4" />
@@ -276,7 +276,7 @@ export default function BanksPage() {
                           {canDelete && (
                             <button
                               onClick={() => setShowDeleteConfirm(bank)}
-                              className="rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-500 transition-colors"
+                              className="rounded-lg p-1.5 text-muted-foreground hover:bg-red-500/10 hover:text-red-500 transition-colors"
                               title="Delete"
                             >
                               <Trash2 className="h-4 w-4" />
@@ -311,34 +311,34 @@ export default function BanksPage() {
 
       {/* Mobile Cards */}
       {loading ? (
-        <div className="md:hidden rounded-2xl border border-slate-200 bg-white shadow-sm p-8 text-center">
+        <div className="md:hidden rounded-2xl border border-border bg-background shadow-sm p-8 text-center">
           <Loader2 className="mx-auto h-8 w-8 text-emerald-500 animate-spin mb-3" />
-          <p className="text-sm text-slate-500">Loading banks...</p>
+          <p className="text-sm text-muted-foreground">Loading banks...</p>
         </div>
       ) : banks.length === 0 ? (
-        <div className="md:hidden rounded-2xl border border-slate-200 bg-white shadow-sm p-8 text-center">
-          <Building2 className="mx-auto h-10 w-10 text-slate-300 mb-3" />
-          <p className="text-sm font-semibold text-slate-600">No banks found</p>
-          <p className="text-xs text-slate-400 mt-1">Try adjusting your search or filters</p>
+        <div className="md:hidden rounded-2xl border border-border bg-background shadow-sm p-8 text-center">
+          <Building2 className="mx-auto h-10 w-10 text-muted-foreground/50 mb-3" />
+          <p className="text-sm font-semibold text-foreground">No banks found</p>
+          <p className="text-xs text-muted-foreground mt-1">Try adjusting your search or filters</p>
         </div>
       ) : (
         <div className="md:hidden space-y-3">
           {banks.map((bank) => (
-            <div key={bank.id} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+            <div key={bank.id} className="rounded-2xl border border-border bg-background p-4 shadow-sm">
               <div className="flex items-start justify-between mb-3">
                 <div className="flex items-center gap-3 min-w-0">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-blue-100">
-                    <Building2 className="h-4 w-4 text-blue-700" />
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-blue-500/10">
+                    <Building2 className="h-4 w-4 text-blue-600" />
                   </div>
                   <div className="min-w-0">
-                    <p className="text-sm font-semibold text-slate-800 truncate">{bank.name}</p>
-                    <Badge variant="outline" className="border-slate-200 bg-slate-50 text-slate-600 text-[10px] font-bold">{bank.code}</Badge>
+                    <p className="text-sm font-semibold text-foreground truncate">{bank.name}</p>
+                    <Badge variant="outline" className="border-border bg-muted text-foreground text-[10px] font-bold">{bank.code}</Badge>
                   </div>
                 </div>
                 {canToggleStatus && (
                   <button
                     onClick={() => handleToggleStatus(bank)}
-                    className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${bank.is_active ? "bg-emerald-100 text-emerald-700" : "bg-slate-100 text-slate-500"}`}
+                    className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${bank.is_active ? "bg-emerald-500/10 text-emerald-600" : "bg-muted text-muted-foreground"}`}
                   >
                     {bank.is_active ? "Active" : "Inactive"}
                   </button>
@@ -346,14 +346,14 @@ export default function BanksPage() {
               </div>
 
               {bank.description && (
-                <p className="text-xs text-slate-500 mb-3 truncate">{bank.description}</p>
+                <p className="text-xs text-muted-foreground mb-3 truncate">{bank.description}</p>
               )}
 
-              <div className="flex items-center justify-end gap-1 pt-2 border-t border-slate-100">
+              <div className="flex items-center justify-end gap-1 pt-2 border-t border-border">
                 {canEdit && (
                   <button
                     onClick={() => openEdit(bank)}
-                    className="rounded-lg p-1.5 text-slate-400 hover:bg-emerald-50 hover:text-emerald-600 transition-colors"
+                    className="rounded-lg p-1.5 text-muted-foreground hover:bg-emerald-500/10 hover:text-emerald-600 transition-colors"
                   >
                     <Edit className="h-4 w-4" />
                   </button>
@@ -361,7 +361,7 @@ export default function BanksPage() {
                 {canDelete && (
                   <button
                     onClick={() => setShowDeleteConfirm(bank)}
-                    className="rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-500 transition-colors"
+                    className="rounded-lg p-1.5 text-muted-foreground hover:bg-red-500/10 hover:text-red-500 transition-colors"
                   >
                     <Trash2 className="h-4 w-4" />
                   </button>
@@ -377,13 +377,13 @@ export default function BanksPage() {
         <div className="fixed inset-0 z-[100] flex items-center justify-center">
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowModal(false)} />
           <div className="relative z-10 w-full max-w-md mx-4 animate-in zoom-in-95 fade-in duration-200">
-            <div className="rounded-2xl bg-white shadow-2xl border border-slate-100 overflow-hidden">
+            <div className="rounded-2xl bg-card shadow-2xl border border-border overflow-hidden">
               <div className="h-1.5 bg-gradient-to-r from-emerald-500 via-emerald-400 to-emerald-500" />
               <div className="p-4 sm:p-6">
-                <h3 className="text-lg font-bold text-slate-900 mb-4">{editingBank ? "Edit Bank" : "Create Bank"}</h3>
+                <h3 className="text-lg font-bold text-foreground mb-4">{editingBank ? "Edit Bank" : "Create Bank"}</h3>
                 <div className="space-y-4">
                   <div>
-                    <label className="mb-1.5 block text-[13px] font-semibold text-slate-700">Name *</label>
+                    <label className="mb-1.5 block text-[13px] font-semibold text-foreground">Name *</label>
                     <Input
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -392,7 +392,7 @@ export default function BanksPage() {
                     />
                   </div>
                   <div>
-                    <label className="mb-1.5 block text-[13px] font-semibold text-slate-700">Code *</label>
+                    <label className="mb-1.5 block text-[13px] font-semibold text-foreground">Code *</label>
                     <Input
                       value={formData.code}
                       onChange={(e) => setFormData({ ...formData, code: e.target.value.toUpperCase() })}
@@ -401,13 +401,13 @@ export default function BanksPage() {
                     />
                   </div>
                   <div>
-                    <label className="mb-1.5 block text-[13px] font-semibold text-slate-700">Description</label>
+                    <label className="mb-1.5 block text-[13px] font-semibold text-foreground">Description</label>
                     <textarea
                       value={formData.description}
                       onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                       placeholder="Optional description"
                       rows={3}
-                      className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-600 outline-none transition-all hover:border-slate-300 focus:border-emerald-500 resize-none"
+                      className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none transition-all hover:border-border focus:border-emerald-500 resize-none"
                     />
                   </div>
                 </div>
@@ -415,7 +415,7 @@ export default function BanksPage() {
               <div className="flex gap-3 px-4 sm:px-6 pb-4 sm:pb-6">
                 <button
                   onClick={() => setShowModal(false)}
-                  className="flex-1 h-10 rounded-lg border border-slate-200 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+                  className="flex-1 h-10 rounded-lg border border-border text-sm font-semibold text-foreground hover:bg-accent"
                 >
                   Cancel
                 </button>
@@ -437,21 +437,21 @@ export default function BanksPage() {
         <div className="fixed inset-0 z-[100] flex items-center justify-center">
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowDeleteConfirm(null)} />
           <div className="relative z-10 w-full max-w-sm mx-4 animate-in zoom-in-95 fade-in duration-200">
-            <div className="rounded-2xl bg-white shadow-2xl border border-slate-100 overflow-hidden">
+            <div className="rounded-2xl bg-card shadow-2xl border border-border overflow-hidden">
               <div className="h-1.5 bg-gradient-to-r from-red-500 via-red-400 to-red-500" />
               <div className="p-4 sm:p-6 text-center">
-                <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-red-50 border border-red-100">
+                <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-red-500/10 border border-red-500/20">
                   <Trash2 className="h-7 w-7 text-red-500" />
                 </div>
-                <h3 className="text-lg font-bold text-slate-900 mb-1">Delete Bank?</h3>
-                <p className="text-sm text-slate-500 leading-relaxed">
-                  This will permanently remove <span className="font-semibold text-slate-700">{showDeleteConfirm.name}</span>. This action cannot be undone.
+                <h3 className="text-lg font-bold text-foreground mb-1">Delete Bank?</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  This will permanently remove <span className="font-semibold text-foreground">{showDeleteConfirm.name}</span>. This action cannot be undone.
                 </p>
               </div>
               <div className="flex gap-3 px-4 sm:px-6 pb-4 sm:pb-6">
                 <button
                   onClick={() => setShowDeleteConfirm(null)}
-                  className="flex-1 h-11 rounded-xl border border-slate-200 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+                  className="flex-1 h-11 rounded-xl border border-border text-sm font-semibold text-foreground hover:bg-accent"
                 >
                   Cancel
                 </button>

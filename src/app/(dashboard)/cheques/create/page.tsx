@@ -165,54 +165,54 @@ export default function CreateChequePage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Record Cheque</h1>
-          <p className="mt-0.5 text-sm text-slate-500">Record a new pending cheque for tracking.</p>
+          <h1 className="text-2xl font-bold text-foreground">Record Cheque</h1>
+          <p className="mt-0.5 text-sm text-muted-foreground">Record a new pending cheque for tracking.</p>
         </div>
-        <nav className="flex items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-1.5 text-xs shrink-0">
-          <button onClick={() => router.push("/cheques")} className="font-medium text-slate-500 hover:text-emerald-600 transition-colors">Cheques</button>
-          <BreadcrumbSep className="h-3 w-3 text-slate-400" />
+        <nav className="flex items-center gap-1.5 rounded-lg bg-muted px-3 py-1.5 text-xs shrink-0">
+          <button onClick={() => router.push("/cheques")} className="font-medium text-muted-foreground hover:text-emerald-600 transition-colors">Cheques</button>
+          <BreadcrumbSep className="h-3 w-3 text-muted-foreground" />
           <span className="font-semibold text-emerald-600">Record</span>
         </nav>
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* Customer & Sale */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-sm">
-          <h3 className="mb-4 text-sm font-semibold text-slate-700">Customer & Sale</h3>
+        <div className="rounded-2xl border border-border bg-card p-4 sm:p-6 shadow-sm">
+          <h3 className="mb-4 text-sm font-semibold text-foreground">Customer & Sale</h3>
           <div className="grid gap-4 sm:grid-cols-2">
             {/* Customer Dropdown */}
             <div className="space-y-2">
-              <Label className="mb-1.5 block text-[13px] font-semibold text-slate-700">Customer <span className="text-red-500">*</span></Label>
+              <Label className="mb-1.5 block text-[13px] font-semibold text-foreground">Customer <span className="text-red-500">*</span></Label>
               <div className="relative" ref={customerDropdownRef}>
                 <button
                   type="button"
                   onClick={() => setCustomerDropdownOpen(!customerDropdownOpen)}
-                  className="flex h-11 w-full items-center justify-between gap-2 rounded-xl border border-slate-200 bg-white px-4 text-sm transition-all hover:border-slate-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
+                  className="flex h-11 w-full items-center justify-between gap-2 rounded-xl border border-border bg-card px-4 text-sm transition-all hover:border-border focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
                 >
-                  <span className={selectedCustomer ? "text-slate-700 font-medium" : "text-slate-400"}>
+                  <span className={selectedCustomer ? "text-foreground font-medium" : "text-muted-foreground"}>
                     {selectedCustomer ? `${selectedCustomer.name} (${selectedCustomer.code})` : "Search by name, code, phone..."}
                   </span>
-                  <ChevronDown className={`h-4 w-4 shrink-0 text-slate-500 transition-transform ${customerDropdownOpen ? "rotate-180" : ""}`} />
+                  <ChevronDown className={`h-4 w-4 shrink-0 text-muted-foreground transition-transform ${customerDropdownOpen ? "rotate-180" : ""}`} />
                 </button>
                 {customerDropdownOpen && (
-                  <div className="absolute z-50 mt-1 w-full overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xl">
+                  <div className="absolute z-50 mt-1 w-full overflow-hidden rounded-xl border border-border bg-card shadow-xl">
                     <div className="p-1.5">
                       <div className="relative">
-                        <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-400" />
-                        <input autoFocus value={customerSearch} onChange={(e) => setCustomerSearch(e.target.value)} placeholder="Search customers..." className="h-9 w-full rounded-lg border border-slate-200 bg-slate-50 pl-8 pr-2.5 text-xs outline-none focus:border-emerald-500" />
+                        <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+                        <input autoFocus value={customerSearch} onChange={(e) => setCustomerSearch(e.target.value)} placeholder="Search customers..." className="h-9 w-full rounded-lg border border-border bg-muted pl-8 pr-2.5 text-xs outline-none focus:border-emerald-500" />
                         {customerSearch && (
-                          <button onClick={() => setCustomerSearch("")} className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"><X className="h-3.5 w-3.5" /></button>
+                          <button onClick={() => setCustomerSearch("")} className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"><X className="h-3.5 w-3.5" /></button>
                         )}
                       </div>
                     </div>
-                    <div className="max-h-48 overflow-y-auto border-t border-slate-100 scrollbar-thin">
+                    <div className="max-h-48 overflow-y-auto border-t border-border scrollbar-thin">
                       {filteredCustomers.length === 0 ? (
-                        <div className="px-3 py-4 text-center text-xs text-slate-400">No customers found</div>
+                        <div className="px-3 py-4 text-center text-xs text-muted-foreground">No customers found</div>
                       ) : (
                         filteredCustomers.map((c) => (
-                          <button key={c.id} type="button" onClick={() => { setValue("customer_id", c.id, { shouldValidate: true }); setValue("sale_id", null); setCustomerDropdownOpen(false); setCustomerSearch(""); }} className={`flex w-full items-center justify-between px-3 py-2 text-xs hover:bg-slate-50 ${selectedCustomerId === c.id ? "bg-emerald-50 text-emerald-700 font-medium" : "text-slate-600"}`}>
+                          <button key={c.id} type="button" onClick={() => { setValue("customer_id", c.id, { shouldValidate: true }); setValue("sale_id", null); setCustomerDropdownOpen(false); setCustomerSearch(""); }} className={`flex w-full items-center justify-between px-3 py-2 text-xs hover:bg-accent ${selectedCustomerId === c.id ? "bg-emerald-500/10 text-emerald-600 font-medium" : "text-foreground"}`}>
                             <span className="font-medium">{c.name}</span>
-                            <span className="text-slate-400 font-mono">{c.code}</span>
+                            <span className="text-muted-foreground font-mono">{c.code}</span>
                           </button>
                         ))
                       )}
@@ -225,39 +225,39 @@ export default function CreateChequePage() {
 
             {/* Sale Dropdown */}
             <div className="space-y-2">
-              <Label className="mb-1.5 block text-[13px] font-semibold text-slate-700">Linked Sale (Optional)</Label>
+              <Label className="mb-1.5 block text-[13px] font-semibold text-foreground">Linked Sale (Optional)</Label>
               <div className="relative" ref={saleDropdownRef}>
                 <button
                   type="button"
                   onClick={() => setSaleDropdownOpen(!saleDropdownOpen)}
                   disabled={!selectedCustomerId}
-                  className="flex h-11 w-full items-center justify-between gap-2 rounded-xl border border-slate-200 bg-white px-4 text-sm transition-all hover:border-slate-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex h-11 w-full items-center justify-between gap-2 rounded-xl border border-border bg-card px-4 text-sm transition-all hover:border-border focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <span className={selectedSale ? "text-slate-700 font-medium" : "text-slate-400"}>
+                  <span className={selectedSale ? "text-foreground font-medium" : "text-muted-foreground"}>
                     {selectedSale ? `${selectedSale.reference_number} (${formatCurrency(selectedSale.due_amount)})` : selectedCustomerId ? "Search sales..." : "Select customer first"}
                   </span>
-                  <ChevronDown className={`h-4 w-4 shrink-0 text-slate-500 transition-transform ${saleDropdownOpen ? "rotate-180" : ""}`} />
+                  <ChevronDown className={`h-4 w-4 shrink-0 text-muted-foreground transition-transform ${saleDropdownOpen ? "rotate-180" : ""}`} />
                 </button>
                 {saleDropdownOpen && selectedCustomerId && (
-                  <div className="absolute z-50 mt-1 w-full overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xl">
+                  <div className="absolute z-50 mt-1 w-full overflow-hidden rounded-xl border border-border bg-card shadow-xl">
                     <div className="p-1.5">
                       <div className="relative">
-                        <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-400" />
-                        <input autoFocus value={saleSearch} onChange={(e) => setSaleSearch(e.target.value)} placeholder="Search sales..." className="h-9 w-full rounded-lg border border-slate-200 bg-slate-50 pl-8 pr-2.5 text-xs outline-none focus:border-emerald-500" />
+                        <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+                        <input autoFocus value={saleSearch} onChange={(e) => setSaleSearch(e.target.value)} placeholder="Search sales..." className="h-9 w-full rounded-lg border border-border bg-muted pl-8 pr-2.5 text-xs outline-none focus:border-emerald-500" />
                         {saleSearch && (
-                          <button onClick={() => setSaleSearch("")} className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"><X className="h-3.5 w-3.5" /></button>
+                          <button onClick={() => setSaleSearch("")} className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"><X className="h-3.5 w-3.5" /></button>
                         )}
                       </div>
                     </div>
-                    <div className="max-h-48 overflow-y-auto border-t border-slate-100 scrollbar-thin">
-                      <button type="button" onClick={() => { setValue("sale_id", null); setSaleDropdownOpen(false); setSaleSearch(""); }} className="flex w-full items-center px-3 py-2 text-xs text-slate-500 hover:bg-slate-50">No linked sale</button>
+                    <div className="max-h-48 overflow-y-auto border-t border-border scrollbar-thin">
+                      <button type="button" onClick={() => { setValue("sale_id", null); setSaleDropdownOpen(false); setSaleSearch(""); }} className="flex w-full items-center px-3 py-2 text-xs text-muted-foreground hover:bg-accent">No linked sale</button>
                       {filteredSales.length === 0 ? (
-                        <div className="px-3 py-4 text-center text-xs text-slate-400">No unpaid sales</div>
+                        <div className="px-3 py-4 text-center text-xs text-muted-foreground">No unpaid sales</div>
                       ) : (
                         filteredSales.map((s) => (
-                          <button key={s.id} type="button" onClick={() => { setValue("sale_id", s.id, { shouldValidate: true }); setSaleDropdownOpen(false); setSaleSearch(""); }} className={`flex w-full items-center justify-between px-3 py-2 text-xs hover:bg-slate-50 ${selectedSaleId === s.id ? "bg-emerald-50 text-emerald-700 font-medium" : "text-slate-600"}`}>
+                          <button key={s.id} type="button" onClick={() => { setValue("sale_id", s.id, { shouldValidate: true }); setSaleDropdownOpen(false); setSaleSearch(""); }} className={`flex w-full items-center justify-between px-3 py-2 text-xs hover:bg-accent ${selectedSaleId === s.id ? "bg-emerald-500/10 text-emerald-600 font-medium" : "text-foreground"}`}>
                             <span className="font-mono font-medium">{s.reference_number}</span>
-                            <span className="text-slate-400">{formatCurrency(s.due_amount)}</span>
+                            <span className="text-muted-foreground">{formatCurrency(s.due_amount)}</span>
                           </button>
                         ))
                       )}
@@ -270,16 +270,16 @@ export default function CreateChequePage() {
         </div>
 
         {/* Cheque Details */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-sm">
-          <h3 className="mb-4 text-sm font-semibold text-slate-700">Cheque Details</h3>
+        <div className="rounded-2xl border border-border bg-card p-4 sm:p-6 shadow-sm">
+          <h3 className="mb-4 text-sm font-semibold text-foreground">Cheque Details</h3>
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
-              <Label className="mb-1.5 block text-[13px] font-semibold text-slate-700">Cheque Number <span className="text-red-500">*</span></Label>
+              <Label className="mb-1.5 block text-[13px] font-semibold text-foreground">Cheque Number <span className="text-red-500">*</span></Label>
               <Input {...register("cheque_number")} placeholder="e.g. CHQ-987654" className="h-11" />
               {errors.cheque_number && <p className="text-xs text-red-500">{errors.cheque_number.message}</p>}
             </div>
             <div className="space-y-2">
-              <Label className="mb-1.5 block text-[13px] font-semibold text-slate-700">Bank Name <span className="text-red-500">*</span></Label>
+              <Label className="mb-1.5 block text-[13px] font-semibold text-foreground">Bank Name <span className="text-red-500">*</span></Label>
               <BankSelect
                 value={watch("bank_name")}
                 onChange={(val) => setValue("bank_name", val, { shouldValidate: true })}
@@ -287,27 +287,27 @@ export default function CreateChequePage() {
               />
             </div>
             <div className="space-y-2">
-              <Label className="mb-1.5 block text-[13px] font-semibold text-slate-700">Cheque Date <span className="text-red-500">*</span></Label>
+              <Label className="mb-1.5 block text-[13px] font-semibold text-foreground">Cheque Date <span className="text-red-500">*</span></Label>
               <Input type="date" {...register("cheque_date")} className="h-11" />
               {errors.cheque_date && <p className="text-xs text-red-500">{errors.cheque_date.message}</p>}
             </div>
             <div className="space-y-2">
-              <Label className="mb-1.5 block text-[13px] font-semibold text-slate-700">Amount <span className="text-red-500">*</span></Label>
+              <Label className="mb-1.5 block text-[13px] font-semibold text-foreground">Amount <span className="text-red-500">*</span></Label>
               <Input type="number" {...register("amount", { valueAsNumber: true })} min="0.01" step="0.01" placeholder="0.00" className="h-11" />
               {errors.amount && <p className="text-xs text-red-500">{errors.amount.message}</p>}
             </div>
             <div className="space-y-2 sm:col-span-2">
-              <Label className="mb-1.5 block text-[13px] font-semibold text-slate-700">Cheque Image (Optional)</Label>
+              <Label className="mb-1.5 block text-[13px] font-semibold text-foreground">Cheque Image (Optional)</Label>
               {chequeImagePreview ? (
                 <div className="relative inline-block">
-                  <img src={chequeImagePreview} alt="Cheque" className="h-32 rounded-xl object-cover border border-slate-200" />
+                  <img src={chequeImagePreview} alt="Cheque" className="h-32 rounded-xl object-cover border border-border" />
                   <button type="button" onClick={removeImage} className="absolute -top-2 -right-2 h-6 w-6 rounded-full bg-red-500 text-white flex items-center justify-center text-xs hover:bg-red-600">×</button>
                 </div>
               ) : (
-                <label className="flex h-32 w-full cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-200 bg-slate-50 transition-colors hover:border-emerald-300 hover:bg-emerald-50">
-                  <Upload className="mb-1 h-6 w-6 text-slate-400" />
-                  <span className="text-xs font-medium text-slate-500">Upload Cheque Image</span>
-                  <span className="text-[10px] text-slate-400 mt-0.5">PNG, JPG, WEBP (max 2MB)</span>
+                <label className="flex h-32 w-full cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-border bg-muted transition-colors hover:border-emerald-300 hover:bg-emerald-500/10">
+                  <Upload className="mb-1 h-6 w-6 text-muted-foreground" />
+                  <span className="text-xs font-medium text-muted-foreground">Upload Cheque Image</span>
+                  <span className="text-[10px] text-muted-foreground mt-0.5">PNG, JPG, WEBP (max 2MB)</span>
                   <input type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
                 </label>
               )}
@@ -316,14 +316,14 @@ export default function CreateChequePage() {
         </div>
 
         {/* Notes */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-sm">
-          <h3 className="mb-4 text-sm font-semibold text-slate-700">Notes (Optional)</h3>
-          <textarea {...register("notes")} placeholder="Additional notes about this cheque" rows={3} className="flex w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition-all placeholder:text-slate-400 hover:border-slate-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20" />
+        <div className="rounded-2xl border border-border bg-card p-4 sm:p-6 shadow-sm">
+          <h3 className="mb-4 text-sm font-semibold text-foreground">Notes (Optional)</h3>
+          <textarea {...register("notes")} placeholder="Additional notes about this cheque" rows={3} className="flex w-full rounded-xl border border-border bg-card px-4 py-3 text-sm outline-none transition-all placeholder:text-muted-foreground hover:border-border focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20" />
         </div>
 
         {/* Actions */}
         <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-3">
-          <Button type="button" variant="outline" onClick={() => router.push("/cheques")} className="h-11 px-6 border-slate-200 text-slate-600 font-semibold">Cancel</Button>
+          <Button type="button" variant="outline" onClick={() => router.push("/cheques")} className="h-11 px-6 border-border text-foreground font-semibold">Cancel</Button>
           <Button type="submit" disabled={isSaving} className="h-11 px-8 bg-emerald-600 text-white hover:bg-emerald-700 font-semibold shadow-lg shadow-emerald-600/20">
             {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
             Record Cheque

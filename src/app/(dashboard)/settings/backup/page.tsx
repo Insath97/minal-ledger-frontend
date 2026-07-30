@@ -102,21 +102,21 @@ export default function DatabaseBackupPage() {
       <div className="space-y-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-slate-900">Database Backup</h1>
-            <p className="mt-0.5 text-sm text-slate-500">Export your database and download a secure SQL dump file.</p>
+            <h1 className="text-2xl font-bold text-foreground">Database Backup</h1>
+            <p className="mt-0.5 text-sm text-muted-foreground">Export your database and download a secure SQL dump file.</p>
           </div>
-          <nav className="flex items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-1.5 text-xs">
-            <button onClick={() => router.push("/settings")} className="font-medium text-slate-500 hover:text-emerald-600 transition-colors">Settings</button>
-            <BreadcrumbSep className="h-3 w-3 text-slate-400" />
+          <nav className="flex items-center gap-1.5 rounded-lg bg-muted px-3 py-1.5 text-xs">
+            <button onClick={() => router.push("/settings")} className="font-medium text-muted-foreground hover:text-emerald-600 transition-colors">Settings</button>
+            <BreadcrumbSep className="h-3 w-3 text-muted-foreground" />
             <span className="font-semibold text-emerald-600">Backup</span>
           </nav>
         </div>
-        <div className="flex flex-col items-center justify-center rounded-2xl border border-slate-200 bg-white py-16 shadow-sm">
-          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-slate-100">
-            <Lock className="h-7 w-7 text-slate-400" />
+        <div className="flex flex-col items-center justify-center rounded-2xl border border-border bg-card py-16 shadow-sm">
+          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-muted">
+            <Lock className="h-7 w-7 text-muted-foreground" />
           </div>
-          <h2 className="mt-5 text-lg font-semibold text-slate-900">Access Denied</h2>
-          <p className="mt-1.5 max-w-sm text-center text-sm text-slate-500">
+          <h2 className="mt-5 text-lg font-semibold text-foreground">Access Denied</h2>
+          <p className="mt-1.5 max-w-sm text-center text-sm text-muted-foreground">
             You do not have permission to access database export. Contact your administrator to request access.
           </p>
           <button
@@ -135,37 +135,37 @@ export default function DatabaseBackupPage() {
       {/* Header */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-slate-900">Database Backup</h1>
-            <p className="mt-0.5 text-sm text-slate-500">Export your database and download a secure SQL dump file.</p>
+            <h1 className="text-2xl font-bold text-foreground">Database Backup</h1>
+            <p className="mt-0.5 text-sm text-muted-foreground">Export your database and download a secure SQL dump file.</p>
           </div>
-          <nav className="flex items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-1.5 text-xs">
-            <button onClick={() => router.push("/settings")} className="font-medium text-slate-500 hover:text-emerald-600 transition-colors">Settings</button>
-            <BreadcrumbSep className="h-3 w-3 text-slate-400" />
+          <nav className="flex items-center gap-1.5 rounded-lg bg-muted px-3 py-1.5 text-xs">
+            <button onClick={() => router.push("/settings")} className="font-medium text-muted-foreground hover:text-emerald-600 transition-colors">Settings</button>
+            <BreadcrumbSep className="h-3 w-3 text-muted-foreground" />
             <span className="font-semibold text-emerald-600">Backup</span>
           </nav>
         </div>
 
       {/* Status Cards */}
       <div className="grid gap-4 sm:grid-cols-3">
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+        <div className="rounded-2xl border border-border bg-card p-5 shadow-sm">
           <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-50">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-500/10">
               <Database className="h-5 w-5 text-emerald-600" />
             </div>
             <div>
-              <p className="text-xs text-slate-500">Database Engine</p>
-              <p className="text-sm font-bold text-slate-900">MySQL / MariaDB</p>
+              <p className="text-xs text-muted-foreground">Database Engine</p>
+              <p className="text-sm font-bold text-foreground">MySQL / MariaDB</p>
             </div>
           </div>
         </div>
 
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+        <div className="rounded-2xl border border-border bg-card p-5 shadow-sm">
           <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-50">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-500/10">
               <HardDrive className="h-5 w-5 text-blue-600" />
             </div>
             <div>
-              <p className="text-xs text-slate-500">Connection Status</p>
+              <p className="text-xs text-muted-foreground">Connection Status</p>
               <div className="flex items-center gap-1.5">
                 <span className="relative flex h-2 w-2">
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
@@ -177,14 +177,14 @@ export default function DatabaseBackupPage() {
           </div>
         </div>
 
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+        <div className="rounded-2xl border border-border bg-card p-5 shadow-sm">
           <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-violet-50">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-violet-500/10">
               <Clock className="h-5 w-5 text-violet-600" />
             </div>
             <div>
-              <p className="text-xs text-slate-500">Last Backup</p>
-              <p className="text-sm font-bold text-slate-900">{lastBackup || "Never"}</p>
+              <p className="text-xs text-muted-foreground">Last Backup</p>
+              <p className="text-sm font-bold text-foreground">{lastBackup || "Never"}</p>
             </div>
           </div>
         </div>
@@ -194,14 +194,14 @@ export default function DatabaseBackupPage() {
         {/* Left Column — Info & Actions */}
         <div className="space-y-5 lg:col-span-2">
           {/* Security Protocol */}
-          <div className="rounded-2xl border border-amber-200 bg-amber-50 p-5">
+          <div className="rounded-2xl border border-amber-500/20 bg-amber-500/10 p-5">
             <div className="flex items-start gap-3">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-100 shrink-0">
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-500/10 shrink-0">
                 <Shield className="h-4.5 w-4.5 text-amber-600" />
               </div>
               <div>
-                <p className="text-sm font-semibold text-amber-800">Security Protocol</p>
-                <p className="mt-1 text-xs leading-relaxed text-amber-700">
+                <p className="text-sm font-semibold text-amber-600">Security Protocol</p>
+                <p className="mt-1 text-xs leading-relaxed text-amber-600">
                   This pipeline streams live database states directly to your browser.
                   Ensure you are on a trusted network and delete backup files after use
                   or store them in an encrypted vault.
@@ -211,26 +211,26 @@ export default function DatabaseBackupPage() {
           </div>
 
           {/* Backup Info */}
-          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-            <h3 className="mb-4 text-sm font-semibold text-slate-900">Export Details</h3>
+          <div className="rounded-2xl border border-border bg-card p-5 shadow-sm">
+            <h3 className="mb-4 text-sm font-semibold text-foreground">Export Details</h3>
             <div className="space-y-3">
               <div className="flex items-center justify-between text-sm">
-                <span className="text-slate-500">Format</span>
-                <span className="font-medium text-slate-900">SQL Dump (.sql)</span>
+                <span className="text-muted-foreground">Format</span>
+                <span className="font-medium text-foreground">SQL Dump (.sql)</span>
               </div>
-              <div className="border-t border-slate-100" />
+              <div className="border-t border-border" />
               <div className="flex items-center justify-between text-sm">
-                <span className="text-slate-500">Compression</span>
-                <span className="font-medium text-slate-900">None (Raw SQL)</span>
+                <span className="text-muted-foreground">Compression</span>
+                <span className="font-medium text-foreground">None (Raw SQL)</span>
               </div>
-              <div className="border-t border-slate-100" />
+              <div className="border-t border-border" />
               <div className="flex items-center justify-between text-sm">
-                <span className="text-slate-500">Includes</span>
-                <span className="font-medium text-slate-900">Schema + Data</span>
+                <span className="text-muted-foreground">Includes</span>
+                <span className="font-medium text-foreground">Schema + Data</span>
               </div>
-              <div className="border-t border-slate-100" />
+              <div className="border-t border-border" />
               <div className="flex items-center justify-between text-sm">
-                <span className="text-slate-500">Activity Log</span>
+                <span className="text-muted-foreground">Activity Log</span>
                 <span className="flex items-center gap-1.5 font-medium text-emerald-600">
                   <CheckCircle2 className="h-3.5 w-3.5" />
                   Recorded
@@ -261,16 +261,16 @@ export default function DatabaseBackupPage() {
 
         {/* Right Column — Terminal */}
         <div className="lg:col-span-3">
-          <div className="flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+          <div className="flex flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
             {/* Terminal Header */}
-            <div className="flex items-center justify-between border-b border-slate-100 bg-slate-50/80 px-5 py-3">
+            <div className="flex items-center justify-between border-b border-border bg-muted/50 px-5 py-3">
               <div className="flex items-center gap-3">
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-900">
                   <Terminal className="h-4 w-4 text-white" />
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-slate-900">Session Logs</p>
-                  <p className="text-[11px] text-slate-400">Real-time backup activity</p>
+                  <p className="text-sm font-semibold text-foreground">Session Logs</p>
+                  <p className="text-[11px] text-muted-foreground">Real-time backup activity</p>
                 </div>
               </div>
               <div className="flex items-center gap-1.5">
@@ -291,7 +291,7 @@ export default function DatabaseBackupPage() {
                   log.type === "error" ? "text-red-400" :
                   log.type === "security" ? "text-amber-400" :
                   log.type === "progress" ? "text-blue-400" :
-                  "text-slate-400"
+                  "text-muted-foreground"
                 }`}>
                   {log.text}
                 </div>

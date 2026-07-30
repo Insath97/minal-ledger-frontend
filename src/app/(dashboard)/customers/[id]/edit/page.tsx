@@ -167,11 +167,11 @@ export default function EditCustomerPage() {
     return (
       <div className="space-y-6">
         <div className="flex items-center gap-4">
-          <div className="h-10 w-10 rounded-xl bg-slate-100 animate-pulse" />
-          <div className="h-7 w-40 rounded bg-slate-100 animate-pulse" />
+          <div className="h-10 w-10 rounded-xl bg-muted animate-pulse" />
+          <div className="h-7 w-40 rounded bg-muted animate-pulse" />
         </div>
-        <div className="rounded-2xl bg-slate-100 h-64 animate-pulse" />
-        <div className="rounded-2xl bg-slate-100 h-40 animate-pulse" />
+        <div className="rounded-2xl bg-muted h-64 animate-pulse" />
+        <div className="rounded-2xl bg-muted h-40 animate-pulse" />
       </div>
     );
   }
@@ -179,13 +179,13 @@ export default function EditCustomerPage() {
   if (!hasPermission("Customer Update")) {
     return (
       <div className="flex h-[50vh] flex-col items-center justify-center gap-4">
-        <div className="rounded-full bg-red-100 p-4">
+        <div className="rounded-full bg-red-500/10 p-4">
           <svg className="h-8 w-8 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
           </svg>
         </div>
-        <h2 className="text-lg font-bold text-slate-900">Access Denied</h2>
-        <p className="text-sm text-slate-500">You don&apos;t have permission to edit customers.</p>
+        <h2 className="text-lg font-bold text-foreground">Access Denied</h2>
+        <p className="text-sm text-muted-foreground">You don&apos;t have permission to edit customers.</p>
         <button onClick={() => router.push("/customers")} className="mt-2 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700">
           Back to Customers
         </button>
@@ -197,12 +197,12 @@ export default function EditCustomerPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Edit Customer</h1>
-          <p className="mt-0.5 text-sm text-slate-500">Update customer information.</p>
+          <h1 className="text-2xl font-bold text-foreground">Edit Customer</h1>
+          <p className="mt-0.5 text-sm text-muted-foreground">Update customer information.</p>
         </div>
-        <nav className="flex items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-1.5 text-xs shrink-0">
-          <button onClick={() => router.push("/customers")} className="font-medium text-slate-500 hover:text-emerald-600 transition-colors">Customers</button>
-          <BreadcrumbSep className="h-3 w-3 text-slate-400" />
+        <nav className="flex items-center gap-1.5 rounded-lg bg-muted px-3 py-1.5 text-xs shrink-0">
+          <button onClick={() => router.push("/customers")} className="font-medium text-muted-foreground hover:text-emerald-600 transition-colors">Customers</button>
+          <BreadcrumbSep className="h-3 w-3 text-muted-foreground" />
           <span className="font-semibold text-emerald-600">Edit</span>
         </nav>
       </div>
@@ -213,7 +213,7 @@ export default function EditCustomerPage() {
           <ImageUpload
             label=""
             preview={profileImagePreview}
-            icon={<Camera className="h-6 w-6 text-slate-400 mb-1" />}
+            icon={<Camera className="h-6 w-6 text-muted-foreground mb-1" />}
             uploadText="Upload Photo"
             onRemove={() => removeImage("profile")}
             onChange={(e) => handleImageChange(e, "profile")}
@@ -245,7 +245,7 @@ export default function EditCustomerPage() {
               <FormField label="ID Type" error={errors.id_type?.message}>
                 <select
                   {...register("id_type")}
-                  className="flex h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm outline-none transition-all hover:border-slate-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
+                  className="flex h-11 w-full rounded-xl border border-border bg-card px-4 text-sm outline-none transition-all hover:border-border focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
                 >
                   <option value="">None</option>
                   <option value="nic">NIC</option>
@@ -261,7 +261,7 @@ export default function EditCustomerPage() {
             <ImageUpload
               label="NIC / ID Image"
               preview={nicImagePreview}
-              icon={<CreditCard className="h-5 w-5 text-slate-400 mb-1" />}
+              icon={<CreditCard className="h-5 w-5 text-muted-foreground mb-1" />}
               uploadText="Upload ID"
               onRemove={() => removeImage("nic")}
               onChange={(e) => handleImageChange(e, "nic")}
@@ -286,18 +286,18 @@ export default function EditCustomerPage() {
         </FormSection>
 
         {/* Status & Balance */}
-        <div className="rounded-2xl border border-slate-200 bg-white px-4 sm:px-6 py-4 shadow-sm">
+        <div className="rounded-2xl border border-border bg-card px-4 sm:px-6 py-4 shadow-sm">
           <div className="grid gap-4 sm:grid-cols-2">
             <FormField label="Status" error={errors.is_active?.message}>
               <button
                 type="button"
                 onClick={() => setValue("is_active", !isActive)}
-                className="inline-flex items-center gap-2.5 h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm transition-all hover:border-slate-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
+                className="inline-flex items-center gap-2.5 h-11 w-full rounded-xl border border-border bg-card px-4 text-sm transition-all hover:border-border focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
               >
-                <span className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${isActive ? "bg-emerald-500" : "bg-slate-200"}`}>
-                  <span className={`inline-block h-3.5 w-3.5 rounded-full bg-white shadow-sm transition-transform ${isActive ? "translate-x-[18px]" : "translate-x-[3px]"}`} />
+                <span className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${isActive ? "bg-emerald-500" : "bg-muted"}`}>
+                  <span className={`inline-block h-3.5 w-3.5 rounded-full bg-card shadow-sm transition-transform ${isActive ? "translate-x-[18px]" : "translate-x-[3px]"}`} />
                 </span>
-                <span className={`text-sm font-medium ${isActive ? "text-emerald-600" : "text-slate-400"}`}>
+                <span className={`text-sm font-medium ${isActive ? "text-emerald-600" : "text-muted-foreground"}`}>
                   {isActive ? "Active" : "Inactive"}
                 </span>
               </button>
@@ -308,7 +308,7 @@ export default function EditCustomerPage() {
                 {...register("outstanding_balance", { valueAsNumber: true })}
                 min="0"
                 readOnly
-                className="h-11 bg-slate-50 text-slate-500 cursor-not-allowed"
+                className="h-11 bg-muted text-muted-foreground cursor-not-allowed"
               />
             </FormField>
           </div>
@@ -321,14 +321,14 @@ export default function EditCustomerPage() {
               {...register("notes")}
               placeholder="Additional notes about the customer"
               rows={3}
-              className="flex w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition-all placeholder:text-slate-400 hover:border-slate-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
+              className="flex w-full rounded-xl border border-border bg-card px-4 py-3 text-sm outline-none transition-all placeholder:text-muted-foreground hover:border-border focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
             />
           </FormField>
         </FormSection>
 
         {/* Actions */}
         <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-3">
-          <Button type="button" variant="outline" onClick={() => router.push("/customers")} className="h-11 px-6 border-slate-200 text-slate-600 font-semibold">
+          <Button type="button" variant="outline" onClick={() => router.push("/customers")} className="h-11 px-6 border-border text-foreground font-semibold">
             Cancel
           </Button>
           <Button type="submit" disabled={isSaving} className="h-11 px-8 bg-emerald-600 text-white hover:bg-emerald-700 font-semibold shadow-lg shadow-emerald-600/20">

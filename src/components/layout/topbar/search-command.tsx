@@ -140,25 +140,25 @@ export function SearchCommand() {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger
         render={
-          <button className="flex h-10 w-full max-w-md items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-sm text-slate-400 transition-colors hover:border-slate-300" />
+          <button className="flex h-10 w-full max-w-md items-center gap-2 rounded-xl border border-border bg-background px-4 text-sm text-muted-foreground transition-colors hover:border-border" />
         }
       >
         <Search className="h-4 w-4" />
         <span>Search...</span>
-        <kbd className="ml-auto hidden rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-medium text-slate-500 sm:inline-block">
+        <kbd className="ml-auto hidden rounded border border-border bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground sm:inline-block">
           ⌘K
         </kbd>
       </DialogTrigger>
       <DialogContent className="max-w-lg p-0">
-        <div className="flex items-center border-b border-slate-200 px-4">
+        <div className="flex items-center border-b border-border px-4">
           {isLoading ? (
-            <Loader2 className="h-4 w-4 text-slate-400 animate-spin" />
+            <Loader2 className="h-4 w-4 text-muted-foreground animate-spin" />
           ) : (
-            <Search className="h-4 w-4 text-slate-400" />
+            <Search className="h-4 w-4 text-muted-foreground" />
           )}
           <input
             ref={inputRef}
-            className="flex-1 bg-transparent px-3 py-3 text-sm outline-none placeholder:text-slate-400"
+            className="flex-1 bg-transparent px-3 py-3 text-sm outline-none placeholder:text-muted-foreground"
             placeholder="Search customers, sales, payments..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
@@ -170,7 +170,7 @@ export function SearchCommand() {
                 setQuery("");
                 inputRef.current?.focus();
               }}
-              className="rounded px-1.5 py-0.5 text-xs text-slate-400 hover:bg-slate-100 hover:text-slate-600"
+              className="rounded px-1.5 py-0.5 text-xs text-muted-foreground hover:bg-accent hover:text-foreground"
             >
               Clear
             </button>
@@ -189,7 +189,7 @@ export function SearchCommand() {
 
           {!error && query.length < 2 && (
             <div className="px-3 py-6 text-center">
-              <p className="text-sm text-slate-400">
+              <p className="text-sm text-muted-foreground">
                 Type at least 2 characters to search...
               </p>
             </div>
@@ -197,7 +197,7 @@ export function SearchCommand() {
 
           {!error && query.length >= 2 && !isLoading && !hasResults && (
             <div className="px-3 py-6 text-center">
-              <p className="text-sm text-slate-400">
+              <p className="text-sm text-muted-foreground">
                 No results found for &quot;{query}&quot;
               </p>
             </div>
@@ -208,7 +208,7 @@ export function SearchCommand() {
               {/* Entity Results */}
               {groupedResults.entities.length > 0 && (
                 <div className="mb-2">
-                  <p className="px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-slate-400">
+                  <p className="px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
                     Results
                   </p>
                   {groupedResults.entities.map((result, index) => (
@@ -219,15 +219,15 @@ export function SearchCommand() {
                       onMouseEnter={() => setSelectedIndex(index)}
                       className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left transition-colors ${
                         selectedIndex === index
-                          ? "bg-slate-100 text-slate-900"
-                          : "text-slate-700 hover:bg-slate-50"
+                          ? "bg-accent text-foreground"
+                          : "text-foreground hover:bg-accent/50"
                       }`}
                     >
                       <div
                         className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${
                           selectedIndex === index
-                            ? "bg-slate-200"
-                            : "bg-slate-100"
+                            ? "bg-accent"
+                            : "bg-muted"
                         }`}
                       >
                         {renderIcon(result.icon)}
@@ -236,15 +236,15 @@ export function SearchCommand() {
                         <p className="text-sm font-medium truncate">
                           {result.title}
                         </p>
-                        <p className="text-xs text-slate-500 truncate">
+                        <p className="text-xs text-muted-foreground truncate">
                           {result.subtitle}
                         </p>
                       </div>
                       <div className="flex items-center gap-1 shrink-0">
-                        <span className="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-medium text-slate-500 capitalize">
+                        <span className="rounded bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground capitalize">
                           {result.type}
                         </span>
-                        <CornerDownLeft className="h-3 w-3 text-slate-400 opacity-0 group-hover:opacity-100" />
+                        <CornerDownLeft className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100" />
                       </div>
                     </button>
                   ))}
@@ -254,7 +254,7 @@ export function SearchCommand() {
               {/* Navigation Results */}
               {groupedResults.navigation.length > 0 && (
                 <div>
-                  <p className="px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-slate-400">
+                  <p className="px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
                     Navigation
                   </p>
                   {groupedResults.navigation.map((result, index) => {
@@ -268,15 +268,15 @@ export function SearchCommand() {
                         onMouseEnter={() => setSelectedIndex(globalIndex)}
                         className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left transition-colors ${
                           selectedIndex === globalIndex
-                            ? "bg-slate-100 text-slate-900"
-                            : "text-slate-700 hover:bg-slate-50"
+                            ? "bg-accent text-foreground"
+                            : "text-foreground hover:bg-accent/50"
                         }`}
                       >
                         <div
                           className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${
                             selectedIndex === globalIndex
-                              ? "bg-slate-200"
-                              : "bg-slate-100"
+                              ? "bg-accent"
+                              : "bg-muted"
                           }`}
                         >
                           {renderIcon(result.icon)}
@@ -285,11 +285,11 @@ export function SearchCommand() {
                           <p className="text-sm font-medium truncate">
                             {result.title}
                           </p>
-                          <p className="text-xs text-slate-500 truncate">
+                          <p className="text-xs text-muted-foreground truncate">
                             {result.subtitle}
                           </p>
                         </div>
-                        <ArrowRight className="h-3 w-3 text-slate-400" />
+                        <ArrowRight className="h-3 w-3 text-muted-foreground" />
                       </button>
                     );
                   })}
@@ -300,19 +300,19 @@ export function SearchCommand() {
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-between border-t border-slate-200 px-4 py-2">
-          <div className="flex items-center gap-3 text-[10px] text-slate-400">
+        <div className="flex items-center justify-between border-t border-border px-4 py-2">
+          <div className="flex items-center gap-3 text-[10px] text-muted-foreground">
             <span className="flex items-center gap-1">
-              <kbd className="rounded border border-slate-200 bg-slate-50 px-1 py-0.5">↑</kbd>
-              <kbd className="rounded border border-slate-200 bg-slate-50 px-1 py-0.5">↓</kbd>
+              <kbd className="rounded border border-border bg-muted px-1 py-0.5">↑</kbd>
+              <kbd className="rounded border border-border bg-muted px-1 py-0.5">↓</kbd>
               navigate
             </span>
             <span className="flex items-center gap-1">
-              <kbd className="rounded border border-slate-200 bg-slate-50 px-1 py-0.5">↵</kbd>
+              <kbd className="rounded border border-border bg-muted px-1 py-0.5">↵</kbd>
               select
             </span>
             <span className="flex items-center gap-1">
-              <kbd className="rounded border border-slate-200 bg-slate-50 px-1 py-0.5">esc</kbd>
+              <kbd className="rounded border border-border bg-muted px-1 py-0.5">esc</kbd>
               close
             </span>
           </div>

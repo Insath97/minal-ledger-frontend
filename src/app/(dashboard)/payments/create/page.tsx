@@ -161,54 +161,54 @@ export default function CreatePaymentPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Record Payment</h1>
-          <p className="mt-0.5 text-sm text-slate-500">Record a customer payment with FIFO allocation.</p>
+          <h1 className="text-2xl font-bold text-foreground">Record Payment</h1>
+          <p className="mt-0.5 text-sm text-muted-foreground">Record a customer payment with FIFO allocation.</p>
         </div>
-        <nav className="flex items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-1.5 text-xs shrink-0">
-          <button onClick={() => router.push("/payments")} className="font-medium text-slate-500 hover:text-emerald-600 transition-colors">Payments</button>
-          <BreadcrumbSep className="h-3 w-3 text-slate-400" />
+        <nav className="flex items-center gap-1.5 rounded-lg bg-muted px-3 py-1.5 text-xs shrink-0">
+          <button onClick={() => router.push("/payments")} className="font-medium text-muted-foreground hover:text-emerald-600 transition-colors">Payments</button>
+          <BreadcrumbSep className="h-3 w-3 text-muted-foreground" />
           <span className="font-semibold text-emerald-600">Record</span>
         </nav>
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* Customer & Method */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-sm">
-          <h3 className="mb-4 text-sm font-semibold text-slate-700">Payment Details</h3>
+        <div className="rounded-2xl border border-border bg-background p-4 sm:p-6 shadow-sm">
+          <h3 className="mb-4 text-sm font-semibold text-foreground">Payment Details</h3>
           <div className="grid gap-4 sm:grid-cols-2">
             {/* Customer */}
             <div className="space-y-2">
-              <Label className="mb-1.5 block text-[13px] font-semibold text-slate-700">Customer <span className="text-red-500">*</span></Label>
+              <Label className="mb-1.5 block text-[13px] font-semibold text-foreground">Customer <span className="text-red-500">*</span></Label>
               <div className="relative" ref={customerDropdownRef}>
                 <button
                   type="button"
                   onClick={() => setCustomerDropdownOpen(!customerDropdownOpen)}
-                  className="flex h-11 w-full items-center justify-between gap-2 rounded-xl border border-slate-200 bg-white px-4 text-sm transition-all hover:border-slate-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
+                  className="flex h-11 w-full items-center justify-between gap-2 rounded-xl border border-border bg-background px-4 text-sm transition-all hover:border-border focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
                 >
-                  <span className={selectedCustomer ? "text-slate-700 font-medium" : "text-slate-400"}>
+                  <span className={selectedCustomer ? "text-foreground font-medium" : "text-muted-foreground"}>
                     {selectedCustomer ? `${selectedCustomer.name} (${selectedCustomer.code})` : "Search by name, code, phone..."}
                   </span>
-                  <ChevronDown className={`h-4 w-4 shrink-0 text-slate-500 transition-transform ${customerDropdownOpen ? "rotate-180" : ""}`} />
+                  <ChevronDown className={`h-4 w-4 shrink-0 text-muted-foreground transition-transform ${customerDropdownOpen ? "rotate-180" : ""}`} />
                 </button>
                 {customerDropdownOpen && (
-                  <div className="absolute z-50 mt-1 w-full overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xl">
+                  <div className="absolute z-50 mt-1 w-full overflow-hidden rounded-xl border border-border bg-background shadow-xl">
                     <div className="p-1.5">
                       <div className="relative">
-                        <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-400" />
-                        <input autoFocus value={customerSearch} onChange={(e) => setCustomerSearch(e.target.value)} placeholder="Search customers..." className="h-9 w-full rounded-lg border border-slate-200 bg-slate-50 pl-8 pr-2.5 text-xs outline-none focus:border-emerald-500" />
+                        <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+                        <input autoFocus value={customerSearch} onChange={(e) => setCustomerSearch(e.target.value)} placeholder="Search customers..." className="h-9 w-full rounded-lg border border-border bg-muted pl-8 pr-2.5 text-xs outline-none focus:border-emerald-500" />
                         {customerSearch && (
-                          <button onClick={() => setCustomerSearch("")} className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"><X className="h-3.5 w-3.5" /></button>
+                          <button onClick={() => setCustomerSearch("")} className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"><X className="h-3.5 w-3.5" /></button>
                         )}
                       </div>
                     </div>
-                    <div className="max-h-48 overflow-y-auto border-t border-slate-100 scrollbar-thin">
+                    <div className="max-h-48 overflow-y-auto border-t border-border scrollbar-thin">
                       {filteredCustomers.length === 0 ? (
-                        <div className="px-3 py-4 text-center text-xs text-slate-400">No customers found</div>
+                        <div className="px-3 py-4 text-center text-xs text-muted-foreground">No customers found</div>
                       ) : (
                         filteredCustomers.map((c) => (
-                          <button key={c.id} type="button" onClick={() => { setValue("customer_id", c.id, { shouldValidate: true }); setSelectedSaleIds([]); setCustomerDropdownOpen(false); setCustomerSearch(""); }} className={`flex w-full items-center justify-between px-3 py-2 text-xs hover:bg-slate-50 ${selectedCustomerId === c.id ? "bg-emerald-50 text-emerald-700 font-medium" : "text-slate-600"}`}>
+                          <button key={c.id} type="button" onClick={() => { setValue("customer_id", c.id, { shouldValidate: true }); setSelectedSaleIds([]); setCustomerDropdownOpen(false); setCustomerSearch(""); }} className={`flex w-full items-center justify-between px-3 py-2 text-xs hover:bg-accent ${selectedCustomerId === c.id ? "bg-emerald-500/10 text-emerald-600 font-medium" : "text-foreground"}`}>
                             <span className="font-medium">{c.name}</span>
-                            <span className="text-slate-400 font-mono">{c.code}</span>
+                            <span className="text-muted-foreground font-mono">{c.code}</span>
                           </button>
                         ))
                       )}
@@ -221,8 +221,8 @@ export default function CreatePaymentPage() {
 
             {/* Payment Method */}
             <div className="space-y-2">
-              <Label className="mb-1.5 block text-[13px] font-semibold text-slate-700">Payment Method <span className="text-red-500">*</span></Label>
-              <select {...register("payment_method")} className="flex h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm outline-none transition-all hover:border-slate-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20">
+              <Label className="mb-1.5 block text-[13px] font-semibold text-foreground">Payment Method <span className="text-red-500">*</span></Label>
+              <select {...register("payment_method")} className="flex h-11 w-full rounded-xl border border-border bg-background px-4 text-sm outline-none transition-all hover:border-border focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20">
                 <option value="">Select method</option>
                 {PAYMENT_METHODS.map((m) => <option key={m.value} value={m.value}>{m.label}</option>)}
               </select>
@@ -231,14 +231,14 @@ export default function CreatePaymentPage() {
 
             {/* Amount */}
             <div className="space-y-2">
-              <Label className="mb-1.5 block text-[13px] font-semibold text-slate-700">Amount <span className="text-red-500">*</span></Label>
+              <Label className="mb-1.5 block text-[13px] font-semibold text-foreground">Amount <span className="text-red-500">*</span></Label>
               <Input type="number" {...register("total_amount", { valueAsNumber: true })} min="0.01" step="0.01" placeholder="0.00" className="h-11" />
               {errors.total_amount && <p className="text-xs text-red-500">{errors.total_amount.message}</p>}
             </div>
 
             {/* Date */}
             <div className="space-y-2">
-              <Label className="mb-1.5 block text-[13px] font-semibold text-slate-700">Payment Date <span className="text-red-500">*</span></Label>
+              <Label className="mb-1.5 block text-[13px] font-semibold text-foreground">Payment Date <span className="text-red-500">*</span></Label>
               <Input type="date" {...register("payment_date")} className="h-11" />
               {errors.payment_date && <p className="text-xs text-red-500">{errors.payment_date.message}</p>}
             </div>
@@ -247,12 +247,12 @@ export default function CreatePaymentPage() {
 
         {/* Sale Allocation */}
         {Number(selectedCustomerId) > 0 && sales.length > 0 && (
-          <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-sm">
+          <div className="rounded-2xl border border-border bg-background p-4 sm:p-6 shadow-sm">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-semibold text-slate-700">Sale Allocation (Optional)</h3>
-              <p className="text-xs text-slate-400">Leave empty for FIFO auto-allocation</p>
+              <h3 className="text-sm font-semibold text-foreground">Sale Allocation (Optional)</h3>
+              <p className="text-xs text-muted-foreground">Leave empty for FIFO auto-allocation</p>
             </div>
-            <p className="text-xs text-slate-400 mb-3">Select specific sales to allocate this payment to, or leave empty for automatic FIFO settlement.</p>
+            <p className="text-xs text-muted-foreground mb-3">Select specific sales to allocate this payment to, or leave empty for automatic FIFO settlement.</p>
             <div className="space-y-2 max-h-64 overflow-y-auto scrollbar-thin">
               {sales.map((sale) => (
                 <button
@@ -261,30 +261,30 @@ export default function CreatePaymentPage() {
                   onClick={() => toggleSaleSelection(sale.id)}
                   className={`flex w-full items-center justify-between rounded-xl border px-4 py-3 text-left transition-all ${
                     selectedSaleIds.includes(sale.id)
-                      ? "border-emerald-500 bg-emerald-50"
-                      : "border-slate-200 hover:border-slate-300"
+                      ? "border-emerald-500 bg-emerald-500/10"
+                      : "border-border hover:border-border"
                   }`}
                 >
                   <div className="flex items-center gap-3">
                     <div className={`flex h-5 w-5 items-center justify-center rounded border-2 transition-all ${
-                      selectedSaleIds.includes(sale.id) ? "border-emerald-500 bg-emerald-500" : "border-slate-300"
+                      selectedSaleIds.includes(sale.id) ? "border-emerald-500 bg-emerald-500" : "border-border"
                     }`}>
                       {selectedSaleIds.includes(sale.id) && <Check className="h-3 w-3 text-white" />}
                     </div>
                     <div>
-                      <p className="text-sm font-mono font-semibold text-slate-700">{sale.reference_number}</p>
-                      <p className="text-xs text-slate-400">{new Date(sale.sale_date).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })}</p>
+                      <p className="text-sm font-mono font-semibold text-foreground">{sale.reference_number}</p>
+                      <p className="text-xs text-muted-foreground">{new Date(sale.sale_date).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })}</p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm font-semibold text-slate-700">{formatCurrency(sale.total_amount)}</p>
+                    <p className="text-sm font-semibold text-foreground">{formatCurrency(sale.total_amount)}</p>
                     <p className="text-xs text-red-600">Due: {formatCurrency(sale.due_amount)}</p>
                   </div>
                 </button>
               ))}
             </div>
             {selectedSaleIds.length > 0 && (
-              <div className="mt-3 rounded-lg bg-emerald-50 px-4 py-2 text-xs text-emerald-700">
+              <div className="mt-3 rounded-lg bg-emerald-500/10 px-4 py-2 text-xs text-emerald-600">
                 {selectedSaleIds.length} sale(s) selected for allocation
               </div>
             )}
@@ -292,35 +292,35 @@ export default function CreatePaymentPage() {
         )}
 
         {/* Proof Image & Notes */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-sm">
-          <h3 className="mb-4 text-sm font-semibold text-slate-700">Additional Details</h3>
+        <div className="rounded-2xl border border-border bg-background p-4 sm:p-6 shadow-sm">
+          <h3 className="mb-4 text-sm font-semibold text-foreground">Additional Details</h3>
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label className="mb-1.5 block text-[13px] font-semibold text-slate-700">Proof Image (Optional)</Label>
+              <Label className="mb-1.5 block text-[13px] font-semibold text-foreground">Proof Image (Optional)</Label>
               {proofImagePreview ? (
                 <div className="relative inline-block">
-                  <img src={proofImagePreview} alt="Proof" className="h-32 rounded-xl object-cover border border-slate-200" />
+                  <img src={proofImagePreview} alt="Proof" className="h-32 rounded-xl object-cover border border-border" />
                   <button type="button" onClick={removeImage} className="absolute -top-2 -right-2 h-6 w-6 rounded-full bg-red-500 text-white flex items-center justify-center text-xs hover:bg-red-600">×</button>
                 </div>
               ) : (
-                <label className="flex h-32 w-full cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-200 bg-slate-50 transition-colors hover:border-emerald-300 hover:bg-emerald-50">
-                  <Upload className="mb-1 h-6 w-6 text-slate-400" />
-                  <span className="text-xs font-medium text-slate-500">Upload Proof</span>
-                  <span className="text-[10px] text-slate-400 mt-0.5">PNG, JPG, WEBP (max 2MB)</span>
+                <label className="flex h-32 w-full cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-border bg-muted transition-colors hover:border-emerald-300 hover:bg-emerald-500/10">
+                  <Upload className="mb-1 h-6 w-6 text-muted-foreground" />
+                  <span className="text-xs font-medium text-muted-foreground">Upload Proof</span>
+                  <span className="text-[10px] text-muted-foreground mt-0.5">PNG, JPG, WEBP (max 2MB)</span>
                   <input type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
                 </label>
               )}
             </div>
             <div className="space-y-2">
-              <Label className="mb-1.5 block text-[13px] font-semibold text-slate-700">Notes (Optional)</Label>
-              <textarea {...register("notes")} placeholder="Additional notes about this payment" rows={3} className="flex w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition-all placeholder:text-slate-400 hover:border-slate-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20" />
+              <Label className="mb-1.5 block text-[13px] font-semibold text-foreground">Notes (Optional)</Label>
+              <textarea {...register("notes")} placeholder="Additional notes about this payment" rows={3} className="flex w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none transition-all placeholder:text-muted-foreground hover:border-border focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20" />
             </div>
           </div>
         </div>
 
         {/* Actions */}
         <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-3">
-          <Button type="button" variant="outline" onClick={() => router.push("/payments")} className="h-11 px-6 border-slate-200 text-slate-600 font-semibold">Cancel</Button>
+          <Button type="button" variant="outline" onClick={() => router.push("/payments")} className="h-11 px-6 border-border text-foreground font-semibold">Cancel</Button>
           <Button type="submit" disabled={isSaving} className="h-11 px-8 bg-emerald-600 text-white hover:bg-emerald-700 font-semibold shadow-lg shadow-emerald-600/20">
             {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
             Record Payment
