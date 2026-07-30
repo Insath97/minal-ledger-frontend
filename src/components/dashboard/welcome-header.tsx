@@ -1,6 +1,7 @@
 "use client";
 
-import { Calendar, Download } from "lucide-react";
+import { useState } from "react";
+import { Calendar, Download, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/stores/auth-store";
 
@@ -11,8 +12,13 @@ function getGreeting(): string {
   return "Good Evening";
 }
 
-export function WelcomeHeader() {
+interface WelcomeHeaderProps {
+  onExport?: () => Promise<void>;
+}
+
+export function WelcomeHeader({ onExport }: WelcomeHeaderProps) {
   const { user } = useAuthStore();
+  const [isExporting, setIsExporting] = useState(false);
   const name = user?.name || "User";
 
   const today = new Date().toLocaleDateString("en-US", {
@@ -21,6 +27,16 @@ export function WelcomeHeader() {
     month: "long",
     day: "numeric",
   });
+
+  const handleExport = async () => {
+    if (!onExport) return;
+    setIsExporting(true);
+    try {
+      await onExport();
+    } finally {
+      setIsExporting(false);
+    }
+  };
 
   return (
     <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -37,9 +53,17 @@ export function WelcomeHeader() {
           <Calendar className="h-4 w-4 text-slate-400" />
           {today}
         </div>
-        <Button className="bg-emerald-600 text-white hover:bg-emerald-700">
-          <Download className="mr-2 h-4 w-4" />
-          Export
+        <Button
+          onClick={handleExport}
+          disabled={isExporting}
+          className="bg-emerald-600 text-white hover:bg-emerald-700 disabled:opacity-60"
+        >
+          {isExporting ? (
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          ) : (
+            <Download className="mr-2 h-4 w-4" />
+          )}
+          {isExporting ? "Exporting..." : "Export"}
         </Button>
       </div>
     </div>
