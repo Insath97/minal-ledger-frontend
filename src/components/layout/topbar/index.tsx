@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { Menu, Sun, Moon, Maximize2, Minimize2 } from "lucide-react";
+import { Menu, Sun, Moon, Maximize, Minimize } from "lucide-react";
 import { SearchCommand } from "./search-command";
 import { Notifications } from "./notifications";
 import { ProfileMenu } from "./profile-menu";
@@ -69,7 +69,7 @@ export function Topbar() {
           className="hidden sm:block rounded-lg p-2 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700"
           title={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
         >
-          {isFullscreen ? <Minimize2 className="h-5 w-5" /> : <Maximize2 className="h-5 w-5" />}
+          {isFullscreen ? <Minimize className="h-5 w-5" /> : <Maximize className="h-5 w-5" />}
         </button>
         <Notifications />
         <div className="ml-1 border-l border-slate-200 pl-3">
