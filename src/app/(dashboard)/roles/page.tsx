@@ -188,7 +188,9 @@ export default function RolesPage() {
                           <Lock className="h-2.5 w-2.5" /> Yes
                         </span>
                       ) : (
-                        <span className="text-xs text-muted-foreground">No</span>
+                        <span className="inline-flex items-center gap-1 rounded-full bg-muted border border-border px-2 py-0.5 text-[10px] font-semibold text-muted-foreground">
+                          No
+                        </span>
                       )}
                     </td>
                     <td className="px-5 py-3.5 text-right">
