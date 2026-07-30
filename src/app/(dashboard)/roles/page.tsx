@@ -11,6 +11,7 @@ import {
   X,
   Loader2,
   Shield,
+  Lock,
 } from "lucide-react";
 import { Pagination } from "@/components/shared/pagination";
 import { Button } from "@/components/ui/button";
@@ -138,6 +139,9 @@ export default function RolesPage() {
                 <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
                   Permissions
                 </th>
+                <th className="px-5 py-3.5 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+                  Protected
+                </th>
                 <th className="px-5 py-3.5 text-right text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
                   Actions
                 </th>
@@ -146,14 +150,14 @@ export default function RolesPage() {
             <tbody className="divide-y divide-border">
               {loading ? (
                 <tr>
-                  <td colSpan={5} className="px-5 py-16 text-center">
+                  <td colSpan={6} className="px-5 py-16 text-center">
                     <Loader2 className="mx-auto h-8 w-8 text-emerald-500 animate-spin mb-3" />
                     <p className="text-sm text-muted-foreground">Loading roles...</p>
                   </td>
                 </tr>
               ) : roles.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-5 py-16 text-center">
+                  <td colSpan={6} className="px-5 py-16 text-center">
                     <Shield className="mx-auto h-10 w-10 text-muted-foreground/50 mb-3" />
                     <p className="text-sm font-semibold text-foreground">No roles found</p>
                     <p className="text-xs text-muted-foreground mt-1">Try adjusting your search</p>
@@ -177,6 +181,15 @@ export default function RolesPage() {
                       <Badge variant="outline" className="border-emerald-500/20 bg-emerald-500/10 text-emerald-600 font-medium">
                         {role.permissions?.length ?? 0} permissions
                       </Badge>
+                    </td>
+                    <td className="px-5 py-3.5">
+                      {role.is_protected ? (
+                        <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 text-[10px] font-semibold text-amber-600">
+                          <Lock className="h-2.5 w-2.5" /> Yes
+                        </span>
+                      ) : (
+                        <span className="text-xs text-muted-foreground">No</span>
+                      )}
                     </td>
                     <td className="px-5 py-3.5 text-right">
                       <div className="flex items-center justify-end gap-1">
@@ -260,6 +273,13 @@ export default function RolesPage() {
                   {role.permissions?.length ?? 0} perms
                 </Badge>
               </div>
+              {role.is_protected && (
+                <div className="mb-3">
+                  <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 text-[10px] font-semibold text-amber-600">
+                    <Lock className="h-2.5 w-2.5" /> Protected
+                  </span>
+                </div>
+              )}
               <div className="flex items-center justify-end gap-1 pt-2 border-t border-border">
                 <button
                   onClick={() => router.push(`/roles/${role.id}`)}
