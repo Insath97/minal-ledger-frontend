@@ -27,13 +27,16 @@ const PER_PAGE_OPTIONS = [5, 10, 25, 50, 100];
 export default function UsersPage() {
   const router = useRouter();
   const { toast } = useToast();
-  const { hasPermission } = useAuthStore();
+  const { hasPermission, isSuperAdmin } = useAuthStore();
 
   const canCreate = hasPermission("User Create");
   const canEdit = hasPermission("User Update");
   const canDelete = hasPermission("User Delete");
   const canToggleStatus = hasPermission("User Toggle Status");
   const showActions = canEdit || canDelete;
+
+  const isUserSuperAdmin = (user: User) => user.roles?.some((r) => r.name === "Super Admin");
+  const currentUserIsSuperAdmin = isSuperAdmin();
   const [users, setUsers] = useState<User[]>([]);
   const [pagination, setPagination] = useState<PaginatedResponse<User> | null>(null);
   const [search, setSearch] = useState("");
@@ -227,7 +230,7 @@ export default function UsersPage() {
                           )}
                         </div>
                       </td>
-                      {canToggleStatus && (
+                      {canToggleStatus && !isUserSuperAdmin(user) && (
                         <td className="px-5 py-3.5">
                           <button
                             onClick={() => handleToggleStatus(user)}
@@ -251,7 +254,7 @@ export default function UsersPage() {
                           </button>
                         </td>
                       )}
-                      {canToggleStatus && (
+                      {canToggleStatus && !isUserSuperAdmin(user) && (
                         <td className="px-5 py-3.5">
                           <button
                             onClick={() => handleToggleCanLogin(user)}
@@ -285,7 +288,7 @@ export default function UsersPage() {
                             >
                               <Eye className="h-4 w-4" />
                             </button>
-                            {canEdit && (
+                            {canEdit && !(isUserSuperAdmin(user) && !currentUserIsSuperAdmin) && (
                               <button
                                 onClick={() => router.push(`/users/${user.id}/edit`)}
                                 className="rounded-lg p-1.5 text-muted-foreground hover:bg-emerald-500/10 hover:text-emerald-600 transition-colors"
@@ -294,7 +297,7 @@ export default function UsersPage() {
                                 <Edit className="h-4 w-4" />
                               </button>
                             )}
-                            {canDelete && (
+                            {canDelete && !(isUserSuperAdmin(user) && !currentUserIsSuperAdmin) && (
                               <button
                                 onClick={() => setShowDeleteConfirm(user)}
                                 className="rounded-lg p-1.5 text-muted-foreground hover:bg-red-500/10 hover:text-red-500 transition-colors"
@@ -360,7 +363,7 @@ export default function UsersPage() {
                     </div>
                   </div>
                   <div className="flex items-center gap-1 shrink-0">
-                    {canToggleStatus && (
+                    {canToggleStatus && !isUserSuperAdmin(user) && (
                       <button
                         onClick={() => handleToggleStatus(user)}
                         className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${user.is_active ? "bg-emerald-500/10 text-emerald-600" : "bg-muted text-muted-foreground"}`}
@@ -389,7 +392,7 @@ export default function UsersPage() {
                   >
                     <Eye className="h-4 w-4" />
                   </button>
-                  {canEdit && (
+                  {canEdit && !(isUserSuperAdmin(user) && !currentUserIsSuperAdmin) && (
                     <button
                       onClick={() => router.push(`/users/${user.id}/edit`)}
                       className="rounded-lg p-1.5 text-muted-foreground hover:bg-emerald-500/10 hover:text-emerald-600 transition-colors"
@@ -397,7 +400,7 @@ export default function UsersPage() {
                       <Edit className="h-4 w-4" />
                     </button>
                   )}
-                  {canDelete && (
+                  {canDelete && !(isUserSuperAdmin(user) && !currentUserIsSuperAdmin) && (
                     <button
                       onClick={() => setShowDeleteConfirm(user)}
                       className="rounded-lg p-1.5 text-muted-foreground hover:bg-red-500/10 hover:text-red-500 transition-colors"

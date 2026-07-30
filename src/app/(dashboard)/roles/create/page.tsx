@@ -26,6 +26,7 @@ import type { Permission } from "@/types";
 const roleSchema = z.object({
   name: z.string().min(1, "Role name is required").max(255),
   permissionIds: z.array(z.number()).min(1, "At least one permission is required"),
+  is_protected: z.boolean(),
 });
 
 type RoleInput = z.infer<typeof roleSchema>;
@@ -48,10 +49,11 @@ export default function CreateRolePage() {
     formState: { errors },
   } = useForm<RoleInput>({
     resolver: zodResolver(roleSchema),
-    defaultValues: { name: "", permissionIds: [] },
+    defaultValues: { name: "", permissionIds: [], is_protected: false },
   });
 
   const selectedPermissionIds = watch("permissionIds");
+  const isProtected = watch("is_protected");
 
   useEffect(() => {
     const fetchPerms = async () => {
@@ -134,7 +136,7 @@ export default function CreateRolePage() {
   const onSubmit = async (data: RoleInput) => {
     setIsSaving(true);
     try {
-      await createRole({ name: data.name, permissions: data.permissionIds });
+      await createRole({ name: data.name, permissions: data.permissionIds, is_protected: data.is_protected });
       toast("Role created successfully", "success");
       router.push("/roles");
     } catch (err: unknown) {
@@ -175,6 +177,21 @@ export default function CreateRolePage() {
             {errors.name && (
               <p className="mt-1 text-xs text-red-500">{errors.name.message}</p>
             )}
+          </div>
+          <div className="mt-4">
+            <label className="flex items-center gap-3 cursor-pointer">
+              <button
+                type="button"
+                onClick={() => setValue("is_protected", !isProtected)}
+                className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${isProtected ? "bg-emerald-500" : "bg-muted"}`}
+              >
+                <span className={`inline-block h-3.5 w-3.5 rounded-full bg-white shadow-sm transition-transform ${isProtected ? "translate-x-4.5" : "translate-x-0.5"}`} />
+              </button>
+              <div>
+                <span className="text-sm font-semibold text-foreground">Protected Role</span>
+                <p className="text-xs text-muted-foreground">Protected roles cannot be edited or deleted by non-super admins.</p>
+              </div>
+            </label>
           </div>
         </div>
 

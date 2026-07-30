@@ -45,13 +45,16 @@ export default function ViewUserPage() {
   const params = useParams();
   const userId = Number(params.id);
   const { toast } = useToast();
-  const { hasPermission } = useAuthStore();
+  const { hasPermission, isSuperAdmin } = useAuthStore();
   const canEdit = hasPermission("User Update");
   const canDelete = hasPermission("User Delete");
   const [user, setUser] = useState<UserType | null>(null);
   const [loading, setLoading] = useState(true);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+
+  const isUserSuperAdmin = user?.roles?.some((r) => r.name === "Super Admin");
+  const currentUserIsSuperAdmin = isSuperAdmin();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -176,7 +179,7 @@ export default function ViewUserPage() {
             </div>
           </div>
           <div className="flex items-center gap-2 sm:shrink-0">
-            {canEdit && (
+            {canEdit && !(isUserSuperAdmin && !currentUserIsSuperAdmin) && (
             <Button
               onClick={() => router.push(`/users/${user.id}/edit`)}
               className="bg-emerald-600 text-white hover:bg-emerald-700 font-semibold shadow-md shadow-emerald-600/20"
@@ -185,7 +188,7 @@ export default function ViewUserPage() {
               Edit
             </Button>
             )}
-            {canDelete && (
+            {canDelete && !(isUserSuperAdmin && !currentUserIsSuperAdmin) && (
             <Button
               onClick={() => setShowDeleteConfirm(true)}
               variant="outline"

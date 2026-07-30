@@ -13,6 +13,7 @@ interface AuthState {
   updateUser: (updates: Partial<User>) => void;
   hasPermission: (permissionName: string) => boolean;
   hasAnyPermission: (permissionNames: string[]) => boolean;
+  isSuperAdmin: () => boolean;
 }
 
 export const useAuthStore = create<AuthState>((set, get) => ({
@@ -86,5 +87,11 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     return user.roles.some((role) =>
       role.permissions?.some((p) => permissionNames.includes(p.name))
     );
+  },
+
+  isSuperAdmin: () => {
+    const user = get().user;
+    if (!user) return false;
+    return user.roles.some((role) => role.name === "Super Admin");
   },
 }));

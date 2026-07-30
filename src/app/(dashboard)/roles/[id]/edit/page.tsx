@@ -27,6 +27,7 @@ import type { Permission } from "@/types";
 const roleSchema = z.object({
   name: z.string().min(1, "Role name is required").max(255),
   permissionIds: z.array(z.number()).min(1, "At least one permission is required"),
+  is_protected: z.boolean(),
 });
 
 type RoleInput = z.infer<typeof roleSchema>;
@@ -53,10 +54,11 @@ export default function EditRolePage() {
     formState: { errors },
   } = useForm<RoleInput>({
     resolver: zodResolver(roleSchema),
-    defaultValues: { name: "", permissionIds: [] },
+    defaultValues: { name: "", permissionIds: [], is_protected: false },
   });
 
   const selectedPermissionIds = watch("permissionIds");
+  const isProtected = watch("is_protected");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -69,6 +71,7 @@ export default function EditRolePage() {
           reset({
             name: roleRes.data.name,
             permissionIds: roleRes.data.permissions.map((p) => p.id),
+            is_protected: roleRes.data.is_protected ?? false,
           });
         }
         if (permsRes.status === "success") {
@@ -228,6 +231,11 @@ export default function EditRolePage() {
               <p className="mt-1 text-xs text-red-500">{errors.name.message}</p>
             )}
           </div>
+          {isProtected && (
+            <div className="mt-4 rounded-lg bg-amber-500/10 border border-amber-500/20 p-3">
+              <p className="text-sm font-semibold text-amber-600">This is a protected role. It cannot be modified or deleted.</p>
+            </div>
+          )}
         </div>
 
         {/* Permissions */}

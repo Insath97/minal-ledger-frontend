@@ -91,6 +91,7 @@ export interface RoleList {
   id: number;
   name: string;
   guard_name: string;
+  is_protected?: boolean;
 }
 
 export interface PaginatedResponse<T> {
